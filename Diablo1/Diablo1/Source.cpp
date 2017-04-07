@@ -1,7 +1,11 @@
 #include <iostream>
-//Ini pertama dibuat oleh Adit
+#include "Human.h"
+#include "Base.h"
+#include "common.h"
 
 int main() {
+	
+
 
 	return 0;
 }
