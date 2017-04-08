@@ -1,9 +1,23 @@
-#pragma once
+#pragma once // compiler specific (sama kyk ifndef dsb)
+
 #ifndef BASE_H
 #define BASE_H
-#include "Human.h"
 
-class Base{
+#include <iostream>
+#include <cstdio>
+#include <cmath>
+#include <iomanip>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+#include <conio.h>
+#include <Windows.h>
+#include <memory>
+#include <vector>
+#include <ctime>
+
+class Base
+{
 protected:
 	int damage;
 	int chanceToHit;
@@ -12,8 +26,9 @@ protected:
 	int maxHealth;
 	int maxStamina;
 	int armor;
+
 public:
-	//get
+	//getter
 	int getDamage() { return damage; }
 	int getChanceToHit() { return chanceToHit; }
 	int getEvade() { return evade; }

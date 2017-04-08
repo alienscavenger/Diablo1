@@ -1,6 +1,23 @@
 #pragma once
+
 #ifndef HUMAN_H
 #define HUMAN_H
+
+#include <iostream>
+#include <cstdio>
+#include <cmath>
+#include <iomanip>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+#include <conio.h>
+#include <Windows.h>
+#include <memory>
+#include <vector>
+#include <ctime>
+
+#include "Base.h"
+#include "Item.h"
 
 class Human : public Base
 {
@@ -9,15 +26,27 @@ private:
 	int endurance;
 	int agility;
 	int dexterity;
+	vector <Item> eguipped; // yang lagi di-eguip
+	vector <Item> inventory; // yang ada di inventory (exclude eguipped)
 
 public:
-	Human(int pilihanJob) {
+	//constructor
+	Human(int pilihanJob)
+	{
 		setPrimary(pilihanJob);
 
 	}
 
+	//getter
+	int getStrength() { return strength; }
+	int getEndurance() { return endurance; }
+	int getAgility() { return agility; }
+	int getDexterity() { return dexterity; }
+
 	//setter all primary and secondary berdasarkan item equipment
-	void setAttributesItem(int str, int end, int agi, int dex, int dmg, int cth, int eva, int spd, int mhp, int mst, int amr) {
+	/// mungkin bakal gw ganti jadi "eguipItem" dan "removeItem", trus pake push_back dan delete-nya vector. Tapi blom kepikiran, ntar gw coba lagi
+	void setAttributesItem(int str, int end, int agi, int dex, int dmg, int cth, int eva, int spd, int mhp, int mst, int amr)
+	{
 		//primary attributes
 		strength += str;
 		endurance += end;
@@ -33,10 +62,9 @@ public:
 		armor += amr;
 	}
 
-
-
 	//untuk masukin primary saat mulai game pilih job (membuat character)
-	void setPrimary(int pilihanJob) { // 1<= pilihanJob <=3
+	void setPrimary(int pilihanJob)
+	{ // 1<= pilihanJob <=3
 		switch (pilihanJob) {
 		case 1: //Assassin
 			strength = 7;
@@ -62,7 +90,8 @@ public:
 	}
 
 	//set Secondary berdasarkan Primary
-	void setSecondary(int str, int end, int agi, int dex) {
+	void setSecondary(int str, int end, int agi, int dex)
+	{
 		damage = 3;
 		chanceToHit = 80 + (2 * dex);
 		evade = (2 * agi);
@@ -72,21 +101,14 @@ public:
 		armor = 0;
 	}
 
-
-
-
-	
-
-	///Ini fungsi untuk set primary saat level up
-	void levelUp(int strength, int endurance, int agility, int dexterity) {
+	//Ini fungsi untuk set primary saat level up
+	void levelUp(int strength, int endurance, int agility, int dexterity)
+	{
 		this->strength += strength;
 		this->endurance += endurance;
 		this->agility += agility;
 		this->dexterity += dexterity;
 	}
-
-
-
 
 };
 
