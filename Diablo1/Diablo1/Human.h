@@ -7,6 +7,8 @@
 #include "Item.h"
 #include <vector>
 
+using namespace std;
+
 class Human : public Base
 {
 private:
@@ -54,14 +56,15 @@ private:
 				kalau false, maka set ke true, set eguipment[index] menjadi pointer ke Item tersebut, dan setEguipped(true) pada item tersebut.
 	*/
 	vector <const Item*> vInventory; // yang ada di inventory (termasuk yang sudah di-eguip)
-	int nInventory; // jumlah barang yang ada di inventory
+	size_t nInventory; // jumlah barang yang ada di inventory
 
 	bool eguipStatus[7]; // true kalau item type ke-index (sesuai type di Item.h) sudah di-eguip, false kalau belum
 	const Item* eguipment[7]; // yang sekarang sedang dipakai (penggunaan index sama dengan eguipStatus)
 
 	void checkInventory(vector<Item>&fileRead)
 	{
-		for (vector<Item>::const_iterator iter = fileRead.begin(), int i = 0; iter != fileRead.end(); iter++, i++)
+		int i = 0;
+		for (vector<Item>::const_iterator iter = fileRead.begin(); iter != fileRead.end(); iter++, i++)
 		{
 			if (iter->getBought()) // kalau sudah dibeli, masukin ke 
 			{

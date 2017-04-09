@@ -43,7 +43,7 @@ public:
 	//constructor (gaada default constructor)
 	Item(char* name, int str, int end, int agi, int dex, int dmg, int cth, int eva, int spd, int mhp, int mst, int amr,int type,int restriction, bool eguipped, bool bought)
 	{
-		strcpy(this->name, name);
+		strcpy(this->name, name); // KALAU PAKE VS15 / VS17, JANGAN LUPA PAKE _CRT_SECURE_NO_WARNIGNS (CARI DI INTERNET)
 		strength = str;
 		endurance = end;
 		agility = agi;
