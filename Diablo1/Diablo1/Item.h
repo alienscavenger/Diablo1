@@ -22,6 +22,9 @@
 class Item // bisa weapon, armor, atau apapun
 {
 private:
+	///masa gk ada nama
+	char name[50];
+	
 	int strength;
 	int endurance;
 	int agility;

@@ -26,8 +26,9 @@ private:
 	int endurance;
 	int agility;
 	int dexterity;
-	vector <Item> eguipped; // yang lagi di-eguip
-	vector <Item> inventory; // yang ada di inventory (exclude eguipped)
+	///depan nya gw kasih 'v' biar tau kalau itu vector
+	vector <Item> vEguipped; // yang lagi di-eguip 
+	vector <Item> vInventory; // yang ada di inventory (exclude eguipped)
 
 public:
 	//constructor
