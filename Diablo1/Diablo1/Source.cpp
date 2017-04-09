@@ -12,7 +12,7 @@
 #include <ctime>
 
 #include "Human.h"
-#include "Base.h"
+#include "Item.h"
 #include "common.h"
 
 using namespace std;

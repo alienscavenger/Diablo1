@@ -3,28 +3,12 @@
 #ifndef ITEM_H
 #define ITEM_H
 
-#include <iostream>
-#include <cstdio>
-#include <cmath>
-#include <iomanip>
-#include <cstdlib>
 #include <cstring>
-#include <string>
-#include <conio.h>
-#include <Windows.h>
-#include <memory>
-#include <vector>
-#include <ctime>
-
-#include "Base.h"
-#include "Human.h"
 
 class Item // bisa weapon, armor, atau apapun
 {
 private:
-	///masa gk ada nama
 	char name[50];
-	
 	int strength;
 	int endurance;
 	int agility;
@@ -37,18 +21,29 @@ private:
 	int maxStamina;
 	int armor;
 	int type;
+	int restriction;
+	bool eguipped;
+	bool bought;
 	/* 
+	   type 0 = pendant
 	   type 1 = helmet
 	   type 2 = gloves
 	   type 3 = chest
 	   type 4 = boots
 	   type 5 = weapon
 	   type 6 = shield
+
+	   restriction 0 = no restriction
+	   restriction 1 = assassin
+	   restriction 2 = paladin
+	   restriction 3 = barbarian
 	*/
+
 public:
 	//constructor (gaada default constructor)
-	Item(int str, int end, int agi, int dex, int dmg, int cth, int eva, int spd, int mhp, int mst, int amr,int type)
+	Item(char* name, int str, int end, int agi, int dex, int dmg, int cth, int eva, int spd, int mhp, int mst, int amr,int type,int restriction, bool eguipped, bool bought)
 	{
+		strcpy(this->name, name);
 		strength = str;
 		endurance = end;
 		agility = agi;
@@ -61,21 +56,41 @@ public:
 		maxStamina = mst;
 		armor = amr;
 		this->type = type;
+		this->restriction = restriction;
+		this->eguipped = eguipped;
+		this->bought = bought;
 	}
 
 	//getter
-	int getStrength() { return strength; }
-	int getEndurance() { return endurance; }
-	int getAgility() { return agility; }
-	int getDexterity() { return dexterity; }
-	int getDamage() { return damage; }
-	int getChanceToHit() { return chanceToHit; }
-	int getEvade() { return evade; }
-	int getSpeed() { return speed; }
-	int getMaxHealth() { return maxHealth; }
-	int getMaxStamina() { return maxStamina; }
-	int getArmor() { return armor; }
-	int getType() { return type; }
+	const char* getName() const { return name; }
+	int getStrength() const { return strength; }
+	int getEndurance() const { return endurance; }
+	int getAgility() const { return agility; }
+	int getDexterity() const { return dexterity; }
+	int getDamage() const { return damage; }
+	int getChanceToHit() const { return chanceToHit; }
+	int getEvade() const { return evade; }
+	int getSpeed() const { return speed; }
+	int getMaxHealth() const { return maxHealth; }
+	int getMaxStamina() const { return maxStamina; }
+	int getArmor() const { return armor; }
+	int getType() const { return type; }
+	int getRestriction() const { return restriction; }
+	bool getEguipped() const { return eguipped; }
+	bool getBought() const { return bought; }
+
+	//setter buat bought
+	void setBought(bool ok)
+	{
+		bought = ok;
+	}
+	//setter buat eguipped
+	void setEguip(bool ok)
+	{
+		eguipped = ok;
+	}
+
+	//setter kalo mau ada kyk "upgrade weapon" dsb, tapi itu nanti aja
 };
 
 

@@ -3,19 +3,6 @@
 #ifndef BASE_H
 #define BASE_H
 
-#include <iostream>
-#include <cstdio>
-#include <cmath>
-#include <iomanip>
-#include <cstdlib>
-#include <cstring>
-#include <string>
-#include <conio.h>
-#include <Windows.h>
-#include <memory>
-#include <vector>
-#include <ctime>
-
 class Base
 {
 protected:
@@ -29,13 +16,13 @@ protected:
 
 public:
 	//getter
-	int getDamage() { return damage; }
-	int getChanceToHit() { return chanceToHit; }
-	int getEvade() { return evade; }
-	int getSpeed() { return speed; }
-	int getMaxHealth() { return maxHealth; }
-	int getMaxStamina() { return maxStamina; }
-	int getArmor() { return armor; }
+	int getDamage() const { return damage; }
+	int getChanceToHit() const { return chanceToHit; }
+	int getEvade() const { return evade; }
+	int getSpeed() const { return speed; }
+	int getMaxHealth() const { return maxHealth; }
+	int getMaxStamina() const { return maxStamina; }
+	int getArmor() const { return armor; }
 };
 
 #endif
