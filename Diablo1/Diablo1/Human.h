@@ -38,7 +38,7 @@ private:
 			   yang sebenernya ditambahin biar ada tipe ke 0, alias index ke-0)
 
 			5. Intinya, vShop tidak akan/dapat diubah oleh class Human, dan vInventory serta eguipment hanyalah sebuah pointer
-			   to const object.
+			   to const object, si vShop itu sendiri.
 
 			6. vShop berisi semua item yang ada dalam game, entah itu uneguipped item, eguipped item, secret item, dsb.
 
@@ -54,22 +54,23 @@ private:
 
 			11. Untuk eguip item, validasi dilakukan di main Class dengan mengecek apakah eguipStatus[index] false. Kalau true, break;
 				kalau false, maka set ke true, set eguipment[index] menjadi pointer ke Item tersebut, dan setEguipped(true) pada item tersebut.
+
+			12. Setiap eguip dan uneguip, jangan lupa di-update attribute Humannya dengan setAttributesItem
 	*/
-	vector <const Item*> vInventory; // yang ada di inventory (termasuk yang sudah di-eguip)
+	vector <Item*> vInventory; // yang ada di inventory (termasuk yang sudah di-eguip)
 	size_t nInventory; // jumlah barang yang ada di inventory
 
 	bool eguipStatus[7]; // true kalau item type ke-index (sesuai type di Item.h) sudah di-eguip, false kalau belum
-	const Item* eguipment[7]; // yang sekarang sedang dipakai (penggunaan index sama dengan eguipStatus)
+	Item* eguipment[7]; // yang sekarang sedang dipakai (penggunaan index sama dengan eguipStatus)
 
 	void checkInventory(vector<Item>&fileRead)
 	{
 		int i = 0;
-		for (vector<Item>::const_iterator iter = fileRead.begin(); iter != fileRead.end(); iter++, i++)
+		for (vector<Item>::iterator iter = fileRead.begin(); iter != fileRead.end(); iter++, i++)
 		{
-			if (iter->getBought()) // kalau sudah dibeli, masukin ke 
+			if (iter->getBought()) // kalau sudah dibeli, masukin ke vInventory
 			{
-				Item* temp = &fileRead[i];
-				vInventory.push_back(temp); // kalau langsung masukin iter gabisa, soalnya itu const_iterator
+				vInventory.push_back(&*iter); // ngambil alamat dari objek Item, dimana Item tersebut terdapat dalam vector vShop
 			}
 		}
 	}
@@ -81,7 +82,7 @@ private:
 			eguipment[i] = NULL; // awalnya tidak menunjuk ke apa"
 		}
 
-		for (vector<const Item*>::const_iterator iter = vInventory.begin(); iter != vInventory.end(); iter++)
+		for (vector<Item*>::iterator iter = vInventory.begin(); iter != vInventory.end(); iter++)
 		{
 			if ((*iter)->getEguipped()) // *iter = value dari vInventory = pointer to Item. jadi perlu di-dereference 2x
 										// kalau sudah di-eguip
@@ -98,8 +99,8 @@ public:
 	{
 		vInventory.reserve(fileRead.size());
 		setPrimary(pilihanJob); // secara implisit manggil setSecondary
-		checkInventory(fileRead);
-		checkEguipped();		
+		checkInventory(fileRead); // filter yang sudah di-bought
+		checkEguipped(); // filter yang sedang di-eguip
 		nInventory = vInventory.size();
 	}
 
@@ -110,7 +111,6 @@ public:
 	int getDexterity() const { return dexterity; }
 
 	//setter all primary and secondary berdasarkan item equipment
-
 	void setAttributesItem(int str, int end, int agi, int dex, int dmg, int cth, int eva, int spd, int mhp, int mst, int amr)
 	{
 		//primary attributes
@@ -181,7 +181,7 @@ public:
 		a.setBought(true);
 		vInventory.push_back(&a);
 	}
-	void sellItem(vector<const Item*>::const_iterator iter, Item* pointer)
+	void sellItem(vector<Item*>::iterator iter, Item* pointer)
 	{
 		pointer->setBought(false); // harus pake ini, habisnya iter adalah pointer ke const Item
 		vInventory.erase(iter); // iter adalah sebuah pointer ke vInventory (const), dan pointer adalah pointer ke objek Item yang dituju
@@ -191,12 +191,18 @@ public:
 		pointer->setEguip(false);
 		eguipStatus[index] = false;
 		eguipment[index] = NULL;
+		setAttributesItem(-pointer->getAgility, -pointer->getEndurance, -pointer->getAgility, -pointer->getDexterity,
+							-pointer->getDamage, -pointer->getChanceToHit, -pointer->getEvade, -pointer->getSpeed,
+							-pointer->getMaxHealth, -pointer->getMaxStamina, -pointer->getArmor);
 	}
 	void eguipItem(int index, Item* pointer)
 	{
 		pointer->setEguip(true);
 		eguipStatus[index] = true;
 		eguipment[index] = pointer;
+		setAttributesItem(pointer->getAgility, pointer->getEndurance, pointer->getAgility, pointer->getDexterity,
+							pointer->getDamage, pointer->getChanceToHit, pointer->getEvade, pointer->getSpeed,
+							pointer->getMaxHealth, pointer->getMaxStamina, pointer->getArmor);
 	}
 };
 
