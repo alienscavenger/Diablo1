@@ -138,9 +138,9 @@ public:
 	}
 
 	/** Changes the console's title. */
-	static void setTitle(const char *str) {
+	/*static void setTitle(const char *str) {
 		SetConsoleTitle(str);
-	}
+	}*/
 
 	/** Displays or hiddens the visibility of console cursor. */
 	static void setCursorVisibility(bool visible) {
