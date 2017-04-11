@@ -22,8 +22,8 @@ private:
 	int armor;
 	int type;
 	int restriction;
-	bool eguipped;
-	bool bought;
+	int eguipped; // 1 = true, 0 = false
+	int bought; // 1 = true, 0 = false
 	/* 
 	   type 0 = pendant
 	   type 1 = helmet
@@ -41,7 +41,7 @@ private:
 
 public:
 	//constructor (gaada default constructor)
-	Item(char* name, int str, int end, int agi, int dex, int dmg, int cth, int eva, int spd, int mhp, int mst, int amr,int type,int restriction, bool eguipped, bool bought)
+	Item(char* name, int str, int end, int agi, int dex, int dmg, int cth, int eva, int spd, int mhp, int mst, int amr,int type,int restriction, int eguipped, int bought)
 	{
 		strcpy(this->name, name); // KALAU PAKE VS15 / VS17, JANGAN LUPA PAKE _CRT_SECURE_NO_WARNIGNS (CARI DI INTERNET)
 		strength = str;
@@ -76,16 +76,16 @@ public:
 	int getArmor() const { return armor; }
 	int getType() const { return type; }
 	int getRestriction() const { return restriction; }
-	bool getEguipped() const { return eguipped; }
-	bool getBought() const { return bought; }
+	int getEguipped() const { return eguipped; }
+	int getBought() const { return bought; }
 
 	//setter buat bought
-	void setBought(bool ok)
+	void setBought(int ok)
 	{
 		bought = ok;
 	}
 	//setter buat eguipped
-	void setEguip(bool ok)
+	void setEguip(int ok)
 	{
 		eguipped = ok;
 	}

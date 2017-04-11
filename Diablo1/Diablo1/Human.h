@@ -115,7 +115,7 @@ public:
 	int getAgility() const { return agility; }
 	int getDexterity() const { return dexterity; }
 	bool getEguipStatus(int index) const { return eguipStatus[index]; }
-	Item* getEguipment(int index) const { return eguipment[index]; }
+	Item* getEguipment(int index) { return eguipment[index]; }
 
 	//setter all primary and secondary berdasarkan item equipment
 	void setAttributesItem(int str, int end, int agi, int dex, int dmg, int cth, int eva, int spd, int mhp, int mst, int amr)
@@ -185,13 +185,13 @@ public:
 
 	void buyItem(Item& a)
 	{
-		a.setBought(true);
+		a.setBought(1); // set true
 		vInventory.push_back(&a);
 		nInventory = vInventory.size(); // update nInventory
 	}
 	void sellItem(Item* pointer)
 	{
-		pointer->setBought(false);
+		pointer->setBought(0); // set false
 		vector<Item*>::iterator iter;
 		for (iter = vInventory.begin(); iter != vInventory.end(); iter++)
 		{
@@ -202,7 +202,7 @@ public:
 	}
 	void uneguipItem(int index, Item* pointer)
 	{
-		pointer->setEguip(false); // set status eguipped di Item menjadi false
+		pointer->setEguip(0); // set status eguipped di Item menjadi false
 		eguipStatus[index] = false; // set status eguipped di Human menjadi false
 		eguipment[index] = NULL; // eguipment[index] di-uneguip
 		setAttributesItem(-1 * (pointer->getAgility()), -1 * (pointer->getEndurance()), -1 * (pointer->getAgility()), -1 * (pointer->getDexterity()),
@@ -211,7 +211,7 @@ public:
 	}
 	void eguipItem(int index, Item* pointer)
 	{
-		pointer->setEguip(true);
+		pointer->setEguip(1); // set true
 		eguipStatus[index] = true;
 		eguipment[index] = pointer;
 		setAttributesItem(pointer->getAgility(), pointer->getEndurance(), pointer->getAgility(), pointer->getDexterity(),
