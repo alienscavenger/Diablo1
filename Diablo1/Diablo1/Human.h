@@ -48,7 +48,7 @@ private:
 			8. Kalau mau menjual item, cek dulu apakah item di vector vInventory sedang di-eguip atau tidak. Kita hanya bisa
 			   menjual item yang sedang tidak di-eguip
 
-			9. Untuk menjual item, tinggal saja vInventory.delete(vInventory.begin() + index). Index ditentukan dari Main class aja.
+			9. Untuk menjual item, tinggal saja vInventory.erase(vInventory.begin() + index). Index ditentukan dari Main class aja.
 
 			10. Untuk uneguip item, tinggal set eguipStatus[index] ke false, dan set eguipment[index] ke NULL;
 
@@ -71,10 +71,15 @@ private:
 			if (iter->getBought()) // kalau sudah dibeli, masukin ke vInventory
 			{
 				vInventory.push_back(&*iter); // ngambil alamat dari objek Item, dimana Item tersebut terdapat dalam vector vShop
+				/*
+				kalau di atas gabisa, pake ini aja:
+				Item* temp = &fileRead[i];
+				vInventory.push_back(temp);
+				*/
 			}
 		}
 	}
-	void checkEguipped()
+	void checkEguipped() // cek apakah yang ada di vInventory sudah di-eguip atau belom
 	{
 		for (int i = 0; i < 7; i++)
 		{
@@ -84,8 +89,8 @@ private:
 
 		for (vector<Item*>::iterator iter = vInventory.begin(); iter != vInventory.end(); iter++)
 		{
+			// kalau sudah di-eguip
 			if ((*iter)->getEguipped()) // *iter = value dari vInventory = pointer to Item. jadi perlu di-dereference 2x
-										// kalau sudah di-eguip
 			{
 				eguipment[(*iter)->getType()] = *iter; // valuenya adalah pointer dari iter, yakni value dari vInventory, yakni pointer to objek Item
 				eguipStatus[(*iter)->getType()] = true; // artinya sekarang sudah ada yang di-eguip
@@ -97,7 +102,7 @@ public:
 	//constructor
 	Human(int pilihanJob, vector <Item>& fileRead) // awalnya mau masukinnya itu const <Item>& fileRead, tapi bikin ribet, jadi dihilangin aja const-nya
 	{
-		vInventory.reserve(fileRead.size());
+		vInventory.reserve(fileRead.size()+5); // +5, karena why not
 		setPrimary(pilihanJob); // secara implisit manggil setSecondary
 		checkInventory(fileRead); // filter yang sudah di-bought
 		checkEguipped(); // filter yang sedang di-eguip
@@ -109,6 +114,8 @@ public:
 	int getEndurance() const { return endurance; }
 	int getAgility() const { return agility; }
 	int getDexterity() const { return dexterity; }
+	bool getEguipStatus(int index) const { return eguipStatus[index]; }
+	Item* getEguipment(int index) const { return eguipment[index]; }
 
 	//setter all primary and secondary berdasarkan item equipment
 	void setAttributesItem(int str, int end, int agi, int dex, int dmg, int cth, int eva, int spd, int mhp, int mst, int amr)
@@ -180,29 +187,36 @@ public:
 	{
 		a.setBought(true);
 		vInventory.push_back(&a);
+		nInventory = vInventory.size(); // update nInventory
 	}
-	void sellItem(vector<Item*>::iterator iter, Item* pointer)
+	void sellItem(Item* pointer)
 	{
-		pointer->setBought(false); // harus pake ini, habisnya iter adalah pointer ke const Item
-		vInventory.erase(iter); // iter adalah sebuah pointer ke vInventory (const), dan pointer adalah pointer ke objek Item yang dituju
+		pointer->setBought(false);
+		vector<Item*>::iterator iter;
+		for (iter = vInventory.begin(); iter != vInventory.end(); iter++)
+		{
+			if (*iter == pointer)break; // *iter adalah value dari vInventory = pointer ke sebuah objek Item
+		}
+		vInventory.erase(iter); // iter adalah sebuah pointer ke vInventory, dan pointernya adalah pointer ke objek Item yang dituju
+		nInventory = vInventory.size(); // update nInventory
 	}
 	void uneguipItem(int index, Item* pointer)
 	{
-		pointer->setEguip(false);
-		eguipStatus[index] = false;
-		eguipment[index] = NULL;
-		setAttributesItem(-pointer->getAgility, -pointer->getEndurance, -pointer->getAgility, -pointer->getDexterity,
-							-pointer->getDamage, -pointer->getChanceToHit, -pointer->getEvade, -pointer->getSpeed,
-							-pointer->getMaxHealth, -pointer->getMaxStamina, -pointer->getArmor);
+		pointer->setEguip(false); // set status eguipped di Item menjadi false
+		eguipStatus[index] = false; // set status eguipped di Human menjadi false
+		eguipment[index] = NULL; // eguipment[index] di-uneguip
+		setAttributesItem(-1 * (pointer->getAgility()), -1 * (pointer->getEndurance()), -1 * (pointer->getAgility()), -1 * (pointer->getDexterity()),
+						-1 * (pointer->getDamage()), -1 * (pointer->getChanceToHit()), -1 * (pointer->getEvade()), -1 * (pointer->getSpeed()),
+						-1 * (pointer->getMaxHealth()), -1 * (pointer->getMaxStamina()), -1 * (pointer->getArmor)());
 	}
 	void eguipItem(int index, Item* pointer)
 	{
 		pointer->setEguip(true);
 		eguipStatus[index] = true;
 		eguipment[index] = pointer;
-		setAttributesItem(pointer->getAgility, pointer->getEndurance, pointer->getAgility, pointer->getDexterity,
-							pointer->getDamage, pointer->getChanceToHit, pointer->getEvade, pointer->getSpeed,
-							pointer->getMaxHealth, pointer->getMaxStamina, pointer->getArmor);
+		setAttributesItem(pointer->getAgility(), pointer->getEndurance(), pointer->getAgility(), pointer->getDexterity(),
+							pointer->getDamage(), pointer->getChanceToHit(), pointer->getEvade(), pointer->getSpeed(),
+							pointer->getMaxHealth(), pointer->getMaxStamina(), pointer->getArmor());
 	}
 };
 
