@@ -9,23 +9,24 @@ class Item // bisa weapon, armor, atau apapun
 {
 private:
 	char name[50];
+	int price;
 	int strength;
 	int endurance;
 	int agility;
 	int dexterity;
-	int damage;
-	int chanceToHit;
-	int evade;
-	int speed;
-	int maxHealth;
-	int maxStamina;
+	float damage;
+	float chanceToHit;
+	float evade;
+	float speed;
+	float maxHealth;
+	float maxStamina;
 	int armor;
 	int type;
 	int restriction;
 	int eguipped; // 1 = true, 0 = false
 	int bought; // 1 = true, 0 = false
 	/* 
-	   type 0 = pendant
+	   type 0 = pendant(?)
 	   type 1 = helmet
 	   type 2 = gloves
 	   type 3 = chest
@@ -41,9 +42,11 @@ private:
 
 public:
 	//constructor (gaada default constructor)
-	Item(char* name, int str, int end, int agi, int dex, int dmg, int cth, int eva, int spd, int mhp, int mst, int amr,int type,int restriction, int eguipped, int bought)
+	Item(char* name, int price, int str, int end, int agi, int dex, float dmg, float cth, float eva, float spd, float mhp, float mst,
+		 int amr,int type,int restriction, int eguipped, int bought)
 	{
-		strcpy(this->name, name); // KALAU PAKE VS15 / VS17, JANGAN LUPA PAKE _CRT_SECURE_NO_WARNIGNS (CARI DI INTERNET)
+		strcpy(this->name, name); // KALAU PAKE VS15 / VS17, JANGAN LUPA PAKE _CRT_SECURE_NO_WARNINGS (CARI DI INTERNET)
+		this->price = price;
 		strength = str;
 		endurance = end;
 		agility = agi;
@@ -63,16 +66,17 @@ public:
 
 	//getter
 	const char* getName() const { return name; }
+	int getPrice() const { return price; }
 	int getStrength() const { return strength; }
 	int getEndurance() const { return endurance; }
 	int getAgility() const { return agility; }
 	int getDexterity() const { return dexterity; }
-	int getDamage() const { return damage; }
-	int getChanceToHit() const { return chanceToHit; }
-	int getEvade() const { return evade; }
-	int getSpeed() const { return speed; }
-	int getMaxHealth() const { return maxHealth; }
-	int getMaxStamina() const { return maxStamina; }
+	float getDamage() const { return damage; }
+	float getChanceToHit() const { return chanceToHit; }
+	float getEvade() const { return evade; }
+	float getSpeed() const { return speed; }
+	float getMaxHealth() const { return maxHealth; }
+	float getMaxStamina() const { return maxStamina; }
 	int getArmor() const { return armor; }
 	int getType() const { return type; }
 	int getRestriction() const { return restriction; }

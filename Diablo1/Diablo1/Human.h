@@ -4,6 +4,7 @@
 #define HUMAN_H
 
 #include "Base.h"
+#include "Monster.h"
 #include "Item.h"
 #include <vector>
 
@@ -16,6 +17,66 @@ private:
 	int endurance;
 	int agility;
 	int dexterity;
+	int gold;
+	int experience;
+	static int expRequirement[31]; // misalnya, expRequirement[2] = 1000, artinya, untuk level up ke 2, player memerlukan exp >= 1000 (di-initialize di bawah)
+	int job;
+
+	//untuk masukin primary saat mulai game pilih job (membuat character)
+	void setPrimary(int pilihanJob) // 1<= pilihanJob <=3
+	{
+		switch (pilihanJob) {
+		case 1: //Assassin
+			strength = 7;
+			endurance = 7;
+			agility = 13;
+			dexterity = 12;
+			break;
+		case 2: //Paladin
+			strength = 14;
+			endurance = 12;
+			agility = 6;
+			dexterity = 8;
+			break;
+		case 3: //Barbarian
+			strength = 13;
+			endurance = 15;
+			agility = 5;
+			dexterity = 6;
+			break;
+		}
+	}
+
+	//set Secondary berdasarkan Primary
+	void setSecondary(int str, int end, int agi, int dex)
+	{
+		damage = 3;
+		chanceToHit = 80 + (2 * dex);
+		evade = (2 * agi);
+		speed = 100 + (5 * agi) + (3 * dex);
+		maxHealth = (5 * str) + (10 * end);
+		maxStamina = (3 * str) + (10 * end) + (2 * dex);
+		armor = 0;
+	}
+
+
+	//setter all primary and secondary berdasarkan item equipment (dipakai buat eguip dan uneguip item)
+	void setAttributesItem(int str, int end, int agi, int dex, float dmg, float cth, float eva, float spd, float mhp, float mst, int amr)
+	{
+		//primary attributes
+		strength += str;
+		endurance += end;
+		agility += agi;
+		dexterity += dex;
+		//secondary attributes
+		damage += dmg;
+		chanceToHit += cth + (2 * dex);
+		evade += eva + (2 * agi);
+		speed += spd + (5 * agi) + (3 * dex);
+		maxHealth += mhp + (5 * str) + (10 * end);
+		maxStamina += mst + (3 * str) + (10 * end) + (2 * dex);
+		armor += amr;
+	}
 
 	/*
 		Jadi gini cara kerja untuk inventory (beda New Game dan Load Game hanya pada actual parameternya saja):
@@ -78,6 +139,7 @@ private:
 				*/
 			}
 		}
+		nInventory = vInventory.size();
 	}
 	void checkEguipped() // cek apakah yang ada di vInventory sudah di-eguip atau belom
 	{
@@ -99,14 +161,48 @@ private:
 	}
 
 public:
-	//constructor
-	Human(int pilihanJob, vector <Item>& fileRead) // awalnya mau masukinnya itu const <Item>& fileRead, tapi bikin ribet, jadi dihilangin aja const-nya
+	//constructor buat new Game
+	// walaupun cuman new Game, vInventory dan eguipment juga perlu di-initialize
+	Human(vector <Item>& fileRead,int pilihanJob)
 	{
-		vInventory.reserve(fileRead.size()+5); // +5, karena why not
-		setPrimary(pilihanJob); // secara implisit manggil setSecondary
+		vInventory.reserve(110); // jadi ada maksimal 110 item di inventory
+		level = 1;
+		gold = 0;
+		experience = 0;
+		job = pilihanJob;
+		setPrimary(pilihanJob); // set primary pertama kali saat membuat character
+		setSecondary(strength, endurance, agility, dexterity); // set seconday pertama kali saat membuat character
+
+		checkEguipped(); // fungsi yang digunakan dari method ini hanya buat initialize eguipStatus dan eguipment jadi false
+						 // semua dan NULL semua, secara berurutan
+		nInventory = vInventory.size(); // harusnya sama dengan 0 (nol)
+	}
+
+	//constructor buat load Game
+	Human(vector <Item>& fileRead,char* name, int lvl,  int pilihanJob, int gold,int exp, int str, int end, int agi,
+		  int dex, float dmg, float cth, float eva, float spd, float mhp, float mst, int amr)
+	{
+		strcpy(this->name, name);
+		level = lvl;
+		job = pilihanJob;
+		this->gold = gold;
+		experience = exp;
+		strength = str;
+		endurance = end;
+		agility = agi;
+		dexterity = dex;
+		damage = dmg;
+		chanceToHit = cth;
+		evade = eva;
+		speed = spd;
+		maxHealth = mhp;
+		maxStamina = mst;
+		armor = amr;
+
+		vInventory.reserve(110);
 		checkInventory(fileRead); // filter yang sudah di-bought
 		checkEguipped(); // filter yang sedang di-eguip
-		nInventory = vInventory.size();
+		nInventory = vInventory.size(); // update jumlah barang di inventory
 	}
 
 	//getter baru (tidak ada pada Base.h)
@@ -114,65 +210,15 @@ public:
 	int getEndurance() const { return endurance; }
 	int getAgility() const { return agility; }
 	int getDexterity() const { return dexterity; }
+	int getJob() const { return job; }
+	int getGold() const { return gold; }
+	int getExperience() const { return experience; }
+	static int getExpRequirement(int index) { return expRequirement[index]; }
+
+	vector <Item*> getInventory() const { return vInventory; }
+	size_t getNumInventory() const { return nInventory; }
 	bool getEguipStatus(int index) const { return eguipStatus[index]; }
-	Item* getEguipment(int index) { return eguipment[index]; }
-
-	//setter all primary and secondary berdasarkan item equipment
-	void setAttributesItem(int str, int end, int agi, int dex, int dmg, int cth, int eva, int spd, int mhp, int mst, int amr)
-	{
-		//primary attributes
-		strength += str;
-		endurance += end;
-		agility += agi;
-		dexterity += dex;
-		//secondary attributes
-		damage += dmg;
-		chanceToHit += cth+(2*dex);
-		evade += eva + (2*agi);
-		speed += spd + (5*agi) + (3*dex);
-		maxHealth += mhp + (5 * str) + (10 * end);
-		maxStamina += mst + (3 * str) + (10 * end) + (2 * dex);
-		armor += amr;
-	}
-
-	//untuk masukin primary saat mulai game pilih job (membuat character)
-	void setPrimary(int pilihanJob) // 1<= pilihanJob <=3
-	{ 
-		switch (pilihanJob) {
-		case 1: //Assassin
-			strength = 7;
-			endurance = 7;
-			agility = 13;
-			dexterity = 12;
-			break;
-		case 2: //Paladin
-			strength = 14;
-			endurance = 12;
-			agility = 6;
-			dexterity = 8;
-			break;
-		case 3: //Barbarian
-			strength = 13;
-			endurance = 15;
-			agility = 5;
-			dexterity = 6;
-			break;
-		}
-		// set seconday pertama kali saat membuat character
-		setSecondary(strength,endurance,agility,dexterity);
-	}
-
-	//set Secondary berdasarkan Primary
-	void setSecondary(int str, int end, int agi, int dex)
-	{
-		damage = 3;
-		chanceToHit = 80 + (2 * dex);
-		evade = (2 * agi);
-		speed = 100 + (5 * agi) + (3 * dex);
-		maxHealth = (5 * str) + (10 * end);
-		maxStamina = (3 * str) + (10 * end) + (2 * dex);
-		armor = 0;
-	}
+	Item* getEguipment(int index) const { return eguipment[index]; }
 
 	//Ini fungsi untuk set primary saat level up
 	void levelUp(int strength, int endurance, int agility, int dexterity)
@@ -183,10 +229,10 @@ public:
 		this->dexterity += dexterity;
 	}
 
-	void buyItem(Item& a)
+	void buyItem(Item* pointer)
 	{
-		a.setBought(1); // set true
-		vInventory.push_back(&a);
+		pointer->setBought(1); // set true
+		vInventory.push_back(pointer);
 		nInventory = vInventory.size(); // update nInventory
 	}
 	void sellItem(Item* pointer)
@@ -195,7 +241,7 @@ public:
 		vector<Item*>::iterator iter;
 		for (iter = vInventory.begin(); iter != vInventory.end(); iter++)
 		{
-			if (*iter == pointer)break; // *iter adalah value dari vInventory = pointer ke sebuah objek Item
+			if (*iter == pointer) break; // *iter adalah value dari vInventory = pointer ke sebuah objek Item
 		}
 		vInventory.erase(iter); // iter adalah sebuah pointer ke vInventory, dan pointernya adalah pointer ke objek Item yang dituju
 		nInventory = vInventory.size(); // update nInventory
@@ -218,6 +264,15 @@ public:
 							pointer->getDamage(), pointer->getChanceToHit(), pointer->getEvade(), pointer->getSpeed(),
 							pointer->getMaxHealth(), pointer->getMaxStamina(), pointer->getArmor());
 	}
+
+	void setExperience(int exp)
+	{
+		experience += exp;
+	}
 };
+
+int Human::expRequirement[31] = {
+	0,0,1000,5000,10000,15000,20000,25000,30000,40000,50000,65000,80000,95000,110000,125000,140000,160000,180000,200000,220000,240000,260000,280000,300000,330000,360000,390000,420000,450000,500000
+}; //    ^lv2											^lv10															^lv20																	^lv30
 
 #endif // !HUMAN_H
