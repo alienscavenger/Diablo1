@@ -15,7 +15,7 @@ protected:
 	float maxStamina;
 	int armor;
 	int level;
-	char name[50];
+	string name;
 
 public:
 	//getter
@@ -27,7 +27,7 @@ public:
 	float getMaxStamina() const { return maxStamina; }
 	int getArmor() const { return armor; }
 	int getLevel() const { return level; }
-	const char* getName() const { return name; }
+	string getName() const { return name; }
 };
 
 #endif

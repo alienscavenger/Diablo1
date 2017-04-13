@@ -3,12 +3,12 @@
 #ifndef ITEM_H
 #define ITEM_H
 
-#include <cstring>
+#include <string>
 
 class Item // bisa weapon, armor, atau apapun
 {
 private:
-	char name[50];
+	string name;
 	int price;
 	int strength;
 	int endurance;
@@ -42,10 +42,10 @@ private:
 
 public:
 	//constructor (gaada default constructor)
-	Item(char* name, int price, int str, int end, int agi, int dex, float dmg, float cth, float eva, float spd, float mhp, float mst,
+	Item(string name, int price, int str, int end, int agi, int dex, float dmg, float cth, float eva, float spd, float mhp, float mst,
 		 int amr,int type,int restriction, int eguipped, int bought)
 	{
-		strcpy(this->name, name); // KALAU PAKE VS15 / VS17, JANGAN LUPA PAKE _CRT_SECURE_NO_WARNINGS (CARI DI INTERNET)
+		this->name = name; // KALAU PAKE VS15 / VS17, JANGAN LUPA PAKE _CRT_SECURE_NO_WARNINGS (CARI DI INTERNET)
 		this->price = price;
 		strength = str;
 		endurance = end;
@@ -65,7 +65,7 @@ public:
 	}
 
 	//getter
-	const char* getName() const { return name; }
+	string getName() const { return name; }
 	int getPrice() const { return price; }
 	int getStrength() const { return strength; }
 	int getEndurance() const { return endurance; }

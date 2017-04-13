@@ -22,9 +22,9 @@ private:
 
 public:
 	// constructor untuk Monster
-	Monster(char* name, float dmg, float cth, float eva, float spd, float mhp, float mst, int amr, int lvl, int gold,float exp, int off, int def)
+	Monster(string name, float dmg, float cth, float eva, float spd, float mhp, float mst, int amr, int lvl, int gold,float exp, int off, int def)
 	{
-		strcpy(this->name, name);
+		this->name = name;
 		damage = dmg;
 		chanceToHit = cth;
 		evade = eva;

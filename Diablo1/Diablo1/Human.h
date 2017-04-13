@@ -7,6 +7,7 @@
 #include "Monster.h"
 #include "Item.h"
 #include <vector>
+#include <string>
 
 using namespace std;
 
@@ -179,10 +180,10 @@ public:
 	}
 
 	//constructor buat load Game
-	Human(vector <Item>& fileRead,char* name, int lvl,  int pilihanJob, int gold,int exp, int str, int end, int agi,
+	Human(vector <Item>& fileRead,string name, int lvl,  int pilihanJob, int gold,int exp, int str, int end, int agi,
 		  int dex, float dmg, float cth, float eva, float spd, float mhp, float mst, int amr)
 	{
-		strcpy(this->name, name);
+		this->name = name;
 		level = lvl;
 		job = pilihanJob;
 		this->gold = gold;

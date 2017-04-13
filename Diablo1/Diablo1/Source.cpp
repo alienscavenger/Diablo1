@@ -25,7 +25,8 @@ int main()
 /*
 TEMPLATE SAVE
 
-Nama Karakter,Level,Job,Gold,Experience,Strength,Endurance,Agility,Dexterity
+Nama Karakter
+Level,Job,Gold,Experience,Strength,Endurance,Agility,Dexterity
 Damage,Chance to Hit,Evade,Speed,Max Health,Max Stamina,Armor
 #Nama Item1,Strength,Endurance,Agility,Dexterity,Damage,Chance to Hit,Evade,Speed,Max Health,Max Stamina,Armor,Restriction,Eguipped,Bought
 #Nama Item2,Strength,Endurance,Agility,Dexterity,Damage,Chance to Hit,Evade,Speed,Max Health,Max Stamina,Armor,Restriction,Eguipped,Bought
@@ -36,10 +37,10 @@ Damage,Chance to Hit,Evade,Speed,Max Health,Max Stamina,Armor
 #Nama Item7,Strength,Endurance,Agility,Dexterity,Damage,Chance to Hit,Evade,Speed,Max Health,Max Stamina,Armor,Restriction,Eguipped,Bought
 #Nama Item8,Strength,Endurance,Agility,Dexterity,Damage,Chance to Hit,Evade,Speed,Max Health,Max Stamina,Armor,Restriction,Eguipped,Bought
 #Nama Item9,Strength,Endurance,Agility,Dexterity,Damage,Chance to Hit,Evade,Speed,Max Health,Max Stamina,Armor,Restriction,Eguipped,Bought
-@Nama Monster1,Gold,Damage,Chance to Hit,Evade,Speed,Max Health,Max Stamina,Armor
-@Nama Monster2,Gold,Damage,Chance to Hit,Evade,Speed,Max Health,Max Stamina,Armor
-@Nama Monster3,Gold,Damage,Chance to Hit,Evade,Speed,Max Health,Max Stamina,Armor
-@Nama Monster4,Gold,Damage,Chance to Hit,Evade,Speed,Max Health,Max Stamina,Armor
-@Nama Monster5,Gold,Damage,Chance to Hit,Evade,Speed,Max Health,Max Stamina,Armor
+@Nama Monster1,Gold,Experience,Level,Damage,Chance to Hit,Evade,Speed,Max Health,Max Stamina,Armor,Offense,Deffense
+@Nama Monster2,Gold,Experience,Level,Damage,Chance to Hit,Evade,Speed,Max Health,Max Stamina,Armor,Offense,Deffense
+@Nama Monster3,Gold,Experience,Level,Damage,Chance to Hit,Evade,Speed,Max Health,Max Stamina,Armor,Offense,Deffense
+@Nama Monster4,Gold,Experience,Level,Damage,Chance to Hit,Evade,Speed,Max Health,Max Stamina,Armor,Offense,Deffense
+@Nama Monster5,Gold,Experience,Level,Damage,Chance to Hit,Evade,Speed,Max Health,Max Stamina,Armor,Offense,Deffense
 
 */
