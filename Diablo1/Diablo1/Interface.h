@@ -13,12 +13,16 @@ public:
 		Console::initialize();
 		Console::setCursorVisibility(false);
 	}
-	static void enter(int x, int y) {
+	static void enter(int x, int y, int type) {
 		Console::setCursorPos(x, y);
 		Console::setColor(7);
-		Console::printf("Press enter to continue");
+		if (type == 1) {
+			Console::printf("  Press enter to skip  ");
+		}
+		else {
+			Console::printf("Press enter to continue");
+		}
 	}
-
 	static void titleScreen() {
 		char *title[] = {
 			"oooooooooo.   ooooo       .o.       oooooooooo.  ooooo          .oooooo.",
@@ -32,7 +36,7 @@ public:
 		float counter = 0;
 		char *production = "Aditya n' Melvin Production presents";
 		char input;
-		enter(27, 20);
+		enter(28, 20, 1);
 		Console::setCursorPos(21, 5);
 		for (int x = 0; x < strlen(production); x++) {
 			input = Console::getKeyPressed();
@@ -51,9 +55,9 @@ public:
 			Console::delay(500);
 		}
 		if (input == VK_RETURN) { return; }
+		enter(28, 20, 2);
 		getchar();
 	}
-
 	static void loading() {
 		int yes;
 		int no;
@@ -66,7 +70,7 @@ public:
 			if (input == VK_RETURN) { break; }
 			Console::delay(100);
 			system("cls");
-			enter(28, 20);
+			enter(29, 20, 1);
 			Console::setCursorPos(0, 0);
 			printf("\n\n\n\n\n\n\n\n\n\n");
 			printf("\t\t");
@@ -92,11 +96,62 @@ public:
 		Console::setCursorPos(0, 10);
 		Console::printf("\n\n\t\t\t\tLOAD SUCCESSFULL!");
 		if (input == VK_RETURN) { return; }
+		enter(29, 20, 2);
 		getchar();
 	}
-	static int getPlayerName() {
-		system("cls");
+	static void displaySword() {
+		char *sword[] = {
+			"                (O)",
+			"                <M ",
+			"     o          <M  ",
+			"    /| ......  /:M\------------------------------------------------,,,,,,",
+			"  (O)[]XXXXXX[]I:K+}=====<{H}>================================------------>",
+			"    \\| ^^^^^^  \:W/------------------------------------------------''''''",
+			"     o          <W  ",
+			"                <W",
+			"                (O)"
 
+		};
+		Console::setColor(3);
+		for (int x = 0; x < 9; x++) {
+			//Console::delay(100);
+			Console::printf("%s\n", sword[x]);
+		}
 	}
-
+	static void intro() {
+		char input;
+		char *introText[] = { "After having lost your Monastery to demons,",
+			"you follow the Dark Wanderer to Tristam Town.",
+			"This is where your journey starts. ",
+			"The demons are roaming the outskirt of this city ",
+			"and soon everything will be devoured...",
+			"Help liberate Tristam Town from hand of Diablo once and for all!" };
+		enter(27, 20, 1);
+		Console::setCursorPos(0, 0);
+		printf("\n\n");
+		displaySword();
+		Console::setColor(7);
+		printf("\n");
+		for (int y = 0; y < 6; y++) {
+			printf("\t");
+			if (y == 5) { Console::setColor(3); }
+			for (int x = 0; x < strlen(introText[y]); x++) {
+				input = Console::getKeyPressed();
+				if (input == VK_RETURN) { break; }
+				Console::delay(60);
+				Console::printf("%c", introText[y][x]);
+			}
+			if (input == VK_RETURN) { break; }
+			printf("\n");
+		}
+		if (input == VK_RETURN) { return; }
+		enter(27, 20, 2);
+		getchar();
+	}
+	static char* getPlayerName() {
+		char *tempPlayerName;
+		system("cls");
+		//gets(tempPlayerName); fflush(stdin);
+		return tempPlayerName;
+	}
 };

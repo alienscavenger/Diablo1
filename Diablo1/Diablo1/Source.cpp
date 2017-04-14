@@ -14,12 +14,19 @@
 #include "Human.h"
 #include "Item.h"
 #include "common.h"
+#include "Interface.h"
 
 using namespace std;
 
 int main()
 {
-	Console::initialize();
+	Interface interface1;
+
+	interface1.titleScreen();
+	interface1.loading();
+	system("cls");
+	interface1.intro();
+
 	return 0;
 }
 /*
