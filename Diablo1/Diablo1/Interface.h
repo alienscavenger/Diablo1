@@ -35,10 +35,10 @@ public:
 		};
 		float counter = 0;
 		char *production = "Aditya n' Melvin Production presents";
-		char input;
+		char input = NULL;
 		enter(28, 20, 1);
 		Console::setCursorPos(21, 5);
-		for (int x = 0; x < strlen(production); x++) {
+		for (int x = 0; x<strlen(production); x++) {
 			input = Console::getKeyPressed();
 			if (input == VK_RETURN) { break; }
 			Console::printf("%c", production[x]);
@@ -47,7 +47,7 @@ public:
 
 
 		Console::setColor(4);
-		for (int x = 0; x < 7; x++) {
+		for (int x = 0; x<7; x++) {
 			input = Console::getKeyPressed();
 			if (input == VK_RETURN) { break; }
 			Console::setCursorPos(3, x + 10);
@@ -61,7 +61,7 @@ public:
 	static void loading() {
 		int yes;
 		int no;
-		char input;
+		char input = NULL;
 		no = 50;
 		yes = 0;
 
@@ -77,14 +77,14 @@ public:
 			Console::setColor(2);
 			//255
 			//222+33
-			for (int x = 0; x < yes; x++) {
+			for (int x = 0; x<yes; x++) {
 				Console::printf("%c", rand() % 241 + 14);
 			}
 			Console::setColor(7);
-			for (int x = 0; x < no; x++) {
+			for (int x = 0; x<no; x++) {
 				Console::printf("%c", rand() % 241 + 14);
 			}
-			if (no > 0) {
+			if (no>0) {
 				//Console::setColor(rand()%8+1);
 				printf("\n\n\t\t\t\t    LOADING...");
 			}
@@ -104,22 +104,22 @@ public:
 			"                (O)",
 			"                <M ",
 			"     o          <M  ",
-			"    /| ......  /:M\------------------------------------------------,,,,,,",
+			"    /| ......  /:M\\------------------------------------------------,,,,,,",
 			"  (O)[]XXXXXX[]I:K+}=====<{H}>================================------------>",
-			"    \\| ^^^^^^  \:W/------------------------------------------------''''''",
+			"    \\| ^^^^^^  \\:W/------------------------------------------------''''''",
 			"     o          <W  ",
 			"                <W",
 			"                (O)"
 
 		};
 		Console::setColor(3);
-		for (int x = 0; x < 9; x++) {
+		for (int x = 0; x<9; x++) {
 			//Console::delay(100);
 			Console::printf("%s\n", sword[x]);
 		}
 	}
 	static void intro() {
-		char input;
+		char input = NULL;
 		char *introText[] = { "After having lost your Monastery to demons,",
 			"you follow the Dark Wanderer to Tristam Town.",
 			"This is where your journey starts. ",
@@ -132,10 +132,10 @@ public:
 		displaySword();
 		Console::setColor(7);
 		printf("\n");
-		for (int y = 0; y < 6; y++) {
+		for (int y = 0; y<6; y++) {
 			printf("\t");
 			if (y == 5) { Console::setColor(3); }
-			for (int x = 0; x < strlen(introText[y]); x++) {
+			for (int x = 0; x<strlen(introText[y]); x++) {
 				input = Console::getKeyPressed();
 				if (input == VK_RETURN) { break; }
 				Console::delay(60);
@@ -151,7 +151,7 @@ public:
 	static char* getPlayerName() {
 		char *tempPlayerName;
 		system("cls");
-		//gets(tempPlayerName); fflush(stdin);
+		gets(tempPlayerName); fflush(stdin);
 		return tempPlayerName;
 	}
 };
