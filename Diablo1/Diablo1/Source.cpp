@@ -11,6 +11,7 @@
 #include <vector>
 #include <ctime>
 
+#include "Base.h"
 #include "Human.h"
 #include "Item.h"
 #include "common.h"
@@ -20,6 +21,16 @@ using namespace std;
 
 int main()
 {
+	//// ascii finder
+	//{
+	//	for (int i = 127; i <= 255; i++)
+	//	{
+	//		system("cls");
+	//		printf("ASCII %d = (%c)", i, i);
+	//		getchar();
+	//	}
+	//}
+
 	Interface interface1;
 
 	interface1.titleScreen();

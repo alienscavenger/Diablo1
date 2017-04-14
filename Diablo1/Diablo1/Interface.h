@@ -3,12 +3,38 @@
 #include <stdlib.h>
 #include <conio.h>
 #include <string>
+#include <iostream>
 #include "common.h"
 
+using namespace std;
 
 class Interface //untuk load screen, dll
 {
 public:
+	static void pressEnterPlease()
+	{
+		while (1)
+		{
+			char x = _getch();
+			if (x == VK_RETURN)
+			{
+				int sampah;
+				while (true)
+				{
+					sampah = Console::getKeyPressed(); // harus pake ini, supaya getKeyPressed lainnya nggak ada masalah
+					if (sampah == VK_RETURN) break;
+				}
+				break;
+			}
+			printf("\b"); // backspace
+		}
+	}
+
+	static void flush()
+	{
+		cin.clear();
+		cin.ignore(10000000, '\n');
+	}
 	Interface() {
 		Console::initialize();
 		Console::setCursorVisibility(false);
@@ -37,14 +63,26 @@ public:
 		char *production = "Aditya n' Melvin Production presents";
 		char input = NULL;
 		enter(28, 20, 1);
+		int flag = 0;
 		Console::setCursorPos(21, 5);
 		for (int x = 0; x<strlen(production); x++) {
 			input = Console::getKeyPressed();
-			if (input == VK_RETURN) { break; }
+			if (input == VK_RETURN) { flag = 1; break; }
 			Console::printf("%c", production[x]);
 			Console::delay(50);
 		}
-
+		
+		if (flag)
+		{
+			int sampah;
+			while (true)
+			{
+				sampah = Console::getKeyPressed(); // harus pake ini, supaya getKeyPressed lainnya nggak ada masalah
+				if (sampah == VK_RETURN) break;
+			}
+			return;
+		}
+		Console::delay(500); // tambahin delay supaya bagus
 
 		Console::setColor(4);
 		for (int x = 0; x<7; x++) {
@@ -52,11 +90,12 @@ public:
 			if (input == VK_RETURN) { break; }
 			Console::setCursorPos(3, x + 10);
 			Console::printf("%s", title[x]);
-			Console::delay(500);
+			if(x<6) Console::delay(300);
 		}
 		if (input == VK_RETURN) { return; }
 		enter(28, 20, 2);
-		getchar();
+		//getchar(); // gw ganti jadi fungsi gw sendiri yah yh, soalnya kalo getchar, semua tombol yang diteken bakal muncul di screen
+		pressEnterPlease();
 	}
 	static void loading() {
 		int yes;
@@ -65,9 +104,11 @@ public:
 		no = 50;
 		yes = 0;
 
+		int flag = 0;
+		srand(time(NULL));
 		while (no >= 0) {
 			input = Console::getKeyPressed();
-			if (input == VK_RETURN) { break; }
+			if (input == VK_RETURN) { flag = 1; break; }
 			Console::delay(100);
 			system("cls");
 			enter(29, 20, 1);
@@ -77,12 +118,22 @@ public:
 			Console::setColor(2);
 			//255
 			//222+33
+			// ascii 27 dan 32 juga jelek (space dan esc)
+			int wala;
 			for (int x = 0; x<yes; x++) {
-				Console::printf("%c", rand() % 241 + 14);
+				do
+				{
+					wala = rand() % 241 + 14;
+				} while (wala == 32 || wala == 27);
+				Console::printf("%c", wala );
 			}
 			Console::setColor(7);
 			for (int x = 0; x<no; x++) {
-				Console::printf("%c", rand() % 241 + 14);
+				do
+				{
+					wala = rand() % 241 + 14;
+				} while (wala == 32 || wala == 27);
+				Console::printf("%c", wala);
 			}
 			if (no>0) {
 				//Console::setColor(rand()%8+1);
@@ -94,10 +145,10 @@ public:
 
 		Console::setColor(2);
 		Console::setCursorPos(0, 10);
-		Console::printf("\n\n\t\t\t\tLOAD SUCCESSFULL!");
+		if(!flag)Console::printf("\n\n\t\t\t\tLOAD SUCCESSFULL!");
 		if (input == VK_RETURN) { return; }
 		enter(29, 20, 2);
-		getchar();
+		pressEnterPlease();
 	}
 	static void displaySword() {
 		char *sword[] = {
@@ -133,12 +184,13 @@ public:
 		Console::setColor(7);
 		printf("\n");
 		for (int y = 0; y<6; y++) {
+			if (y == 5) Console::delay(650);
 			printf("\t");
 			if (y == 5) { Console::setColor(3); }
 			for (int x = 0; x<strlen(introText[y]); x++) {
 				input = Console::getKeyPressed();
 				if (input == VK_RETURN) { break; }
-				Console::delay(60);
+				Console::delay(30);
 				Console::printf("%c", introText[y][x]);
 			}
 			if (input == VK_RETURN) { break; }
@@ -146,12 +198,13 @@ public:
 		}
 		if (input == VK_RETURN) { return; }
 		enter(27, 20, 2);
-		getchar();
+		pressEnterPlease();
 	}
-	static char* getPlayerName() {
-		char *tempPlayerName;
+	static string getPlayerName() {
+		string tempPlayerName;
 		system("cls");
-		gets(tempPlayerName); fflush(stdin);
+		//gets(tempPlayerName); fflush(stdin); // ini di gw error btw, jadi gw ganti string yah wkwkwkw
+		getline(cin, tempPlayerName);
 		return tempPlayerName;
 	}
 };

@@ -5,6 +5,7 @@
 
 #include "Base.h"
 #include "Human.h"
+#include <string>
 #include <cmath>
 
 using namespace std;
