@@ -15,7 +15,7 @@ class Monster : public Base
 	// class Monster memiliki vector/array nya sendiri dalam class Main ( vector <Monster> vMonster ), karena experience dan gold dari monster
 	// merupakan variabel yang dinamis (berganti", yaitu saat mati, berkurang setengahnya). Makanya itu perlu di-save.
 private:
-	// offense dan defense hanyalah jumlah bintang yang dimiliki oleh monster tersebut (1-10)
+	// offense dan defense hanyalah jumlah bintang yang dimiliki oleh monster tersebut (ceil(offense/20) atau ceil(defense/20))
 	int offense;
 	int defense;
 	int gold; // ini sama exp adalah rewardnya
@@ -23,7 +23,7 @@ private:
 
 public:
 	// constructor untuk Monster
-	Monster(string name, float dmg, float cth, float eva, float spd, float mhp, float mst, int amr, int lvl, int gold,float exp, int off, int def)
+	Monster(string name, int lvl, int gold, float dmg, float cth, float eva, float spd, float mhp, float mst, int amr,float exp, int off, int def)
 	{
 		this->name = name;
 		damage = dmg;
@@ -42,7 +42,7 @@ public:
 	int getOffense() const { return offense; }
 	int getDefense() const { return defense; }
 	int getGold() const { return gold; }
-	int getExp() const { return exp; }
+	float getExp() const { return exp; }
 
 	// setiap kali monster dibunuh:
 	void killed()

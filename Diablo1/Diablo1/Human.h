@@ -52,11 +52,11 @@ private:
 	void setSecondary(int str, int end, int agi, int dex)
 	{
 		damage = 3;
-		chanceToHit = 80 + (2 * dex);
-		evade = (2 * agi);
-		speed = 100 + (5 * agi) + (3 * dex);
-		maxHealth = (5 * str) + (10 * end);
-		maxStamina = (3 * str) + (10 * end) + (2 * dex);
+		chanceToHit = 80 + (2 * (float)dex);
+		evade = (2 * (float)agi);
+		speed = 100 + (5 * (float)agi) + (3 * (float)dex);
+		maxHealth = (5 * (float)str) + (10 * (float)end);
+		maxStamina = (3 * (float)str) + (10 * (float)end) + (2 * (float)dex);
 		armor = 0;
 	}
 
@@ -164,12 +164,13 @@ private:
 public:
 	//constructor buat new Game
 	// walaupun cuman new Game, vInventory dan eguipment juga perlu di-initialize
-	Human(vector <Item>& fileRead,int pilihanJob)
+	Human(vector <Item>& fileRead,int pilihanJob,string name)
 	{
 		vInventory.reserve(110); // jadi ada maksimal 110 item di inventory
 		level = 1;
 		gold = 0;
 		experience = 0;
+		this->name = name;
 		job = pilihanJob;
 		setPrimary(pilihanJob); // set primary pertama kali saat membuat character
 		setSecondary(strength, endurance, agility, dexterity); // set seconday pertama kali saat membuat character
@@ -229,7 +230,6 @@ public:
 		this->agility += agility;
 		this->dexterity += dexterity;
 	}
-
 	void buyItem(Item* pointer)
 	{
 		pointer->setBought(1); // set true
@@ -265,7 +265,6 @@ public:
 							pointer->getDamage(), pointer->getChanceToHit(), pointer->getEvade(), pointer->getSpeed(),
 							pointer->getMaxHealth(), pointer->getMaxStamina(), pointer->getArmor());
 	}
-
 	void setExperience(int exp)
 	{
 		experience += exp;

@@ -42,10 +42,12 @@ public:
 		cin.clear();
 		cin.ignore(10000000, '\n');
 	}
-	Interface() {
+
+	Interface() { // constructor
 		Console::initialize();
 		Console::setCursorVisibility(false);
 	}
+
 	static void enter(int x, int y, int type) {
 		Console::setCursorPos(x, y);
 		Console::setColor(7);
@@ -242,7 +244,6 @@ public:
 	static string getPlayerName() {
 		string tempPlayerName;
 		system("cls");
-		//gets(tempPlayerName); fflush(stdin); // ini di gw error btw, jadi gw ganti string yah wkwkwkw
 		getline(cin, tempPlayerName);
 		return tempPlayerName;
 	}

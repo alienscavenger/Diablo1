@@ -4,11 +4,13 @@
 #define ITEM_H
 
 #include <string>
+using namespace std;
 
 class Item // bisa weapon, armor, atau apapun
 {
 private:
 	string name;
+	string effect;
 	int price;
 	int strength;
 	int endurance;
@@ -29,7 +31,7 @@ private:
 	   type 0 = pendant(?)
 	   type 1 = helmet
 	   type 2 = gloves
-	   type 3 = chest
+	   type 3 = armor
 	   type 4 = boots
 	   type 5 = weapon
 	   type 6 = shield
@@ -39,25 +41,36 @@ private:
 	   restriction 2 = paladin
 	   restriction 3 = barbarian
 	*/
-
+	template <class T>
+	void effectHandling(T& attribute, string code)
+	{
+		int index;
+		if ((index = effect.find(code)) != string::npos)
+		{
+			attribute = (effect[index + 3] == '+') ? (T)atoi(effect.c_str() + index + 4) : (T)atoi(effect.c_str() + index + 4)*-1;
+		}
+	}
 public:
 	//constructor (gaada default constructor)
-	Item(string name, int price, int str, int end, int agi, int dex, float dmg, float cth, float eva, float spd, float mhp, float mst,
-		 int amr,int type,int restriction, int eguipped, int bought)
+	Item(string name, int price,string effect,int type,int restriction, int eguipped, int bought):
+		strength(0),endurance(0),agility(0),dexterity(0),damage(0),chanceToHit(0),evade(0),speed(0),maxHealth(0),maxStamina(0),armor(0)
 	{
 		this->name = name; // KALAU PAKE VS15 / VS17, JANGAN LUPA PAKE _CRT_SECURE_NO_WARNINGS (CARI DI INTERNET)
+		this->effect = effect;
 		this->price = price;
-		strength = str;
-		endurance = end;
-		agility = agi;
-		dexterity = dex;
-		damage = dmg;
-		chanceToHit = cth;
-		evade = eva;
-		speed = spd;
-		maxHealth = mhp;
-		maxStamina = mst;
-		armor = amr;
+
+		effectHandling(this->strength,"STR");
+		effectHandling(this->endurance, "END");
+		effectHandling(this->agility, "AGI");
+		effectHandling(this->dexterity, "DEX");
+		effectHandling(this->damage, "DMG");
+		effectHandling(this->chanceToHit, "CTH");
+		effectHandling(this->evade, "EVA");
+		effectHandling(this->speed, "SPD");
+		effectHandling(this->maxHealth, "MHP");
+		effectHandling(this->maxStamina, "MST");
+		effectHandling(this->armor, "AMR");
+
 		this->type = type;
 		this->restriction = restriction;
 		this->eguipped = eguipped;
@@ -66,6 +79,7 @@ public:
 
 	//getter
 	string getName() const { return name; }
+	string getEffect() const { return effect; }
 	int getPrice() const { return price; }
 	int getStrength() const { return strength; }
 	int getEndurance() const { return endurance; }
