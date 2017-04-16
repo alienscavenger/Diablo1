@@ -10,6 +10,9 @@ using namespace std;
 
 class Interface //untuk load screen, dll
 {
+private:
+	static int delayScreen;
+	static int delayFlag;
 public:
 	static void pressEnterPlease()
 	{
@@ -22,7 +25,11 @@ public:
 				while (true)
 				{
 					sampah = Console::getKeyPressed(); // harus pake ini, supaya getKeyPressed lainnya nggak ada masalah
-					if (sampah == VK_RETURN) break;
+					if (sampah == VK_RETURN) {
+						//printf(" <-");
+						Console::delay(200);
+						break;
+					}
 				}
 				break;
 			}
@@ -50,6 +57,7 @@ public:
 		}
 	}
 	static void titleScreen() {
+		delayFlag = 1;
 		char *title[] = {
 			"oooooooooo.   ooooo       .o.       oooooooooo.  ooooo          .oooooo.",
 			" 888'   `Y8b  `888'      .888.      `888'   `Y8b `888'         d8P'  `Y8b",
@@ -67,9 +75,10 @@ public:
 		Console::setCursorPos(21, 5);
 		for (int x = 0; x<strlen(production); x++) {
 			input = Console::getKeyPressed();
-			if (input == VK_RETURN) { flag = 1; break; }
+			if (input == VK_RETURN) { flag = 1; delayFlag = 0; delayScreen = 0;}
 			Console::printf("%c", production[x]);
-			Console::delay(50);
+			if (delayFlag) delayScreen = 50;
+			Console::delay(delayScreen);
 		}
 		
 		if (flag)
@@ -80,24 +89,31 @@ public:
 				sampah = Console::getKeyPressed(); // harus pake ini, supaya getKeyPressed lainnya nggak ada masalah
 				if (sampah == VK_RETURN) break;
 			}
-			return;
+			//return;
 		}
-		Console::delay(500); // tambahin delay supaya bagus
+
+		if(delayFlag)Console::delay(500); // tambahin delay supaya bagus
 
 		Console::setColor(4);
 		for (int x = 0; x<7; x++) {
 			input = Console::getKeyPressed();
-			if (input == VK_RETURN) { break; }
+			if (input == VK_RETURN) { delayFlag = 0; delayScreen = 0; };
 			Console::setCursorPos(3, x + 10);
 			Console::printf("%s", title[x]);
-			if(x<6) Console::delay(300);
+			if (x < 6)
+			{
+				if (delayFlag) delayScreen = 300;
+				Console::delay(delayScreen);
+			}
 		}
 		if (input == VK_RETURN) { return; }
 		enter(28, 20, 2);
 		//getchar(); // gw ganti jadi fungsi gw sendiri yah yh, soalnya kalo getchar, semua tombol yang diteken bakal muncul di screen
 		pressEnterPlease();
 	}
+
 	static void loading() {
+		delayFlag = 1;
 		int yes;
 		int no;
 		char input = NULL;
@@ -108,8 +124,17 @@ public:
 		srand(time(NULL));
 		while (no >= 0) {
 			input = Console::getKeyPressed();
-			if (input == VK_RETURN) { flag = 1; break; }
-			Console::delay(100);
+			if (input == VK_RETURN) {
+				//flag = 1;
+				delayFlag = 0;
+				delayScreen = 0;
+				yes = 50;
+				no = 0;
+				//Console::delay(500); // tambahin delay supaya bagus
+				//break;
+			}
+			if (delayFlag) delayScreen = 100;
+			Console::delay(delayScreen);
 			system("cls");
 			enter(29, 20, 1);
 			Console::setCursorPos(0, 0);
@@ -145,11 +170,13 @@ public:
 
 		Console::setColor(2);
 		Console::setCursorPos(0, 10);
-		if(!flag)Console::printf("\n\n\t\t\t\tLOAD SUCCESSFULL!");
-		if (input == VK_RETURN) { return; }
+		//if(!flag)Console::printf("\n\n\t\t\t\tLOAD SUCCESSFULL!");
+		Console::printf("\n\n\t\t\t\tLOAD SUCCESSFULL!");
+		//if (input == VK_RETURN) { return; }
 		enter(29, 20, 2);
 		pressEnterPlease();
 	}
+
 	static void displaySword() {
 		char *sword[] = {
 			"                (O)",
@@ -169,7 +196,9 @@ public:
 			Console::printf("%s\n", sword[x]);
 		}
 	}
+
 	static void intro() {
+		delayFlag = 1;
 		char input = NULL;
 		char *introText[] = { "After having lost your Monastery to demons,",
 			"you follow the Dark Wanderer to Tristam Town.",
@@ -184,13 +213,23 @@ public:
 		Console::setColor(7);
 		printf("\n");
 		for (int y = 0; y<6; y++) {
-			if (y == 5) Console::delay(650);
+			if (y == 5)
+			{
+				if(delayFlag) delayScreen = 650;
+				Console::delay(delayScreen);
+			}
 			printf("\t");
 			if (y == 5) { Console::setColor(3); }
 			for (int x = 0; x<strlen(introText[y]); x++) {
 				input = Console::getKeyPressed();
-				if (input == VK_RETURN) { break; }
-				Console::delay(30);
+				if (input == VK_RETURN) {
+					delayFlag = 0;
+					delayScreen = 0;
+					//Console::delay(500); // tambahin delay supaya bagus
+					//break;
+				}
+				if (delayFlag) delayScreen = 30;
+				Console::delay(delayScreen);
 				Console::printf("%c", introText[y][x]);
 			}
 			if (input == VK_RETURN) { break; }
@@ -208,3 +247,6 @@ public:
 		return tempPlayerName;
 	}
 };
+
+int Interface::delayScreen = 0;
+int Interface::delayFlag = 0;
