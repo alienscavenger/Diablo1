@@ -10,6 +10,8 @@
 #include <memory>
 #include <vector>
 #include <ctime>
+#include <algorithm>
+#include <functional>
 
 #include "Base.h"
 #include "Human.h"
@@ -30,9 +32,9 @@ private:
 	float speed, hSpeed;
 	float maxHealth, hMaxHealth;
 	float maxStamina, hMaxStamina;
-	int armor,hArmor;
-	int level,hLevel;
-	string name,hName;
+	int armor, hArmor;
+	int level, hLevel;
+	string name, hName;
 	char tempName[50];
 	//human:
 	int strength;
@@ -46,7 +48,7 @@ private:
 	int offense;
 	int defense;
 	float exp; // float (monster)
-	//item:
+			   //item:
 	string effect;
 	char tempEffect[100];
 	int price;
@@ -54,17 +56,16 @@ private:
 	int restriction;
 	int eguipped;
 	int bought;
-
 	// main variable
 	FILE* save;
 	FILE* initial;
 	Human* karakter;
 	vector<Item> vShop; // item yang ada di game
 	vector<Monster> vMonster; // monster yang ada di game
-	//Human character;
+							  //Human character;
 	bool saveGameAvailable; // kalau save game ada, maka true. Kalo nggak, maka false
 
-	// helper function
+							// helper function
 	void createDefaultSave(); // definition di paling bawah
 
 	void checkSave() // (kyk preLoad gitu)
@@ -109,7 +110,7 @@ private:
 		{
 			saveGameAvailable = true;
 			// baca dari save
-			fscanf(save,"%[^\n]\n", tempName);
+			fscanf(save, "%[^\n]\n", tempName);
 			fscanf(save, "%d,%d,%d,%d,%d,%d,%d,%d\n", &hLevel, &job, &hGold, &experience, &strength, &endurance, &agility, &dexterity);
 			fscanf(save, "%f,%f,%f,%f,%f,%f,%d\n", &hDamage, &hChanceToHit, &hEvade, &hSpeed, &hMaxHealth, &hMaxStamina, &hArmor);
 			hName = tempName;
@@ -146,9 +147,9 @@ private:
 		save = fopen("save.txt", "w");
 		fprintf(save, "%s\n", karakter->getName().c_str());
 		fprintf(save, "%d,%d,%d,%d,%d,%d,%d,%d\n", karakter->getLevel(), karakter->getJob(), karakter->getGold(), karakter->getExperience(),
-			karakter->getStrength(),karakter->getEndurance(), karakter->getAgility(), karakter->getDexterity());
-		fprintf(save, "%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,%d\n",karakter->getDamage(),karakter->getChanceToHit(),karakter->getEvade(),karakter->getSpeed(),karakter->getMaxHealth(),
-			karakter->getMaxStamina(),karakter->getArmor());
+			karakter->getStrength(), karakter->getEndurance(), karakter->getAgility(), karakter->getDexterity());
+		fprintf(save, "%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,%d\n", karakter->getDamage(), karakter->getChanceToHit(), karakter->getEvade(), karakter->getSpeed(), karakter->getMaxHealth(),
+			karakter->getMaxStamina(), karakter->getArmor());
 
 		for (vector<Item>::iterator iterItem = vShop.begin(); iterItem != vShop.end(); iterItem++)
 		{
@@ -166,6 +167,24 @@ private:
 		fclose(save);
 	}
 
+	void testShop();
+
+	struct ComparePrice {
+		bool operator()(Item* struct1, Item* struct2) {
+			return (struct1->getPrice() < struct2->getPrice());
+		}
+	};
+	struct CompareName {
+		bool operator()(Item* struct1, Item* struct2) {
+			return (struct1->getName() < struct2->getName());
+		}
+	};
+	struct CompareRestriction {
+		bool operator()(Item* struct1, Item* struct2) {
+			return (struct1->getRestriction() < struct2->getRestriction());
+		}
+	};
+
 public:
 	Game() // constructor
 	{
@@ -176,6 +195,7 @@ public:
 		system("cls");
 		interface1.intro();
 		*/
+
 		vShop.reserve(110);
 		vMonster.reserve(60);
 		checkSave();
@@ -204,7 +224,7 @@ public:
 		cout << "Choose menu: ";
 		int menu;
 		cin >> menu;
-		while(cin.fail() || menu<1 || menu>max)
+		while (cin.fail() || menu<1 || menu>max)
 		{
 			Interface::flush();
 			cin >> menu;
@@ -215,9 +235,10 @@ public:
 		{
 			cout << "Pick name :"; // ntar tambahin validasi lain
 			getline(cin, name);
-			while(cin.fail())
+			while (cin.fail() || name.length()<1)
 			{
 				cin.clear();
+				cout << "Pick name :";
 				getline(cin, name);
 			}
 			cout << "Pick class (1=assassin, 2=paladin, 3=barbarian): ";
@@ -228,7 +249,7 @@ public:
 				cin >> job;
 			}
 			Interface::flush();
-			
+
 			karakter = new Human(vShop, job, name);
 			cout << "SUCCESFULLY CREATED NEW CHARACTER!" << endl;
 			Interface::flush();
@@ -241,6 +262,15 @@ public:
 			cout << "SUCCESFULLY LOADED OLD CHARACTER!" << endl;
 			Interface::flush();
 		}
+		// -------------------------------------------------------- TESTING SHOP DSB
+		// -------------------------------------------------------- TESTING SHOP DSB
+		// -------------------------------------------------------- TESTING SHOP DSB
+		// -------------------------------------------------------- TESTING SHOP DSB
+		// -------------------------------------------------------- TESTING SHOP DSB
+		// -------------------------------------------------------- TESTING SHOP DSB
+		// -------------------------------------------------------- TESTING SHOP DSB
+
+		testShop();
 
 		cout << "saving..";
 		saveGame();
@@ -323,7 +353,7 @@ void Game::createDefaultSave()
 		"#Boneweave Boots,5000,AMR+8 MST+80 MHP+80,4,3,0,0\n",
 		"#Mirrored Boots,6000,AMR+10 STR+2 END+2,4,0,0,0\n",
 		"#Myrmidon Boots,5500,AMR+12 MHP+50 MST+50,4,2,0,0\n",
-		
+
 		//gloves
 		"#Leather Gloves,400,AMR+1 EVA+5,2,0,0,0\n",
 		"#Heavy Gloves,800,AMR+2 EVA+3,2,0,0,0\n",
@@ -336,7 +366,7 @@ void Game::createDefaultSave()
 		"#Battle Gauntlets,5500,AMR+9 CTH+10,2,0,0,0\n",
 		"#Ogre Gauntlets,8200,AMR+11 CTH+10 DMG+4,2,0,0,0\n",
 		"#Crusader Gauntlets,18000,AMR+12 MHP+60 MST+60,2,2,0,0\n",
-		
+
 		//helmet
 		"#Cap,300,AMR+1 EVA+4,1,0,0,0\n",
 		"#Skullcap,600,AMR+2 EVA+3,1,0,0,0\n",
@@ -355,7 +385,7 @@ void Game::createDefaultSave()
 		"#Grim Helm,7200,AMR+6 DEX+3 EVA+10 CTH+10,1,0,0,0\n",
 		"#Winged Helm,9000,AMR+12 END+2 MHP+60 MST+60,1,2,0,0\n",
 		"#Grand Crown,6900,AMR+9 EVA+10 CTH+10,1,0,0,0\n",
-		
+
 		//shield
 		"#Buckler,600,AMR+2,6,0,0,0\n",
 		"#Small Shield,1000,AMR+4,6,0,0,0\n",
@@ -368,7 +398,7 @@ void Game::createDefaultSave()
 		"#Barbed Shield,900,AMR+2 END+2 STR+2 DMG+1,6,3,0,0\n",
 		"#Pavise,5000,AMR+10 MHP+100 MST+100,6,2,0,0\n",
 		"#Ancient Shield,18000,AMR+22 STR+4 END+4,6,2,0,0\n",
-		
+
 		//weapon
 		"#Hand Axe,500,DMG+4,5,0,0,0\n",
 		"#Double Axe,1000,DMG+8,5,0,0,0\n",
@@ -441,4 +471,69 @@ void Game::createDefaultSave()
 	}
 
 	fclose(initial);
+}
+
+//bool comparator (Item* struct1, Item* struct2)
+//{
+//	return (struct1->getPrice() < struct2->getPrice());
+//}
+
+void Game::testShop()
+{
+	sini:
+	system("cls");
+	cout << "1 = Buy\n2 = Show invent\n";
+	cout << "choose: ";
+	int choose;
+	cin >> choose;
+	while (cin.fail())
+	{
+		Interface::flush();
+		cout << "choose: ";
+		cin >> choose;
+	}
+	Interface::flush();
+	if (choose == 1)
+	{
+		vector<Item*> temporary; // nampung semua item di vShop yang belum dibeli
+		int shopSize = vShop.size(); // berapa item di vShop
+		// ini buat baca di vShop, yang mana yang belum dibeli. (yang belum dibeli doang yang bakal di-push_back)
+		for (int i = 0; i < shopSize; i++)
+		{
+			if (!(vShop[i].getBought())) temporary.push_back(&vShop[i]);
+		}
+		
+		// mau sort apa nggak? -------------------
+
+		//ntar ada pilihan sort by (....)
+		sort(temporary.begin(), temporary.end(),CompareRestriction()); // sortir berdasarkan yang diinginkan(optional)
+		// ----------------------------------------
+
+		//test sort
+		vector<Item*>::iterator iter; // iterator untuk vector temporary (Item*)
+		int i = 1;
+		int buy;
+		// ini buat print (sorted/belum sorted)
+		for (iter = temporary.begin(); iter != temporary.end(); iter++, i++)
+		{
+			cout << i << ' ' << (*iter)->getName() << " (price:" << (*iter)->getPrice() << ", Restriction = " << (*iter)->getRestriction() << ")\n";
+		}
+		cout << "buy what: ";
+		cin >> buy;
+		Interface::flush();
+		karakter->buyItem(temporary[buy - 1]);
+	} // endif
+	else
+	{
+		vector<Item*> vec(karakter->getInventory());
+		cout << "\npilihan 2\n";
+		vector<Item*>::iterator iter; //iter memiliki value dari Item*
+		int i;
+		for (iter = vec.begin(), i=1; iter != vec.end(); iter++,i++)
+		{
+			cout << i << ' ' << (*iter)->getName() << " (price:" << (*iter)->getPrice() << ")\n";
+		}
+	} // endelse
+	Interface::flush();
+	goto sini;
 }
