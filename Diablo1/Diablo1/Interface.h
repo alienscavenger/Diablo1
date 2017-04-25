@@ -6,6 +6,8 @@
 #include <iostream>
 #include "common.h"
 
+#define COLOR_GREY 7
+
 using namespace std;
 
 class Interface //untuk load screen, dll
@@ -27,7 +29,7 @@ public:
 					sampah = Console::getKeyPressed(); // harus pake ini, supaya getKeyPressed lainnya nggak ada masalah
 					if (sampah == VK_RETURN) {
 						//printf(" <-");
-						Console::delay(200);
+						Console::delay(100);
 						break;
 					}
 				}
@@ -36,11 +38,18 @@ public:
 			printf("\b"); // backspace
 		}
 	}
-
 	static void flush()
 	{
 		cin.clear();
 		cin.ignore(10000000, '\n');
+	}
+	static void setWindowSize(int width, int height)
+	{
+		HWND console = GetConsoleWindow();
+		RECT r;
+		GetWindowRect(console, &r); //stores the console's current dimensions
+
+		MoveWindow(console, r.left, r.top, width, height, TRUE);
 	}
 
 	Interface() { // constructor
@@ -50,7 +59,7 @@ public:
 
 	static void enter(int x, int y, int type) {
 		Console::setCursorPos(x, y);
-		Console::setColor(7);
+		Console::setColor(Console::COLOR_WHITE);
 		if (type == 1) {
 			Console::printf("  Press enter to skip  ");
 		}
@@ -96,7 +105,7 @@ public:
 
 		if(delayFlag)Console::delay(500); // tambahin delay supaya bagus
 
-		Console::setColor(4);
+		Console::setColor(4); // BENERIN NIH 'MAGIC NUMBER' PLZZZ
 		for (int x = 0; x<7; x++) {
 			input = Console::getKeyPressed();
 			if (input == VK_RETURN) { delayFlag = 0; delayScreen = 0; };
@@ -142,7 +151,7 @@ public:
 			Console::setCursorPos(0, 0);
 			printf("\n\n\n\n\n\n\n\n\n\n");
 			printf("\t\t");
-			Console::setColor(2);
+			Console::setColor(Console::COLOR_GREEN);
 			//255
 			//222+33
 			// ascii 27 dan 32 juga jelek (space dan esc)
@@ -154,7 +163,7 @@ public:
 				} while (wala == 32 || wala == 27);
 				Console::printf("%c", wala );
 			}
-			Console::setColor(7);
+			Console::setColor(COLOR_GREY);
 			for (int x = 0; x<no; x++) {
 				do
 				{
@@ -170,7 +179,7 @@ public:
 			no--;
 		}
 
-		Console::setColor(2);
+		Console::setColor(Console::COLOR_GREEN);
 		Console::setCursorPos(0, 10);
 		//if(!flag)Console::printf("\n\n\t\t\t\tLOAD SUCCESSFULL!");
 		Console::printf("\n\n\t\t\t\tLOAD SUCCESSFULL!");
@@ -212,7 +221,7 @@ public:
 		Console::setCursorPos(0, 0);
 		printf("\n\n");
 		displaySword();
-		Console::setColor(7);
+		Console::setColor(Console::COLOR_WHITE);
 		printf("\n");
 		for (int y = 0; y<6; y++) {
 			if (y == 5)

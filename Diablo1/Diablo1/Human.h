@@ -4,11 +4,12 @@
 #define HUMAN_H
 
 #include "Base.h"
-#include "Monster.h"
 #include "Item.h"
+#include "common.h"
 #include <vector>
 #include <string>
-
+#define EGUIPMENT_SLOT 7
+#define MAX_LEVEL 31
 using namespace std;
 
 class Human : public Base
@@ -20,7 +21,7 @@ private:
 	int dexterity;
 	int gold;
 	int experience;
-	static int expRequirement[31]; // misalnya, expRequirement[2] = 1000, artinya, untuk level up ke 2, player memerlukan exp >= 1000 (di-initialize di bawah)
+	static int expRequirement[MAX_LEVEL]; // misalnya, expRequirement[2] = 1000, artinya, untuk level up ke 2, player memerlukan exp >= 1000 (di-initialize di bawah)
 	int job;
 
 	//untuk masukin primary saat mulai game pilih job (membuat character)
@@ -122,8 +123,8 @@ private:
 	vector <Item*> vInventory; // yang ada di inventory (termasuk yang sudah di-eguip)
 	size_t nInventory; // jumlah barang yang ada di inventory
 
-	bool eguipStatus[7]; // true kalau item type ke-index (sesuai type di Item.h) sudah di-eguip, false kalau belum
-	Item* eguipment[7]; // yang sekarang sedang dipakai (penggunaan index sama dengan eguipStatus)
+	bool eguipStatus[EGUIPMENT_SLOT]; // true kalau item type ke-index (sesuai type di Item.h) sudah di-eguip, false kalau belum
+	Item* eguipment[EGUIPMENT_SLOT]; // yang sekarang sedang dipakai (penggunaan index sama dengan eguipStatus)
 
 	void checkInventory(vector<Item>&fileRead)
 	{
@@ -132,32 +133,38 @@ private:
 		{
 			if (iter->getBought()) // kalau sudah dibeli, masukin ke vInventory
 			{
-				vInventory.push_back(&*iter); // ngambil alamat dari objek Item, dimana Item tersebut terdapat dalam vector vShop
-				/*
-				kalau di atas gabisa, pake ini aja:
-				Item* temp = &fileRead[i];
-				vInventory.push_back(temp);
-				*/
+				vInventory.push_back(&(*iter)); // ngambil alamat dari objek Item, dimana Item tersebut terdapat dalam vector vShop
 			}
 		}
 		nInventory = vInventory.size();
 	}
+
 	void checkEguipped() // cek apakah yang ada di vInventory sudah di-eguip atau belom
 	{
-		for (int i = 0; i < 7; i++)
+		// initialize
+		for (int i = 0; i < EGUIPMENT_SLOT; i++)
 		{
 			eguipStatus[i] = false; // awalnya set eguipped ke false dulu (character tidak wear apa")
 			eguipment[i] = NULL; // awalnya tidak menunjuk ke apa"
 		}
-
-		for (vector<Item*>::iterator iter = vInventory.begin(); iter != vInventory.end(); iter++)
+		
+		try
 		{
-			// kalau sudah di-eguip
-			if ((*iter)->getEguipped()) // *iter = value dari vInventory = pointer to Item. jadi perlu di-dereference 2x
+			for (vector<Item*>::iterator iter = vInventory.begin(); iter != vInventory.end(); iter++)
 			{
-				eguipment[(*iter)->getType()] = *iter; // valuenya adalah pointer dari iter, yakni value dari vInventory, yakni pointer to objek Item
-				eguipStatus[(*iter)->getType()] = true; // artinya sekarang sudah ada yang di-eguip
+				// kalau sudah di-eguip
+				if ((*iter)->getEguipped()) // *iter = value dari vInventory = pointer to Item. jadi perlu di-dereference 2x
+				{
+					if (eguipStatus[(*iter)->getType()] == true) throw (*iter)->getType();
+					eguipment[(*iter)->getType()] = *iter; // valuenya adalah pointer dari iter, yakni value dari vInventory, yakni pointer to objek Item
+					eguipStatus[(*iter)->getType()] = true; // artinya sekarang sudah ada yang di-eguip
+				}
 			}
+		}
+		catch (int x)
+		{
+			Console::setColor(3);
+			Console::printf("\n(!)ERROR: EGUIPMENT POSITION-%d RE-EGUIP\n",x);
 		}
 	}
 

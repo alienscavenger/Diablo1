@@ -28,7 +28,7 @@ private:
 	int eguipped; // 1 = true, 0 = false
 	int bought; // 1 = true, 0 = false
 	/* 
-	   type 0 = pendant(?)
+	   type 0 = GAADA
 	   type 1 = helmet
 	   type 2 = gloves
 	   type 3 = armor
