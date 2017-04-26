@@ -63,94 +63,122 @@ private:
 	int eguipped;
 	int bought;
 
-	// MAIN VARIABLE:
+	// -------------------------------- MAIN VARIABLE ----------------------------------------------------
 	FILE* save;
 	FILE* default;
 	Human* karakter; // karakternya
 	vector<Item> vShop; // item yang ada di game
 	vector<Monster> vMonster; // monster yang ada di game
+	// ---------------------------------------------------------------------------------------------------
 
-	// miscellaneous
+	// -------------------------------- SAVE function -----------------------------------------------------
+	/*
+		LANGKAH-LANGKAH BUAT NEW GAME DAN LOAD GAME:
+		1. lakukan checkSave() dan resetDefaultSave() (menjamin default.txt ada)
+		2. kalau saveGameAvailable, maka pilihan LOAD GAME ada
+		3. kalau pilih NEW GAME: (save.txt bisa ada, bisa tidak aja, tapi itu tidak penting. Karena tidak bakal di-write maupun overwrite)
+			3.1	lakukan newData() (ini buat reset data vMonster dan vShop yang ada kemungkinan sudah dibuat maupun belum ke default)
+			3.2 delete objek human lama (kalau ada)
+			3.3 bikin objek human baru
+		4. kalau pilih LOAD GAME: (save.txt sudah pasti ada, karena saveGameAvailable benar)
+			4.1 (optional) lakuin checkSave() lagi untuk benar" menjamin data save ada
+			4.2 delete objek human lama
+			4.3 lakukan loadSave()
+	*/
 	bool saveGameAvailable; // kalau save game ada, maka true. Kalo nggak, maka false
 
-	// helper function
-	void createDefaultSave(); // definition di paling bawah (terlalu panjang)
-
-	void checkSave() // kyk pre-Load gitu
+	void checkSave() // check save.txt ada apa nggak
 	{
 		save = fopen("save.txt", "r");
-		default = fopen("default.txt", "r"); // PENTING: bakal di-overwrite di program ini sendiri kalau belum dibuat
-
-		if (default == NULL) // kalau file default tidak exist
-		{
-			// create file default kalau nggak ada
-			createDefaultSave();
-			default = fopen("default.txt", "r"); // dibuka lagi buat read
-		}
-
 		if (save == NULL) // save game gaada
 		{
 			saveGameAvailable = false;
-			// baca dari default
-			while (!feof(default))
-			{
-				char ztype;
-				ztype = fgetc(default);
-				if (ztype == '#') // item
-				{
-					//#Nama Item, Price, *effect*, Type, Restriction, Eguipped, Bought
-					fscanf(default, "%[^,],%d,%[^,],%d,%d,%d,%d\n",
-						tempName, &price, tempEffect, &type, &restriction, &eguipped, &bought);
-					name = tempName;
-					effect = tempEffect;
-					vShop.push_back(Item(name, price, effect, type, restriction, eguipped, bought));
-				}
-				else // monster (ztype == '@')
-				{
-					//@Nama Monster, Level, Gold, Damage, Chance to Hit, Evade, Speed, Max Health, Max Stamina, Armor, Experience, Offense, Defense
-					fscanf(default, "%[^,],%d,%d,%f,%f,%f,%f,%f,%f,%d,%f,%d,%d\n",
-						tempName, &level, &gold, &damage, &chanceToHit, &evade, &speed, &maxHealth, &maxStamina, &armor, &exp, &offense, &defense);
-					name = tempName;
-					vMonster.push_back(Monster(name, level, gold, damage, chanceToHit, evade, speed, maxHealth, maxStamina, armor, exp, offense, defense));
-				}
-			}
 		}
 		else // save game ada (save!=NULL)
 		{
 			saveGameAvailable = true;
-			// baca dari save
-			fscanf(save, "%[^\n]\n", tempName);
-			fscanf(save, "%d,%d,%d,%d,%d,%d,%d,%d\n", &hLevel, &job, &hGold, &experience, &strength, &endurance, &agility, &dexterity);
-			fscanf(save, "%f,%f,%f,%f,%f,%f,%d\n", &hDamage, &hChanceToHit, &hEvade, &hSpeed, &hMaxHealth, &hMaxStamina, &hArmor);
-			hName = tempName;
-
-			while (!feof(save))
-			{
-				char ztype;
-				ztype = fgetc(save);
-				if (ztype == '#') // item
-				{
-					//#Nama Item, Price, *effect*, Type, Restriction, Eguipped, Bought
-					fscanf(save, "%[^,],%d,%[^,],%d,%d,%d,%d\n",
-						tempName, &price, tempEffect, &type, &restriction, &eguipped, &bought);
-					name = tempName;
-					effect = tempEffect;
-					vShop.push_back(Item(name, price, effect, type, restriction, eguipped, bought));
-				}
-				else // monster
-				{
-					//@Nama Monster, Level, Gold, Damage, Chance to Hit, Evade, Speed, Max Health, Max Stamina, Armor, Experience, Offense, Defense
-					fscanf(save, "%[^,],%d,%d,%f,%f,%f,%f,%f,%f,%d,%f,%d,%d\n",
-						tempName, &level, &gold, &damage, &chanceToHit, &evade, &speed, &maxHealth, &maxStamina, &armor, &exp, &offense, &defense);
-					name = tempName;
-					vMonster.push_back(Monster(name, level, gold, damage, chanceToHit, evade, speed, maxHealth, maxStamina, armor, exp, offense, defense));
-				}
-			}
 			fclose(save);
 		}
-
-		fclose(default);
 	} // END checkSave()
+
+	void createDefaultSave(); // definition di paling bawah (terlalu panjang)
+
+	void loadSave() // DIJAMIN FILE SAVE.TXT UDAH ADA
+	{
+		vShop.clear();
+		vMonster.clear();
+		save = fopen("save.txt", "r");
+		// baca ATTRIBUTE dari save
+		if (fscanf(save, "%[^\n]\n", tempName) != 1) cout << "\nERROR IN READING 1ST LINE";
+		if (fscanf(save, "%d,%d,%d,%d,%d,%d,%d,%d\n", &hLevel, &job, &hGold, &experience, &strength, &endurance, &agility, &dexterity) != 8) cout << "\nERROR IN READING 2ND LINE!";
+		if (fscanf(save, "%f,%f,%f,%f,%f,%f,%d\n", &hDamage, &hChanceToHit, &hEvade, &hSpeed, &hMaxHealth, &hMaxStamina, &hArmor) != 7) cout << "\nERROR IN READING 3RD LINE";
+		hName = tempName;
+		while (!feof(save))
+		{
+			char ztype;
+			ztype = fgetc(save);
+			if (ztype == '#') // item
+			{
+				//#Nama Item, Price, *effect*, Type, Restriction, Eguipped, Bought
+				fscanf(save, "%[^,],%d,%[^,],%d,%d,%d,%d\n",
+					tempName, &price, tempEffect, &type, &restriction, &eguipped, &bought);
+				name = tempName;
+				effect = tempEffect;
+				vShop.push_back(Item(name, price, effect, type, restriction, eguipped, bought));
+			}
+			else // monster
+			{
+				//@Nama Monster, Level, Gold, Damage, Chance to Hit, Evade, Speed, Max Health, Max Stamina, Armor, Experience, Offense, Defense
+				fscanf(save, "%[^,],%d,%d,%f,%f,%f,%f,%f,%f,%d,%f,%d,%d\n",
+					tempName, &level, &gold, &damage, &chanceToHit, &evade, &speed, &maxHealth, &maxStamina, &armor, &exp, &offense, &defense);
+				name = tempName;
+				vMonster.push_back(Monster(name, level, gold, damage, chanceToHit, evade, speed, maxHealth, maxStamina, armor, exp, offense, defense));
+			}
+		}
+		fclose(save);
+	}
+
+	void newData() // buat new Game (METHOD INI BUKAN WRITE KE FILE, TAPI HANYA RESET VMONSTER DAN VSHOP)
+	{
+		// baca dari default (DIJAMIN DEFAULT.TXT ADA)
+		default = fopen("default.txt", "r");
+		vShop.clear();
+		vMonster.clear();
+		while (!feof(default))
+		{
+			char ztype;
+			ztype = fgetc(default);
+			if (ztype == '#') // item
+			{
+				//#Nama Item, Price, *effect*, Type, Restriction, Eguipped, Bought
+				fscanf(default, "%[^,],%d,%[^,],%d,%d,%d,%d\n",
+					tempName, &price, tempEffect, &type, &restriction, &eguipped, &bought);
+				name = tempName;
+				effect = tempEffect;
+				vShop.push_back(Item(name, price, effect, type, restriction, eguipped, bought));
+			}
+			else // monster (ztype == '@')
+			{
+				//@Nama Monster, Level, Gold, Damage, Chance to Hit, Evade, Speed, Max Health, Max Stamina, Armor, Experience, Offense, Defense
+				fscanf(default, "%[^,],%d,%d,%f,%f,%f,%f,%f,%f,%d,%f,%d,%d\n",
+					tempName, &level, &gold, &damage, &chanceToHit, &evade, &speed, &maxHealth, &maxStamina, &armor, &exp, &offense, &defense);
+				name = tempName;
+				vMonster.push_back(Monster(name, level, gold, damage, chanceToHit, evade, speed, maxHealth, maxStamina, armor, exp, offense, defense));
+			}
+		}
+		fclose(default);
+	}
+
+	void resetDefaultSave()
+	{
+		default = fopen("default.txt", "r"); // WARNING: bakal di-overwrite di program ini sendiri kalau belum dibuat
+		if (default == NULL) // kalau file default tidak exist
+		{
+			// create file default kalau nggak ada
+			createDefaultSave();
+		}
+		else fclose(default);
+	}
 
 	void saveGame()
 	{
@@ -180,8 +208,10 @@ private:
 		fclose(save);
 	} // END saveGame()
 
+	// ----------------------------------------------------------------------------------------------------
 
-	// shop dan segalanya
+
+	// -------------------------------- SHOP FUNCTION ----------------------------------------------------
 	void testShop();
 	int filterType;
 	struct ComparePrice { // comparator sort buat harga (ascending)
@@ -204,6 +234,7 @@ private:
 			return (struct1->getDamage() < struct2->getDamage());
 		}
 	};
+	// -------------------------------------------------------------------------------------------------
 
 public:
 	Game() // constructor
@@ -218,11 +249,9 @@ public:
 		*/
 
 		Interface::setWindowSize(800, 550);
-
+		karakter = NULL; // state karakter pertama
 		vShop.reserve(MAX_ITEM);
 		vMonster.reserve(MAX_MONSTER);
-		checkSave();
-
 		// ********************************************************************** TEMPLATE DOANG, ntar diganti jadi lebih bagus
 		// ********************************************************************** TEMPLATE DOANG, ntar diganti jadi lebih bagus
 		// ********************************************************************** TEMPLATE DOANG, ntar diganti jadi lebih bagus
@@ -231,74 +260,95 @@ public:
 		// ********************************************************************** TEMPLATE DOANG, ntar diganti jadi lebih bagus
 		// ********************************************************************** TEMPLATE DOANG, ntar diganti jadi lebih bagus
 		// ********************************************************************** TEMPLATE DOANG, ntar diganti jadi lebih bagus
-		cout << "1. new game" << endl;
-		int EXIT;
-		if (saveGameAvailable) // PEMAKAIAN saveGameAvailable
+		while (1)
 		{
-			cout << "2. load game" << endl;
-			cout << "3. exit" << endl;
-			EXIT = 3;
-		}
-		else
-		{
-			cout << "2. exit" << endl;
-			EXIT = 2;
-		}
-		cout << "Choose menu: ";
-		int menu;
-		cin >> menu;
-		while (cin.fail() || menu<1 || menu>EXIT)
-		{
-			Interface::flush();
-			cin >> menu;
-		}
-		Interface::flush();
-		if (menu == EXIT) return;
-		if (menu == 1) // new game
-		{
-			cout << "Pick name :"; // ntar tambahin validasi lain
-			getline(cin, name);
-			while (cin.fail() || name.length()<1 || name.length()>50)
+			checkSave();
+			resetDefaultSave();
+			system("cls");
+			cout << "1. new game" << endl;
+			int EXIT;
+			if (saveGameAvailable) // PEMAKAIAN saveGameAvailable
 			{
-				cin.clear();
-				cout << "Pick name :";
-				getline(cin, name);
+				cout << "2. load game" << endl;
+				cout << "3. exit" << endl;
+				EXIT = 3;
 			}
-			cout << "Pick class (1=assassin, 2=paladin, 3=barbarian): ";
-			cin >> job;
-			while (cin.fail() || job < 1 || job>3)
+			else
+			{
+				cout << "2. exit" << endl;
+				EXIT = 2;
+			}
+			cout << "Choose menu: ";
+			int menu;
+			cin >> menu;
+			while (cin.fail() || menu<1 || menu>EXIT)
 			{
 				Interface::flush();
-				cin >> job;
+				cin >> menu;
 			}
 			Interface::flush();
+			if (menu == EXIT) return;
 
-			karakter = new Human(vShop, job, name); // CARA BIKIN HUMAN DENGAN NEW GAME
-			cout << "SUCCESFULLY CREATED NEW CHARACTER!" << endl;
+			if (menu == 1) // new game
+			{
+				cout << "Pick name :"; // ntar tambahin validasi lain
+				getline(cin, hName);
+				while (cin.fail() || hName.length() < 1 || hName.length() > 50)
+				{
+					cin.clear();
+					cout << "Pick name :";
+					getline(cin, hName);
+				}
+				cout << "Pick class (1=assassin, 2=paladin, 3=barbarian): ";
+				cin >> job;
+				while (cin.fail() || job < 1 || job>3)
+				{
+					Interface::flush();
+					cin >> job;
+				}
+				Interface::flush();
+
+				newData();
+				if (karakter != NULL) delete karakter;
+				karakter = new Human(vShop, job, hName); // CARA BIKIN HUMAN DENGAN NEW GAME
+				cout << "SUCCESFULLY CREATED NEW CHARACTER!" << endl;
+				Interface::flush();
+			}
+			else // load game
+			{
+				// CARA BIKIN HUMAN DENGAN LOAD GAME
+				if (karakter != NULL) delete karakter;
+				checkSave();
+				if (!saveGameAvailable)
+				{
+					cout << "\nSAVE GAME CORRUPTED WHILE READING\nPress enter to go back..";
+					Interface::pressEnterPlease();
+					return; // INI LANGSUNG EXIT
+				}
+				else
+				{
+					loadSave();
+					karakter = new Human(vShop, hName, hLevel, job, hGold, experience, strength, endurance, agility, dexterity, hDamage, hChanceToHit, hEvade, hSpeed
+						, hMaxHealth, hMaxStamina, hArmor);
+
+					cout << "SUCCESFULLY LOADED OLD CHARACTER!" << endl;
+					Interface::flush();
+				}
+			}
+			// -------------------------------------------------------- TESTING SHOP DSB
+			// -------------------------------------------------------- TESTING SHOP DSB
+			// -------------------------------------------------------- TESTING SHOP DSB
+			// -------------------------------------------------------- TESTING SHOP DSB
+			// -------------------------------------------------------- TESTING SHOP DSB
+			// -------------------------------------------------------- TESTING SHOP DSB
+			// -------------------------------------------------------- TESTING SHOP DSB
+
+			testShop(); // TESTING SHOP DAN SORT
+
+			cout << "game saved!";
+			saveGame();
 			Interface::flush();
 		}
-		else // load game
-		{
-			// CARA BIKIN HUMAN DENGAN LOAD GAME
-			karakter = new Human(vShop, hName, hLevel, job, hGold, experience, strength, endurance, agility, dexterity, hDamage, hChanceToHit, hEvade, hSpeed
-				, hMaxHealth, hMaxStamina, hArmor);
-
-			cout << "SUCCESFULLY LOADED OLD CHARACTER!" << endl;
-			Interface::flush();
-		}
-		// -------------------------------------------------------- TESTING SHOP DSB
-		// -------------------------------------------------------- TESTING SHOP DSB
-		// -------------------------------------------------------- TESTING SHOP DSB
-		// -------------------------------------------------------- TESTING SHOP DSB
-		// -------------------------------------------------------- TESTING SHOP DSB
-		// -------------------------------------------------------- TESTING SHOP DSB
-		// -------------------------------------------------------- TESTING SHOP DSB
-
-		testShop(); // TESTING SHOP DAN SORT
-
-		cout << "game saved!";
-		saveGame();
-		Interface::flush();
 	} // END constructor
 };
 
@@ -482,7 +532,22 @@ void Game::testShop()
 	while(1)
 	{
 		system("cls");
-		cout << "1 = Buy\n2 = Show inventory\n3 = Exit\n";
+		cout << "Name: " << karakter->getName() << " (";
+		switch (karakter->getJob())
+		{
+		case 1:
+			cout << "Assassin ";
+			break;
+		case 2:
+			cout << "Paladin ";
+			break;
+		case 3:
+			cout << "Barbarian ";
+			break;
+		}
+		cout << "lv. " << karakter->getLevel() << ") (exp: " << karakter->getExperience() << '/' << karakter->getExpRequirement(karakter->getLevel() + 1) << ")\n";
+		cout << "You have (" << karakter->getNumInventory() << ") out of (" << vShop.size() << ") items\n";
+		cout << "\n1 = Buy\n2 = Show inventory\n3 = Exit\n";
 		cout << "choose: ";
 		int menu;
 		cin >> menu;
@@ -503,7 +568,7 @@ void Game::testShop()
 
 			// tanya dulu mau filter apa nggak
 			filterType = 0;
-			cout << "Filter by: NONE\n\n";
+			cout << "<Filter by: NONE>\n\n";
 			while (1)
 			{
 				// INI BACA DARI VSHOP
@@ -550,7 +615,7 @@ void Game::testShop()
 							sampah = Console::getKeyPressed();
 							if (sampah == VK_RETURN) {
 								//printf(" <-");
-								Console::delay(200);
+								Console::delay(50);
 								flag = 1;
 								break;
 							}
@@ -570,49 +635,50 @@ void Game::testShop()
 				if (flag) break; // kalau udah teken "enter", maka lanjut
 
 				system("cls");
-				cout << "Filter by: ";
+				cout << "<Filter by: ";
 				switch (filterType)
 				{
 				case 0:
-					cout << "NONE";
+					cout << "NONE>";
 					break;
 				case 1:
-					cout << "HELMET";
+					cout << "HELMET>";
 					break;
 				case 2:
-					cout << "GLOVE";
+					cout << "GLOVE>";
 					break;
 				case 3:
-					cout << "ARMOR";
+					cout << "ARMOR>";
 					break;
 				case 4:
-					cout << "BOOT";
+					cout << "BOOT>";
 					break;
 				case 5:
-					cout << "WEAPON";
+					cout << "WEAPON>";
 					break;
 				case 6:
-					cout << "SHIELD";
+					cout << "SHIELD>";
 					break;
 				}
 				cout << "\n\n";
 			}
 
 			// setelah di-filter (atau tidak), tanya mau sort atau tidak?
-			cout << "\n\nSort or not? [y/n]: ";
+			cout << "\nSORT or not? [y/n]: ";
 			string choose;
+			tolower(choose[0]);
 			getline(cin, choose);
 			while (cin.fail() || (choose != "y" && choose != "n"))
 			{
 				cin.clear();
-				cout << "Sort or not? [y/n]: ";
+				cout << "SORT or not? [y/n]: ";
 				getline(cin, choose);
 			}
 			if (choose == "y")
 			{
 				// sortir berdasarkan yang diinginkan
 				int maks;
-				cout << "sort by:" << '\n';
+				cout << "\nSort by:" << '\n';
 				cout << "1. Price\n2. Name\n";
 				if (filterType == 0) // kalau tidak di-filter
 				{
@@ -695,20 +761,20 @@ void Game::testShop()
 					break;
 				}
 				// tulis sorted by apa
-				cout << "\nSorted by: ";
+				cout << "\n<Sorted by: ";
 				switch (sortByApa)
 				{
 				case 1:
-					cout << "Price\n\n";
+					cout << "PRICE>\n\n";
 					break;
 				case 2:
-					cout << "Name\n\n";
+					cout << "NAME>\n\n";
 					break;
 				case 3:
-					cout << "Armor\n\n";
+					cout << "ARMOR>\n\n";
 					break;
 				case 4:
-					cout << "Damage\n\n";
+					cout << "DAMAGE>\n\n";
 					break;
 				}
 
@@ -740,23 +806,24 @@ void Game::testShop()
 			if (buy != -1)
 			{
 				karakter->buyItem(temporary[buy - 1]); // jangan lupa index dikurang 1 (buy-1)
-				cout << "\n" << temporary[buy - 1]->getName() << '(' << temporary[buy-1]->getPrice() << ") succesfully bought!";
+				cout << "\n" << temporary[buy - 1]->getName() << '(' << temporary[buy-1]->getPrice() << ") succesfully bought!\n";
 			}
-			cout << "\n\nPress enter to continue..";
+			cout << "\n-> Press enter to continue <-\n";
 			Interface::pressEnterPlease();
 		}
 		else if (menu == 2)// show inventory
 		{
 			vector<Item*> vec(karakter->getInventory());
-			cout << "\nInventory\n";
+			cout << "\n<MY INVENTORY>\n";
 			vector<Item*>::iterator iter; //iter memiliki value dari Item*
 			int i;
+			if (karakter->getNumInventory() == 0) cout << "\n~ ~ ~ EMPTY! YOU GOT TO BUY SOME MORE BRUH! ~ ~ ~\n";
 			for (iter = vec.begin(), i = 1; iter != vec.end(); iter++, i++)
 			{
 				cout << i << ' ' << (*iter)->getName() << " (price:" << (*iter)->getPrice() << ")\n";
 			}
 
-			cout << "\n\nPress enter to continue\n";
+			cout << "\n-> Press enter to continue <-\n";
 			Interface::pressEnterPlease();
 			Console::delay(50);
 		}
