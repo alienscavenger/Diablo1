@@ -248,7 +248,6 @@ public:
 		/*Interface::titleScreen();
 		Interface::loading();
 		Interface::intro();*/
-		
 
 		karakter = NULL; // state karakter pertama
 		vShop.reserve(MAX_ITEM);
@@ -256,6 +255,7 @@ public:
 
 		while (1)
 		{
+			system("cls");
 			checkSave();
 			resetDefaultSave();
 			int menu = Interface::startGame(saveGameAvailable);
@@ -264,23 +264,11 @@ public:
 
 			if (menu == 1) // new game
 			{
-				cout << "Pick name :"; // ntar tambahin validasi lain
-				getline(cin, hName);
-				while (cin.fail() || hName.length() < 1 || hName.length() > 50)
-				{
-					cin.clear();
-					cout << "Pick name :";
-					getline(cin, hName);
-				}
-				cout << "Pick class (1=assassin, 2=paladin, 3=barbarian): ";
-				cin >> job;
-				while (cin.fail() || job < 1 || job>3)
-				{
-					Interface::flush();
-					cin >> job;
-				}
-				Interface::flush();
+				hName = Interface::newGameName();
+				job = Interface::newGameJob(hName);
+				if (job == -1) continue;
 
+				system("cls");
 				newData();
 				if (karakter != NULL) delete karakter;
 				karakter = new Human(vShop, job, hName); // CARA BIKIN HUMAN DENGAN NEW GAME
