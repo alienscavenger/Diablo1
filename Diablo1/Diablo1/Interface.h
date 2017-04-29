@@ -5,6 +5,7 @@
 #include <string>
 #include <iostream>
 #include "common.h"
+#include "Game.h"
 
 #define COLOR_GREY 7
 
@@ -29,7 +30,7 @@ public:
 					sampah = Console::getKeyPressed(); // harus pake ini, supaya getKeyPressed lainnya nggak ada masalah
 					if (sampah == VK_RETURN) {
 						//printf(" <-");
-						Console::delay(100);
+						//Console::delay(50);
 						break;
 					}
 				}
@@ -68,6 +69,7 @@ public:
 		}
 	}
 	static void titleScreen() {
+		system("cls");
 		delayFlag = 1;
 		char *title[] = {
 			"oooooooooo.   ooooo       .o.       oooooooooo.  ooooo          .oooooo.",
@@ -124,6 +126,7 @@ public:
 	}
 
 	static void loading() {
+		system("cls");
 		delayFlag = 1;
 		int yes;
 		int no;
@@ -189,6 +192,7 @@ public:
 	}
 
 	static void displaySword() {
+		system("cls");
 		char *sword[] = {
 			"                (O)",
 			"                <M ",
@@ -209,6 +213,7 @@ public:
 	}
 
 	static void intro() {
+		system("cls");
 		delayFlag = 1;
 		char input = NULL;
 		char *introText[] = { "After having lost your Monastery to demons,",
@@ -250,11 +255,68 @@ public:
 		enter(27, 20, 2);
 		pressEnterPlease();
 	}
-	static string getPlayerName() {
-		string tempPlayerName;
+
+	static int startGame( bool saveGameAvailable)
+	{
 		system("cls");
-		getline(cin, tempPlayerName);
-		return tempPlayerName;
+		bool printFlag = true;
+		int sampahFlag = 1;
+		int pickMenu = 0;
+		int maxMenu = saveGameAvailable ? 3 : 2;
+		char charMenu;
+		while (1)
+		{
+			if (printFlag)
+			{
+				Console::setCursorPos(40, 10);
+				if(pickMenu ==0 )Console::setColor(79);
+				else Console::setColor(Console::COLOR_WHITE);
+				Console::printf("NEW GAME");
+
+				if (saveGameAvailable)
+				{
+					Console::setCursorPos(40, 11);
+					if (pickMenu == 1)Console::setColor(79);
+					else Console::setColor(Console::COLOR_WHITE);
+					Console::printf("LOAD GAME");
+				}
+				int yExit = saveGameAvailable ? 12 : 11;
+				Console::setCursorPos(42, yExit);
+				if (pickMenu == (maxMenu-1))Console::setColor(79);
+				else Console::setColor(Console::COLOR_WHITE);
+				Console::printf("EXIT");
+
+				printFlag = false;
+			}
+			charMenu = Console::getKeyPressed();
+			if (charMenu != -1)
+			{
+				if (sampahFlag) // supaya key release tidak kebaca
+				{
+					if (charMenu == VK_UP) // up
+					{
+						pickMenu = (pickMenu - 1 + maxMenu) % maxMenu;
+						printFlag = true;
+					}
+					else if (charMenu == VK_DOWN) // down
+					{
+						pickMenu = (pickMenu + 1) % maxMenu;
+						printFlag = true;
+					}
+					else if (charMenu == VK_RETURN)
+					{
+						break;
+					}
+					int sampah = Console::getKeyPressed();
+					sampahFlag = 0;
+				}
+				else sampahFlag++;
+			}
+		} // endWhile
+		Console::setColor(Console::COLOR_WHITE);
+		system("cls");
+		if (pickMenu == (maxMenu - 1)) return -1;
+		else return pickMenu+1;
 	}
 };
 

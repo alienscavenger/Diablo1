@@ -30,6 +30,9 @@
 class Game
 {
 private:
+
+	friend class Interface; // supaya Interface bisa akses variable Game
+
 	// TEMPORARY VARIABLE:
 	// base:
 	float damage, hDamage; // kiri buat monster/item, kanan buat human
@@ -235,59 +238,29 @@ private:
 		}
 	};
 	// -------------------------------------------------------------------------------------------------
+	
+
 
 public:
 	Game() // constructor
 	{
-		/*
-		Interface interface1;
-		interface1.titleScreen();
-		interface1.loading();
-		system("cls");
-		interface1.intro();
-		system("cls");
-		*/
+		Interface::setWindowSize(1000, 550);
+		/*Interface::titleScreen();
+		Interface::loading();
+		Interface::intro();*/
+		
 
-		Interface::setWindowSize(800, 550);
 		karakter = NULL; // state karakter pertama
 		vShop.reserve(MAX_ITEM);
 		vMonster.reserve(MAX_MONSTER);
-		// ********************************************************************** TEMPLATE DOANG, ntar diganti jadi lebih bagus
-		// ********************************************************************** TEMPLATE DOANG, ntar diganti jadi lebih bagus
-		// ********************************************************************** TEMPLATE DOANG, ntar diganti jadi lebih bagus
-		// ********************************************************************** TEMPLATE DOANG, ntar diganti jadi lebih bagus
-		// ********************************************************************** TEMPLATE DOANG, ntar diganti jadi lebih bagus
-		// ********************************************************************** TEMPLATE DOANG, ntar diganti jadi lebih bagus
-		// ********************************************************************** TEMPLATE DOANG, ntar diganti jadi lebih bagus
-		// ********************************************************************** TEMPLATE DOANG, ntar diganti jadi lebih bagus
+
 		while (1)
 		{
 			checkSave();
 			resetDefaultSave();
-			system("cls");
-			cout << "1. new game" << endl;
-			int EXIT;
-			if (saveGameAvailable) // PEMAKAIAN saveGameAvailable
-			{
-				cout << "2. load game" << endl;
-				cout << "3. exit" << endl;
-				EXIT = 3;
-			}
-			else
-			{
-				cout << "2. exit" << endl;
-				EXIT = 2;
-			}
-			cout << "Choose menu: ";
-			int menu;
-			cin >> menu;
-			while (cin.fail() || menu<1 || menu>EXIT)
-			{
-				Interface::flush();
-				cin >> menu;
-			}
-			Interface::flush();
-			if (menu == EXIT) return;
+			int menu = Interface::startGame(saveGameAvailable);
+
+			if (menu == -1) return;
 
 			if (menu == 1) // new game
 			{
@@ -314,7 +287,7 @@ public:
 				cout << "SUCCESFULLY CREATED NEW CHARACTER!" << endl;
 				Interface::flush();
 			}
-			else // load game
+			else // menu==2 (load game)
 			{
 				// CARA BIKIN HUMAN DENGAN LOAD GAME
 				if (karakter != NULL) delete karakter;
