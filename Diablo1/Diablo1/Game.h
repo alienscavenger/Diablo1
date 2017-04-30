@@ -215,7 +215,6 @@ private:
 
 
 	// -------------------------------- SHOP FUNCTION ----------------------------------------------------
-	void testShop();
 	int filterType;
 	struct ComparePrice { // comparator sort buat harga (ascending)
 		bool operator()(Item* struct1, Item* struct2) {
@@ -271,8 +270,16 @@ public:
 				newData();
 				if (karakter != NULL) delete karakter;
 				karakter = new Human(vShop, job, hName); // CARA BIKIN HUMAN DENGAN NEW GAME
-				cout << "SUCCESFULLY CREATED NEW CHARACTER!" << endl;
-				Interface::flush();
+
+				Console::setColor(79);
+				Console::setCursorPos(30, 13);
+				printf("SUCCESSFULY CREATED NEW CHARACTER!");
+
+				Console::setColor(Console::COLOR_GRAY);
+				Console::setCursorPos(34, 14);
+				printf("(Press any key to continue");
+				Interface::pressEnterPlease();
+				Console::setColor(Console::COLOR_WHITE);
 			}
 			else // menu==2 (load game)
 			{
@@ -291,14 +298,34 @@ public:
 					karakter = new Human(vShop, hName, hLevel, job, hGold, experience, strength, endurance, agility, dexterity, hDamage, hChanceToHit, hEvade, hSpeed
 						, hMaxHealth, hMaxStamina, hArmor);
 
-					cout << "SUCCESFULLY LOADED OLD CHARACTER!" << endl;
-					Interface::flush();
+
+					Console::setColor(79);
+					Console::setCursorPos(35, 13);
+					printf("GAME SUCCESFULLY LOADED!");
+
+					Console::setColor(Console::COLOR_GRAY);
+					Console::setCursorPos(34, 14);
+					printf("(Press any key to continue)");
+					Interface::pressEnterPlease();
+					Console::setColor(Console::COLOR_WHITE);
 				}
 			}
+			while (1)
+			{
+				// INI INVENTORY dan PLAYER STATUS
+				Interface::inventMenu(vShop, karakter);
+				
+				cout << "\nmau ke shop? (1=yes,sisanya=exit)";
+				int milih;
+				cin >> milih;
+				Interface::flush();
 
-			Interface::shopMenu(vShop,karakter);
-
-			testShop(); // TESTING SHOP DAN SORT
+				if (milih == 1)
+					// INI SHOP
+					Interface::shopMenu(vShop, karakter);
+				else
+					break;
+			}
 
 			cout << "game saved!";
 			saveGame();
@@ -480,313 +507,6 @@ void Game::createDefaultSave()
 	}
 
 	fclose(default);
-}
-
-void Game::testShop()
-{
-	while(1)
-	{
-		system("cls");
-		cout << "Name: " << karakter->getName() << " (";
-		switch (karakter->getJob())
-		{
-		case 1:
-			cout << "Assassin ";
-			break;
-		case 2:
-			cout << "Paladin ";
-			break;
-		case 3:
-			cout << "Barbarian ";
-			break;
-		}
-		cout << "lv. " << karakter->getLevel() << ") (exp: " << karakter->getExperience() << '/' << karakter->getExpRequirement(karakter->getLevel() + 1) << ")\n";
-		cout << "You have (" << karakter->getNumInventory() << ") out of (" << vShop.size() << ") items\n";
-		cout << "\n1 = Buy\n2 = Show inventory\n3 = Exit\n";
-		cout << "choose: ";
-		int menu;
-		cin >> menu;
-		while (cin.fail() || menu < 1 || menu>3)
-		{
-			Interface::flush();
-			cout << "choose: ";
-			cin >> menu;
-		}
-		Interface::flush();
-
-		if (menu == 1)
-		{
-			system("cls");
-			vector<Item*> temporary; // nampung semua item di vShop yang belum dibeli
-			temporary.reserve(MAX_ITEM);
-			int shopSize = vShop.size(); // berapa item di vShop
-
-			// tanya dulu mau filter apa nggak
-			filterType = 0;
-			cout << "<Filter by: NONE>\n\n";
-			while (1)
-			{
-				// INI BACA DARI VSHOP
-				temporary.clear();
-				if (filterType > 0) // kalau di-filter
-				{
-					for (int i = 0; i < shopSize; i++)
-					{
-						if (!(vShop[i].getBought()) && vShop[i].getType() == filterType) temporary.push_back(&vShop[i]);
-					}
-				}
-				else // kalau di-filter
-				{
-					for (int i = 0; i < shopSize; i++) // ini buat baca di vShop, yang mana yang belum dibeli. (yang belum dibeli doang yang bakal di-push_back)
-					{
-						if (!(vShop[i].getBought())) temporary.push_back(&vShop[i]);
-					}
-				}
-
-				int flag = 0;
-				vector<Item*>::iterator iter; // iterator untuk vector temporary (Item*)
-				int i = 1; // variable buat print index vector (tapi ini mulai dari 1, sedangkan vector mulai dari 0)
-
-				
-				// INI SETELAH DI-FILTER (KALAU DI-FILTER)
-				for (iter = temporary.begin(); iter != temporary.end(); iter++, i++)
-				{
-					cout << setw(3) << left << i << ' ' << setw(20) << left << (*iter)->getName() << " Price: " << setw(6) << left << (*iter)->getPrice()
-						<< " Restriction = " << (*iter)->getRestriction() << "  Type = " << (*iter)->getType();
-					if ((*iter)->getArmor() != 0) cout <<  " Armor  = " << setw(3) << (*iter)->getArmor();
-					if ((*iter)->getDamage() != 0) cout << " Damage = " << setw(3) << (*iter)->getDamage();
-					cout << '\n';
-				}
-
-				cout << "\nPress tab to switch item filter, or enter to continue...\n";
-				while (1)
-				{
-					char x = _getch();
-					if (x == VK_RETURN) // press enter = keluar
-					{
-						int sampah;
-						while (true)
-						{
-							sampah = Console::getKeyPressed();
-							if (sampah == VK_RETURN) {
-								//printf(" <-");
-								Console::delay(50);
-								flag = 1;
-								break;
-							}
-						}
-						break;
-					}
-					else if (x == '\t')
-					{
-						// --------------------------------------------------- MODIFIKASI DARI YANG DI INTERFACE
-						filterType = (filterType + 1) % 7;
-						// -------------------------------------------------------------------------------------
-						break;
-					}
-					else printf("\b \b"); // backspace
-				}
-
-				if (flag) break; // kalau udah teken "enter", maka lanjut
-
-				system("cls");
-				cout << "<Filter by: ";
-				switch (filterType)
-				{
-				case 0:
-					cout << "NONE>";
-					break;
-				case 1:
-					cout << "HELMET>";
-					break;
-				case 2:
-					cout << "GLOVE>";
-					break;
-				case 3:
-					cout << "ARMOR>";
-					break;
-				case 4:
-					cout << "BOOT>";
-					break;
-				case 5:
-					cout << "WEAPON>";
-					break;
-				case 6:
-					cout << "SHIELD>";
-					break;
-				}
-				cout << "\n\n";
-			}
-
-			// setelah di-filter (atau tidak), tanya mau sort atau tidak?
-			cout << "\nSORT or not? [y/n]: ";
-			string choose;
-			tolower(choose[0]);
-			getline(cin, choose);
-			while (cin.fail() || (choose != "y" && choose != "n"))
-			{
-				cin.clear();
-				cout << "SORT or not? [y/n]: ";
-				getline(cin, choose);
-			}
-			if (choose == "y")
-			{
-				// sortir berdasarkan yang diinginkan
-				int maks;
-				cout << "\nSort by:" << '\n';
-				cout << "1. Price\n2. Name\n";
-				if (filterType == 0) // kalau tidak di-filter
-				{
-					cout << "3. Armor\n4. Damage\n";
-					maks = 4;
-				}
-				else if (filterType == 3 || filterType == 4) // kalau di-filter armor yang gak punya effect +DMG
-				{
-					cout << "3. Armor\n";
-					maks = 3;
-				}
-				else
-				{
-					cout << "3. Damage\n"; //kalau di-filter weapon (gk punya +AMR)
-					maks = 3;
-				}
-				cout << "choose: ";
-				int pilihSort;
-				cin >> pilihSort;
-				while (cin.fail() || pilihSort < 1 || pilihSort>maks)
-				{
-					cin.clear();
-					cin.ignore(1000000, '\n');
-					cout << "choose: ";
-					cin >> pilihSort;
-				}
-				cin.clear();
-				cin.ignore(1000000, '\n');
-				int sortByApa;
-				switch (pilihSort)
-				{
-				case 1:
-					sort(temporary.begin(), temporary.end(), ComparePrice());
-					sortByApa = 1;
-					break;
-				case 2:
-					sort(temporary.begin(), temporary.end(), CompareName());
-					sortByApa = 2;
-					break;
-				case 3:
-					if (filterType != 3 && filterType != 4)
-					{
-						sortByApa = 4;
-						sort(temporary.begin(), temporary.end(), CompareDamage()); // hanya tipe 3 dan 4 saja yang gk punya damage
-						break;
-					}
-					else sort(temporary.begin(), temporary.end(), CompareArmor());
-					sortByApa = 3;
-					break;
-				case 4:
-					sort(temporary.begin(), temporary.end(), CompareDamage());
-					sortByApa = 4;
-					break;
-				}
-				system("cls");
-				// tulis ulang filter by apa
-				cout << "Filter by: ";
-				switch (filterType)
-				{
-				case 0:
-					cout << "NONE";
-					break;
-				case 1:
-					cout << "HELMET";
-					break;
-				case 2:
-					cout << "GLOVE";
-					break;
-				case 3:
-					cout << "ARMOR";
-					break;
-				case 4:
-					cout << "BOOT";
-					break;
-				case 5:
-					cout << "WEAPON";
-					break;
-				case 6:
-					cout << "SHIELD";
-					break;
-				}
-				// tulis sorted by apa
-				cout << "\n<Sorted by: ";
-				switch (sortByApa)
-				{
-				case 1:
-					cout << "PRICE>\n\n";
-					break;
-				case 2:
-					cout << "NAME>\n\n";
-					break;
-				case 3:
-					cout << "ARMOR>\n\n";
-					break;
-				case 4:
-					cout << "DAMAGE>\n\n";
-					break;
-				}
-
-				// KALAU MINTA SORT, PRINT ULANG (buat update-in dari sebelumnya)
-				int i = 1; // variable buat print index vector (tapi ini mulai dari 1, sedangkan vector mulai dari 0)
-				vector<Item*>::iterator iter; // iterator untuk vector temporary (Item*)
-											  // INI SETELAH DI-SORT (KALAU DI-SORT)
-				for (iter = temporary.begin(); iter != temporary.end(); iter++, i++)
-				{
-					cout << setw(3) << left << i << ' ' << setw(20) << left << (*iter)->getName() << " Price: " << setw(6) << left << (*iter)->getPrice()
-						<< " Restriction = " << (*iter)->getRestriction() << "  Type = " << (*iter)->getType();
-					if ((*iter)->getArmor() != 0) cout << " Armor  = " << setw(3) << (*iter)->getArmor();
-					if ((*iter)->getDamage() != 0) cout << " Damage = " << setw(3) << (*iter)->getDamage();
-					cout << '\n';
-				}
-			}
-
-			int buy;
-			int vectorSize = temporary.size();
-			cout << "\nBuy what (-1 to cancel): "; // 0 to cancel itu bisa diganti supaya jadi lebih elegan
-			cin >> buy;
-			while (cin.fail() || buy<-1 || buy==0 || buy > vectorSize)
-			{
-				Interface::flush();
-				cout << "\nBuy what (-1 to cancel): "; // -1 to cancel itu bisa diganti supaya jadi lebih "indah"
-				cin >> buy;
-			}
-			Interface::flush();
-			if (buy != -1)
-			{
-				karakter->buyItem(temporary[buy - 1]); // jangan lupa index dikurang 1 (buy-1)
-				cout << "\n" << temporary[buy - 1]->getName() << '(' << temporary[buy-1]->getPrice() << ") succesfully bought!\n";
-			}
-			cout << "\n-> Press enter to continue <-\n";
-			Interface::pressEnterPlease();
-		}
-		else if (menu == 2)// show inventory
-		{
-			vector<Item*> vec(karakter->getInventory());
-			cout << "\n<MY INVENTORY>\n";
-			vector<Item*>::iterator iter; //iter memiliki value dari Item*
-			int i;
-			if (karakter->getNumInventory() == 0) cout << "\n~ ~ ~ EMPTY! YOU GOT TO BUY SOME MORE BRUH! ~ ~ ~\n";
-			for (iter = vec.begin(), i = 1; iter != vec.end(); iter++, i++)
-			{
-				cout << i << ' ' << (*iter)->getName() << " (price:" << (*iter)->getPrice() << ")\n";
-			}
-
-			cout << "\n-> Press enter to continue <-\n";
-			Interface::pressEnterPlease();
-			Console::delay(50);
-		}
-		else // menu == 3
-		{
-			return;
-		}
-	}
 }
 
 #endif // !GAME_H

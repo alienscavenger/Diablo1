@@ -224,7 +224,7 @@ public:
 	int getExperience() const { return experience; }
 	static int getExpRequirement(int index) { return expRequirement[index]; }
 
-	vector <Item*> getInventory() const { return vInventory; }
+	vector <Item*>& getInventory() { return vInventory; }
 	size_t getNumInventory() const { return nInventory; }
 	bool getEguipStatus(int index) const { return eguipStatus[index]; }
 	Item* getEguipment(int index) const { return eguipment[index]; }
@@ -275,6 +275,13 @@ public:
 	void setExperience(int exp)
 	{
 		experience += exp;
+	}
+
+	//setter gold
+	void setGold(int ammount)
+	{
+		gold += ammount;
+		return;
 	}
 };
 
