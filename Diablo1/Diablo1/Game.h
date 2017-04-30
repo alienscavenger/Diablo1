@@ -239,8 +239,6 @@ private:
 	};
 	// -------------------------------------------------------------------------------------------------
 	
-
-
 public:
 	Game() // constructor
 	{
@@ -260,13 +258,14 @@ public:
 			resetDefaultSave();
 			int menu = Interface::startGame(saveGameAvailable);
 
-			if (menu == -1) return;
+			if (menu == -1) return; // kalau user pilih exit game
 
 			if (menu == 1) // new game
 			{
 				hName = Interface::newGameName();
+				if (hName == "3s0xla 81a;LKDJn(**A;") continue;
 				job = Interface::newGameJob(hName);
-				if (job == -1) continue;
+				if (job == -1) continue; // kalau user teken esc (exit) saat milih new game
 
 				system("cls");
 				newData();
@@ -296,13 +295,8 @@ public:
 					Interface::flush();
 				}
 			}
-			// -------------------------------------------------------- TESTING SHOP DSB
-			// -------------------------------------------------------- TESTING SHOP DSB
-			// -------------------------------------------------------- TESTING SHOP DSB
-			// -------------------------------------------------------- TESTING SHOP DSB
-			// -------------------------------------------------------- TESTING SHOP DSB
-			// -------------------------------------------------------- TESTING SHOP DSB
-			// -------------------------------------------------------- TESTING SHOP DSB
+
+			Interface::shopMenu(vShop,karakter);
 
 			testShop(); // TESTING SHOP DAN SORT
 
