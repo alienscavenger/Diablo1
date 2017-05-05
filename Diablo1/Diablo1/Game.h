@@ -241,7 +241,7 @@ private:
 public:
 	Game() // constructor
 	{
-		Interface::setWindowSize(1000, 550);
+		Interface::setWindowSize(900, 550);
 		/*Interface::titleScreen();
 		Interface::loading();
 		Interface::intro();*/

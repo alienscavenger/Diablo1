@@ -294,7 +294,7 @@ public:
 		{
 			if (printFlag)
 			{
-				Interface::setWindowSize(1000, 550);
+				//Interface::setWindowSize(1000, 550);
 				Console::setColor(7);
 				Console::setCursorPos(0, 27);
 				Console::printf("Press up/down or WSAD to select, and enter to choose");
@@ -363,7 +363,7 @@ public:
 		Console::setColor(Console::COLOR_RED);
 		while (1)
 		{
-			Interface::setWindowSize(1000, 550);
+			//Interface::setWindowSize(1000, 550);
 			char buff = _getch();
 			if (buff == VK_ESCAPE) return "3s0xla 81a;LKDJn(**A;"; // kode EXIT
 			if (buff == VK_RETURN && myName.length()>0) break;
@@ -465,7 +465,7 @@ public:
 			"Very brutal at offensive while sacrificing its protection,",
 			"barbarian has slow but deadly attack. It is likely to endure",
 			"the longest battle, thanks to its high stamina. Barbarian has",
-			" the highest endurance and hit point and can withstand devastating",
+			"the highest endurance and hit point and can withstand devastating",
 			"hits from enemy. Barbarian is also able touse all kind of weapons",
 			"including two-handed weapon. But, what a disappointment, since",
 			"barbarian can't wear any heavy armor!"
@@ -520,7 +520,7 @@ public:
 				if (printFlag)
 				{
 					system("cls");
-					Interface::setWindowSize(1000, 550);
+					//Interface::setWindowSize(1000, 550);
 					Console::setColor(7);
 					Console::setCursorPos(23, 27);
 					Console::printf("Press left/right or WSAD to select, and enter to choose");
@@ -629,7 +629,7 @@ public:
 			if (what == 1) break;
 		} // end while
 		Console::setColor(Console::COLOR_WHITE);
-		return job;
+		return (job+1); // 1 <= job <= 3
 	}
 
 	static void playerStatus(Human*& karakter) // print player status
@@ -644,15 +644,15 @@ public:
 		printf(" Class : ");
 		switch (karakter->getJob())
 		{
-		case 0:
+		case 1:
 			Console::setColor(Console::COLOR_RED);
 			cout << "Assassin";
 			break;
-		case 1:
+		case 2:
 			Console::setColor(Console::COLOR_GREEN);
 			cout << "Paladin";
 			break;
-		case 2:
+		case 3:
 			Console::setColor(Console::COLOR_YELLOW);
 			cout << "Barbarian";
 			break;
@@ -813,7 +813,8 @@ public:
 			pickMenu = 0;
 
 			int currY = Console::getCursorY();
-
+			bool sortA = false; // saat di menu pilihan sort, click 'a'
+			bool sortD = false; // saat di menu pilihan sort, click 'd' (SEBENERNYA GK PERLU, TAPI GPP, BUAT KONSISTENSI)
 			while (1)
 			{	
 				if (printFlag)
@@ -924,6 +925,18 @@ public:
 							delayFlag = 0;
 							break;
 						}
+						else if (pickMenu == 0 && buff == 0x41) // 'a'
+						{
+							sortA = true;
+							delayFlag = 0;
+							break;
+						}
+						else if (pickMenu == 0 && buff == 0x44) // 'd'
+						{
+							sortD = true;
+							delayFlag = 0;
+							break;
+						}
 						delayFlag = 0;
 					}
 					else delayFlag++;
@@ -944,7 +957,8 @@ public:
 				int maks;
 				if (filterType == 0) maks = 3;
 				else maks = 4;
-				sortType = (sortType + 1) % maks;
+				if (sortA) sortType = (sortType - 1 + maks) % maks;
+				else sortType = (sortType + 1) % maks;
 				continue; // continue while luar
 				break;
 			case 1: // buy item
@@ -1032,6 +1046,28 @@ public:
 				}
 				else
 				{
+					if ((temporary[index - 1]->getRestriction() > 0) && (temporary[index - 1]->getRestriction() != karakter->getJob()) )
+					{
+						Console::setColor(Console::COLOR_MAGENTA);
+						printf(" WARNING: THE ITEM HAS RESTRICTION <");
+						switch (temporary[index - 1]->getRestriction())
+						{
+						case 1:
+							Console::setColor(Console::COLOR_RED);
+							printf("ASSASSIN");
+							break;
+						case 2:
+							Console::setColor(Console::COLOR_GREEN);
+							printf("PALADIN");
+							break;
+						case 3:
+							Console::setColor(Console::COLOR_YELLOW);
+							printf("BARBARIAN");
+							break;
+						}
+						Console::setColor(Console::COLOR_MAGENTA);
+						printf("> ONLY!\n");
+					}
 					Console::setColor(Console::COLOR_WHITE);
 					printf(" Are you sure you want to buy it?\n ");
 					int pickWhat = 0;
@@ -1103,7 +1139,7 @@ public:
 				break;
 			case 2: // exit
 				return;
-			}
+			} // end switch
 
 
 		} // end while luar

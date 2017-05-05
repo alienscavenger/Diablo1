@@ -175,7 +175,7 @@ public:
 	{
 		vInventory.reserve(110); // jadi ada maksimal 110 item di inventory
 		level = 1;
-		gold = 2000;
+		gold = 2000000;
 		experience = 0;
 		this->name = name;
 		job = pilihanJob;
