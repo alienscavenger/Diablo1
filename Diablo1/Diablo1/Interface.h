@@ -378,7 +378,7 @@ public:
 				myName.push_back(buff);
 			}
 		}
-
+		Console::setCursorVisibility(false);
 		return myName;
 	}
 
@@ -629,7 +629,6 @@ public:
 			if (what == 1) break;
 		} // end while
 		Console::setColor(Console::COLOR_WHITE);
-		Console::setCursorVisibility(true);
 		return job;
 	}
 
@@ -1059,6 +1058,7 @@ public:
 								printf("<NO>");
 								Console::setColor(Console::COLOR_WHITE);
 							}
+							flagPrint = false;
 						}
 						int buff = Console::getKeyPressed();
 						if (buff != -1)

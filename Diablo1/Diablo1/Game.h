@@ -277,7 +277,7 @@ public:
 
 				Console::setColor(Console::COLOR_GRAY);
 				Console::setCursorPos(34, 14);
-				printf("(Press any key to continue");
+				printf("(Press any key to continue)");
 				Interface::pressEnterPlease();
 				Console::setColor(Console::COLOR_WHITE);
 			}
@@ -288,7 +288,7 @@ public:
 				checkSave();
 				if (!saveGameAvailable)
 				{
-					cout << "\nSAVE GAME CORRUPTED WHILE READING\nPress enter to go back..";
+					cout << "\nSAVE GAME CORRUPTED WHILE READING\n(Press enter to go back..)";
 					Interface::pressEnterPlease();
 					return; // INI LANGSUNG EXIT
 				}
@@ -314,19 +314,19 @@ public:
 			{
 				// INI INVENTORY dan PLAYER STATUS
 				Interface::inventMenu(vShop, karakter);
-				
+
+				Console::setCursorVisibility(true);
 				cout << "\nmau ke shop? (1=yes,sisanya=exit)";
 				int milih;
 				cin >> milih;
 				Interface::flush();
-
+				Console::setCursorVisibility(false);
 				if (milih == 1)
 					// INI SHOP
 					Interface::shopMenu(vShop, karakter);
 				else
 					break;
 			}
-
 			cout << "game saved!";
 			saveGame();
 			Interface::flush();
