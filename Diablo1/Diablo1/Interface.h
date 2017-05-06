@@ -69,6 +69,7 @@ public:
 		cin.clear();
 		cin.ignore(10000000, '\n');
 	}
+
 	static void setWindowSize(int width, int height)
 	{
 		HWND console = GetConsoleWindow();
@@ -76,6 +77,19 @@ public:
 		GetWindowRect(console, &r); //stores the console's current dimensions
 
 		MoveWindow(console, r.left, r.top, width, height, TRUE);
+	}
+
+	static void setDefaultFont(int font)
+	{
+		CONSOLE_FONT_INFOEX cfi;
+		cfi.cbSize = sizeof(cfi);
+		cfi.nFont = 0;
+		cfi.dwFontSize.X = 0; // Width of each character in the font
+		cfi.dwFontSize.Y = font; // Height
+		cfi.FontFamily = FF_DONTCARE;
+		cfi.FontWeight = FW_NORMAL;
+		std::wcscpy(cfi.FaceName, L"Consolas"); // Choose your font
+		SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
 	}
 
 	Interface() { // constructor
@@ -283,8 +297,38 @@ public:
 
 	static int startGame( bool saveGameAvailable)
 	{
+		char* wallpaper[20] = {
+			"                          )       \\   /      (",
+			"                         /|\\      )\\_/(     /|\\",
+			"*                       / | \\    (/\\|/\\)   / | \\                      *",
+			"|`.____________________/__|__o____\\`|'/___o__|__\\___________________.'|",
+			"|                           '^`    \\|/   '^`                          |",
+			"|                                   V                                 |",
+			"|                                                                     |",
+			"|                                                                     |",
+			"|                                                                     |",
+			"|                                                                     |",
+			"|                                                                     |",
+			"|                                                                     |",
+			"|                                                                     |",
+			"|                                                                     |",
+			"|                                                                     |",
+			"| ._________________________________________________________________. |",
+			"|'               l    /\\ /     \\\\            \\ /\\   l                `|",
+			"*                l  /   V       ))            V   \\ l                 *",
+			"                 l/            //                  \\I",
+			"                               V"
+		};
+
 		system("cls");
+		printf("\n");
+		Console::setColor(Console::COLOR_RED);
+		for (int i = 0; i < 20; i++)
+		{
+			printf("           %s\n", wallpaper[i]);
+		}
 		Console::setCursorVisibility(false);
+		Console::setColor(Console::COLOR_WHITE);
 		bool printFlag = true;
 		int sampahFlag = 1;
 		int pickMenu = 0;
@@ -296,23 +340,23 @@ public:
 			{
 				//Interface::setWindowSize(1000, 550);
 				Console::setColor(7);
-				Console::setCursorPos(0, 27);
+				Console::setCursorPos(0, 24);
 				Console::printf("Press up/down or WSAD to select, and enter to choose");
 
-				Console::setCursorPos(40, 10);
+				Console::setCursorPos(43, 10);
 				if(pickMenu ==0 )Console::setColor(79);
 				else Console::setColor(Console::COLOR_WHITE);
 				Console::printf("NEW GAME");
 
 				if (saveGameAvailable)
 				{
-					Console::setCursorPos(40, 11);
+					Console::setCursorPos(43, 11);
 					if (pickMenu == 1)Console::setColor(79);
 					else Console::setColor(Console::COLOR_WHITE);
 					Console::printf("LOAD GAME");
 				}
 				int yExit = saveGameAvailable ? 12 : 11;
-				Console::setCursorPos(42, yExit);
+				Console::setCursorPos(45, yExit);
 				if (pickMenu == (maxMenu-1))Console::setColor(79);
 				else Console::setColor(Console::COLOR_WHITE);
 				Console::printf("EXIT");
@@ -522,55 +566,55 @@ public:
 					system("cls");
 					//Interface::setWindowSize(1000, 550);
 					Console::setColor(7);
-					Console::setCursorPos(23, 27);
+					Console::setCursorPos(23, 24);
 					Console::printf("Press left/right or WSAD to select, and enter to choose");
 
 					Console::setColor(Console::COLOR_WHITE);
-					Console::setCursorPos(35, 3);
+					Console::setCursorPos(40-(name.length()/2), 1);
 					cout << "What class are you, ";
 					Console::setColor(Console::COLOR_RED);
 					cout << name;
 					Console::setColor(Console::COLOR_WHITE);
 					cout << '?';
-					Console::setCursorPos(7, 5);
+					Console::setCursorPos(7, 3);
 					switch (job)
 					{
 					case 0:
 						Console::setColor(Console::COLOR_RED);
-						cout << "ASSASSIN\n\n";
+						cout << "  ASSASSIN\n\n";
 						for (int i = 0; i < 15; i++) // 31 = byk row assassin
 						{
 							printf("%s\n", assassin[i]);
 						}
 						for (int i = 0; i < 9; i++) // 9 = byk row assassinText
 						{
-							Console::setCursorPos(25, 10 + i);
+							Console::setCursorPos(25, 9 + i);
 							printf("%s", assassinText[i]);
 						}
 						break;
 					case 1:
 						Console::setColor(Console::COLOR_GREEN);
-						cout << "PALADIN\n\n\n";
+						cout << "  PALADIN\n\n\n";
 						for (int i = 0; i < 12; i++)
 						{
 							printf("%s\n", paladin[i]);
 						}
 						for (int i = 0; i < 9; i++)
 						{
-							Console::setCursorPos(25, 10 + i);
+							Console::setCursorPos(25, 9 + i);
 							printf("%s", paladinText[i]);
 						}
 						break;
 					case 2:
 						Console::setColor(Console::COLOR_YELLOW);
-						cout << "BARBARIAN\n\n\n\n";
+						cout << " BARBARIAN\n\n\n\n";
 						for (int i = 0; i < 11; i++)
 						{
 							printf("%s\n", barbarian[i]);
 						}
 						for (int i = 0; i < 7; i++)
 						{
-							Console::setCursorPos(25, 10 + i);
+							Console::setCursorPos(25, 9 + i);
 							printf("%s", barbarianText[i]);
 						}
 						break;
@@ -580,12 +624,12 @@ public:
 			} // end while dalem
 			if (exit)
 			{
-				job = -1;
+				job = -2;
 				break;
 			}
 
 			Console::setColor(Console::COLOR_MAGENTA);
-			Console::setCursorPos(27, 26);
+			Console::setCursorPos(27, 23);
 			printf("Are you sure you want to choose ");
 			switch (job)
 			{
@@ -597,7 +641,7 @@ public:
 			cout << " ?";
 
 			Console::setColor(COLOR_GREY);
-			Console::setCursorPos(17, 27);
+			Console::setCursorPos(17, 24);
 			cout << "           "; // untuk hilangin kata sebelumnya
 			cout << "(press enter to continue, esc to repick)";
 			cout << "               "; // untuk hilangin kata sebelumnya
@@ -664,8 +708,8 @@ public:
 		printf(" %-9s: %3d%7s %-13s: %3.0f%%\n", "Agility", karakter->getAgility(), " ", "Evade", karakter->getEvade());
 		printf(" %-9s: %3d%7s %-13s: %3.0f\n", "Dexterity", karakter->getDexterity(), " ", "Speed", karakter->getSpeed());
 		printf(" %21s %-13s: %3.0f\n", " ", "Max Health", karakter->getMaxHealth());
-		printf(" %-5s: %6d G%6s %-13s: %3.0f\n", "Gold", karakter->getGold(), " ", "Max Stamina", karakter->getMaxStamina());
-		printf(" %-5s: %6d/%-6d  %-13s: %3d\n\n", "Exp", karakter->getGold(), karakter->getExpRequirement(karakter->getLevel() + 1), "Armor", karakter->getArmor());
+		printf(" %-5s: %7d G%6s%-13s: %3.0f\n", "Gold", karakter->getGold(), " ", "Max Stamina", karakter->getMaxStamina());
+		printf(" %-5s: %7d/%-6d %-13s: %3d\n\n", "Exp", karakter->getGold(), karakter->getExpRequirement(karakter->getLevel() + 1), "Armor", karakter->getArmor());
 
 		printf(" =========================================\n");
 	}
@@ -1143,6 +1187,12 @@ public:
 
 
 		} // end while luar
+	}
+	
+	static void homeMenu(Human*& karakter)
+	{
+		system("cls");
+
 	}
 
 	static void inventMenu(vector<Item>& vShop, Human*& karakter)

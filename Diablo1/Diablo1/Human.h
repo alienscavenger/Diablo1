@@ -23,6 +23,7 @@ private:
 	int experience;
 	static int expRequirement[MAX_LEVEL]; // misalnya, expRequirement[2] = 1000, artinya, untuk level up ke 2, player memerlukan exp >= 1000 (di-initialize di bawah)
 	int job;
+	int monsterKilled;
 
 	//untuk masukin primary saat mulai game pilih job (membuat character)
 	void setPrimary(int pilihanJob) // 1<= pilihanJob <=3
@@ -174,6 +175,7 @@ public:
 	Human(vector <Item>& fileRead,int pilihanJob,string name)
 	{
 		vInventory.reserve(110); // jadi ada maksimal 110 item di inventory
+		monsterKilled = 0;
 		level = 1;
 		gold = 2000000;
 		experience = 0;
@@ -189,8 +191,9 @@ public:
 
 	//constructor buat load Game
 	Human(vector <Item>& fileRead,string name, int lvl,  int pilihanJob, int gold,int exp, int str, int end, int agi,
-		  int dex, float dmg, float cth, float eva, float spd, float mhp, float mst, int amr)
+		  int dex, float dmg, float cth, float eva, float spd, float mhp, float mst, int amr, int kill)
 	{
+		monsterKilled = kill;
 		this->name = name;
 		level = lvl;
 		job = pilihanJob;
@@ -215,6 +218,7 @@ public:
 	}
 
 	//getter baru (tidak ada pada Base.h)
+	int getMonsterKilled() const { return monsterKilled; }
 	int getStrength() const { return strength; }
 	int getEndurance() const { return endurance; }
 	int getAgility() const { return agility; }
@@ -243,8 +247,9 @@ public:
 		vInventory.push_back(pointer);
 		nInventory = vInventory.size(); // update nInventory
 	}
-	void sellItem(Item* pointer)
+	void sellItem(Item* pointer) // secara implicit nambah gold karakter sebanyak setengah dari harga item yang dijual
 	{
+		setGold(pointer->getPrice()/2);
 		pointer->setBought(0); // set false
 		vector<Item*>::iterator iter;
 		for (iter = vInventory.begin(); iter != vInventory.end(); iter++)
@@ -278,9 +283,9 @@ public:
 	}
 
 	//setter gold
-	void setGold(int ammount)
+	void setGold(int amount)
 	{
-		gold += ammount;
+		gold += amount;
 		return;
 	}
 };

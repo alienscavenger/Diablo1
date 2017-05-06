@@ -15,6 +15,7 @@ class Monster : public Base
 	// merupakan variabel yang dinamis (berganti", yaitu saat mati, berkurang setengahnya). Makanya itu perlu di-save.
 private:
 	// offense dan defense hanyalah jumlah bintang yang dimiliki oleh monster tersebut (ceil(offense/20) atau ceil(defense/20))
+	int killed; // berapa banyak di-kill
 	int offense;
 	int defense;
 	int gold; // ini sama exp adalah rewardnya
@@ -22,8 +23,9 @@ private:
 
 public:
 	// constructor untuk Monster
-	Monster(string name, int lvl, int gold, float dmg, float cth, float eva, float spd, float mhp, float mst, int amr,float exp, int off, int def)
+	Monster(string name, int lvl, int gold, float dmg, float cth, float eva, float spd, float mhp, float mst, int amr,float exp, int off, int def, int kill)
 	{
+		killed = kill;
 		this->name = name;
 		damage = dmg;
 		chanceToHit = cth;
@@ -38,14 +40,16 @@ public:
 		offense = off;
 		defense = def;
 	}
+	int getKilled() const { return killed; }
 	int getOffense() const { return offense; }
 	int getDefense() const { return defense; }
 	int getGold() const { return gold; }
 	float getExp() const { return exp; }
 
 	// setiap kali monster dibunuh:
-	void killed()
+	void die()
 	{
+		this->killed += 1;
 		level += 1;
 		exp = exp*1.25f;
 		// cth tambah 4 persen setial level up
