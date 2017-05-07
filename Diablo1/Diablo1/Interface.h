@@ -1,10 +1,14 @@
 #pragma once
+#ifndef INTERFACE_H
+#define INTERFACE_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
 #include <string>
 #include <vector>
 #include <iostream>
+#include <sstream>
 #include "common.h"
 #include "Game.h"
 
@@ -46,7 +50,7 @@ public:
 	{
 		while (1)
 		{
-			char x = _getch();
+			char x = _getch(); // tidak ngebaca key release (hanya key press), tapi getKeyPressed iya
 			if (x == VK_RETURN)
 			{
 				int sampah;
@@ -99,16 +103,18 @@ public:
 
 	static void enter(int x, int y, int type) {
 		Console::setCursorPos(x, y);
-		Console::setColor(Console::COLOR_WHITE);
+		Console::setColor(Console::COLOR_GRAY);
 		if (type == 1) {
 			Console::printf("  Press enter to skip  ");
 		}
 		else {
 			Console::printf("Press enter to continue");
 		}
+		Console::setColor(Console::COLOR_WHITE);
 	}
 	static void titleScreen() {
 		system("cls");
+		Console::setCursorVisibility(false);
 		delayFlag = 1;
 		char *title[] = {
 			"oooooooooo.   ooooo       .o.       oooooooooo.  ooooo          .oooooo.",
@@ -122,50 +128,72 @@ public:
 		float counter = 0;
 		char *production = "Aditya n' Melvin Production presents";
 		char input = NULL;
-		enter(28, 20, 1);
+		enter(33, 20, 1);
 		int flag = 0;
-		Console::setCursorPos(21, 5);
-		for (int x = 0; x<strlen(production); x++) {
+		int inputFlag = 0;
+		Console::setCursorPos(26, 5);
+		for (int x = 0; x < strlen(production); x++) {
 			input = Console::getKeyPressed();
-			if (input == VK_RETURN) { flag = 1; delayFlag = 0; delayScreen = 0;}
+			if (input == VK_RETURN)
+			{
+				if (inputFlag)
+				{
+					flag = 1;
+					delayFlag = 0;
+					delayScreen = 0;
+				}
+				else inputFlag++;
+			}
 			Console::printf("%c", production[x]);
 			if (delayFlag) delayScreen = 50;
 			Console::delay(delayScreen);
 		}
-		
-		if (flag)
-		{
-			int sampah;
-			while (true)
-			{
-				sampah = Console::getKeyPressed(); // harus pake ini, supaya getKeyPressed lainnya nggak ada masalah
-				if (sampah == VK_RETURN) break;
-			}
-			//return;
-		}
 
-		if(delayFlag)Console::delay(500); // tambahin delay supaya bagus
+		if (delayFlag)Console::delay(500); // tambahin delay supaya bagus
 
 		Console::setColor(4); // BENERIN NIH 'MAGIC NUMBER' PLZZZ
-		for (int x = 0; x<7; x++) {
-			input = Console::getKeyPressed();
-			if (input == VK_RETURN) { delayFlag = 0; delayScreen = 0; };
-			Console::setCursorPos(3, x + 10);
-			Console::printf("%s", title[x]);
-			if (x < 6)
-			{
-				if (delayFlag) delayScreen = 300;
-				Console::delay(delayScreen);
+		if (delayFlag)
+		{
+			for (int x = 0; x < 7; x++) {
+				input = Console::getKeyPressed();
+				if (input == VK_RETURN) { delayFlag = 0; delayScreen = 0; };
+				Console::setCursorPos(8, x + 10);
+				Console::printf("%s", title[x]);
+				if (x < 6)
+				{
+					if (delayFlag) delayScreen = 300;
+					Console::delay(delayScreen);
+				}
 			}
 		}
-		if (input == VK_RETURN) { return; }
-		enter(28, 20, 2);
+		else
+		{
+			for (int x = 0; x < 7; x++) {
+				Console::setCursorPos(8, x + 10);
+				Console::printf("%s", title[x]);
+			}
+		}
+
+		//if (flag)
+		//{
+		//	int sampah;
+		//	while (true)
+		//	{
+		//		sampah = Console::getKeyPressed(); // harus pake ini, supaya getKeyPressed lainnya nggak ada masalah
+		//		if (sampah == VK_RETURN) break;
+		//	}
+		//	//return;
+		//}
+
+		//if (input == VK_RETURN) { return; }
+		enter(33, 20, 2);
 		//getchar(); // gw ganti jadi fungsi gw sendiri yah yh, soalnya kalo getchar, semua tombol yang diteken bakal muncul di screen
 		pressEnterPlease();
 	}
 
 	static void loading() {
 		system("cls");
+		Console::setCursorVisibility(false);
 		delayFlag = 1;
 		int yes;
 		int no;
@@ -189,10 +217,10 @@ public:
 			if (delayFlag) delayScreen = 100;
 			Console::delay(delayScreen);
 			system("cls");
-			enter(29, 20, 1);
+			enter(37, 20, 1);
 			Console::setCursorPos(0, 0);
 			printf("\n\n\n\n\n\n\n\n\n\n");
-			printf("\t\t");
+			printf("\t\t\t");
 			Console::setColor(Console::COLOR_GREEN);
 			//255
 			//222+33
@@ -215,7 +243,7 @@ public:
 			}
 			if (no>0) {
 				//Console::setColor(rand()%8+1);
-				printf("\n\n\t\t\t\t    LOADING...");
+				printf("\n\n\t\t\t\t\t    LOADING...");
 			}
 			yes++;
 			no--;
@@ -224,9 +252,9 @@ public:
 		Console::setColor(Console::COLOR_GREEN);
 		Console::setCursorPos(0, 10);
 		//if(!flag)Console::printf("\n\n\t\t\t\tLOAD SUCCESSFULL!");
-		Console::printf("\n\n\t\t\t\tLOAD SUCCESSFULL!");
+		Console::printf("\n\n\t\t\t\t\tLOAD SUCCESSFULL!");
 		//if (input == VK_RETURN) { return; }
-		enter(29, 20, 2);
+		enter(37, 20, 2);
 		pressEnterPlease();
 	}
 
@@ -245,9 +273,10 @@ public:
 
 		};
 		Console::setColor(3);
+		printf("\n\n");
 		for (int x = 0; x<9; x++) {
 			//Console::delay(100);
-			Console::printf("%s\n", sword[x]);
+			Console::printf("\t%s\n", sword[x]);
 		}
 	}
 
@@ -255,12 +284,12 @@ public:
 		system("cls");
 		delayFlag = 1;
 		char input = NULL;
-		char *introText[] = { "After having lost your Monastery to demons,",
-			"you follow the Dark Wanderer to Tristam Town.",
-			"This is where your journey starts. ",
-			"The demons are roaming the outskirt of this city ",
-			"and soon everything will be devoured...",
-			"Help liberate Tristam Town from hand of Diablo once and for all!" };
+		char *introText[] = {   "After having lost your Monastery to demons,",
+								"you follow the Dark Wanderer to Tristam Town.",
+								"This is where your journey starts. ",
+								"The demons are roaming the outskirt of this city",
+								"and soon everything will be devoured...",
+								"Help liberate Tristam Town from hand of Diablo once and for all!" };
 		enter(27, 20, 1);
 		Console::setCursorPos(0, 0);
 		printf("\n\n");
@@ -273,8 +302,9 @@ public:
 				if(delayFlag) delayScreen = 650;
 				Console::delay(delayScreen);
 			}
-			printf("\t");
-			if (y == 5) { Console::setColor(3); }
+			printf("\t\t");
+			if (y == 5) { Console::setColor(11); }
+			else printf("\t");
 			for (int x = 0; x<strlen(introText[y]); x++) {
 				input = Console::getKeyPressed();
 				if (input == VK_RETURN) {
@@ -291,7 +321,7 @@ public:
 			printf("\n");
 		}
 		if (input == VK_RETURN) { return; }
-		enter(27, 20, 2);
+		enter(32, 20, 2);
 		pressEnterPlease();
 	}
 
@@ -525,7 +555,6 @@ public:
 				job = -1;
 				break;
 			}
-			job = 0;
 			bool printFlag = true;
 			char buffer;
 			int delayInput = 0;
@@ -624,7 +653,7 @@ public:
 			} // end while dalem
 			if (exit)
 			{
-				job = -2;
+				job = -2; // -2, soalnya ntar di akhir bakal return job+1
 				break;
 			}
 
@@ -676,7 +705,7 @@ public:
 		return (job+1); // 1 <= job <= 3
 	}
 
-	static void playerStatus(Human*& karakter) // print player status
+	static void playerStatus(Human*& karakter, vector<Monster>& vMonster) // print player status
 	{
 		printf("\n");
 		printf(" ============= Player Status =============\n\n");
@@ -701,7 +730,9 @@ public:
 			cout << "Barbarian";
 			break;
 		}
+		printf("\n");
 		Console::setColor(Console::COLOR_WHITE);
+		printf(" Monsters killed : %d", karakter->getMonsterKilled());
 		printf("\n\n");
 		printf(" %-9s: %3d%7s %-13s: %3.0f\n", "Strength", karakter->getStrength(), " ", "Base Damage", karakter->getDamage());
 		printf(" %-9s: %3d%7s %-13s: %3.0f%%\n", "Endurance", karakter->getEndurance(), " ", "Chance to Hit", karakter->getChanceToHit());
@@ -709,8 +740,11 @@ public:
 		printf(" %-9s: %3d%7s %-13s: %3.0f\n", "Dexterity", karakter->getDexterity(), " ", "Speed", karakter->getSpeed());
 		printf(" %21s %-13s: %3.0f\n", " ", "Max Health", karakter->getMaxHealth());
 		printf(" %-5s: %7d G%6s%-13s: %3.0f\n", "Gold", karakter->getGold(), " ", "Max Stamina", karakter->getMaxStamina());
-		printf(" %-5s: %7d/%-6d %-13s: %3d\n\n", "Exp", karakter->getGold(), karakter->getExpRequirement(karakter->getLevel() + 1), "Armor", karakter->getArmor());
-
+		stringstream temp;
+		temp << karakter->getExperience() << '/' << karakter->getExpRequirement(karakter->getLevel() + 1);
+		string exp_string;
+		getline(temp, exp_string);
+		printf(" %-5s: %-14s %-13s: %3d\n\n", "Exp", exp_string.c_str(), "Armor", karakter->getArmor());
 		printf(" =========================================\n");
 	}
 
@@ -1195,10 +1229,10 @@ public:
 
 	}
 
-	static void inventMenu(vector<Item>& vShop, Human*& karakter)
+	static void inventMenu(vector<Item>& vShop, vector<Monster>& vMonster, Human*& karakter)
 	{
 		system("cls");
-		playerStatus(karakter);
+		playerStatus(karakter, vMonster);
 		printf("\n");
 		int inventSize = (karakter->getInventory()).size();
 		if (inventSize == 0)
@@ -1232,3 +1266,5 @@ public:
 
 int Interface::delayScreen = 0;
 int Interface::delayFlag = 0;
+
+#endif

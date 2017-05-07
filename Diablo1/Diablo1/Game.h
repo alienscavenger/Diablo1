@@ -23,6 +23,7 @@
 #include "Item.h"
 #include "common.h"
 #include "Interface.h"
+#include "Battle.h"
 
 #define MAX_ITEM 110
 #define MAX_MONSTER 60
@@ -316,10 +317,10 @@ public:
 			while (1)
 			{
 				// INI INVENTORY dan PLAYER STATUS
-				Interface::inventMenu(vShop, karakter);
+				Interface::inventMenu(vShop, vMonster, karakter);
 
 				Console::setCursorVisibility(true);
-				cout << "\nmau ke shop? (1=yes,sisanya=exit)";
+				cout << "\nmau ke shop? (1=yes,2=battle,sisanya=exit)";
 				int milih;
 				cin >> milih;
 				Interface::flush();
@@ -327,8 +328,13 @@ public:
 				if (milih == 1)
 					// INI SHOP
 					Interface::shopMenu(vShop, karakter);
-				else
-					break;
+				else if (milih ==2 )
+				{
+					/*printf("blom jadi mas..");
+					cin.get();*/
+					Battle::startBattle(*karakter, vMonster[0]);
+				}
+				else	break;
 			}
 			cout << "game saved!";
 			saveGame();
