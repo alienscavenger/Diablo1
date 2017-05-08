@@ -166,7 +166,7 @@ private:
 			else // monster (ztype == '@')
 			{
 				//@Nama Monster, Level, Gold, Damage, Chance to Hit, Evade, Speed, Max Health, Max Stamina, Armor, Experience, Offense, Defense, Killed
-				fscanf(default, "%[^,],%d,%d,%f,%f,%f,%f,%f,%f,%d,%f,%d,%d,&d\n",
+				fscanf(default, "%[^,],%d,%d,%f,%f,%f,%f,%f,%f,%d,%f,%d,%d,%d\n",
 					tempName, &level, &gold, &damage, &chanceToHit, &evade, &speed, &maxHealth, &maxStamina, &armor, &exp, &offense, &defense, &killed);
 				name = tempName;
 				vMonster.push_back(Monster(name, level, gold, damage, chanceToHit, evade, speed, maxHealth, maxStamina, armor, exp, offense, defense,killed));
