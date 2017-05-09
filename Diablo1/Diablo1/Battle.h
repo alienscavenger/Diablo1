@@ -430,7 +430,8 @@ private:
 				else delayFlag++;
 			}
 		}
-		return pickMenu;
+		if (pickMenu == 2) return pickMenu + karakter.getJob();
+		else return pickMenu;
 	}
 	static void attack(int who, Human& karakter, Monster& enemy)
 	{
@@ -441,7 +442,7 @@ private:
 		}
 		else // turn monster
 		{
-
+			HPchange(0, 30, karakter, enemy);
 		}
 	}
 	static void rest(int who,Human& karakter, Monster& enemy)
@@ -472,6 +473,7 @@ private:
 					Console::setCursorPos(40 + (x++), 4);
 					printf("%c", ASCII_BOX_EMPTY);
 				}
+				Console::delay(1000);
 				Console::resetColor();
 			}
 			else
@@ -496,12 +498,49 @@ private:
 					Console::setCursorPos(40 + (x++), 4);
 					printf("%c", ASCII_BOX_EMPTY);
 				}
-				cin.get();
+				Console::delay(1000);
 			}
 		}
 		else
 		{
+			if (hHP <= change)
+			{
+				// insta kill
+				hHP == 0;
+				Console::setColor(RED);
+				int x = 0;
+				while (x<22)
+				{
+					Console::setCursorPos(40 + (x++), 4);
+					printf("%c", ASCII_BOX_EMPTY);
+				}
+				Console::delay(1000);
+				Console::resetColor();
+			}
+			else
+			{
+				float box = karakter.getMaxHealth() / 22.0f;
+				hHP -= change;
 
+				if (hHP > karakter.getMaxHealth()*0.5) Console::setColor(GREEN);
+				else if (hHP < karakter.getMaxHealth()*0.20)Console::setColor(RED);
+				else Console::setColor(YELLOW);
+
+				float counter = 0;
+				int x = 0;
+				while (x<22 && counter <= hHP)
+				{
+					Console::setCursorPos(7 + (x++), 4);
+					printf("%c", ASCII_BOX_FULL);
+					counter += box;
+				}
+				while (x < 22)
+				{
+					Console::setCursorPos(7 + (x++), 4);
+					printf("%c", ASCII_BOX_EMPTY);
+				}
+				Console::delay(1000);
+			}
 		}
 	}
 	static void STAchange(int who, float change, Human& karakter, Monster& enemy)
@@ -629,8 +668,8 @@ public:
 			printf("TIPS: press TAB to change speed, WSAD");
 			Console::setCursorPos(23, 20);
 			printf("to choose, ESC to toggle Auto Attack");
-			Console::setCursorPos(23, 21);
 			Console::setColor(GREY);
+			Console::setCursorPos(23, 21);
 			printf("Press ENTER key to continue");
 			{
 				int inputDelay = 0;
