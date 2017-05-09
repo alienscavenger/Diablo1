@@ -8,7 +8,7 @@
 #include "common.h"
 #include <vector>
 #include <string>
-#define EGUIPMENT_SLOT 7
+#define EQUIPMENT_SLOT 7
 #define MAX_LEVEL 31
 using namespace std;
 
@@ -63,7 +63,7 @@ private:
 	}
 
 
-	//setter all primary and secondary berdasarkan item equipment (dipakai buat eguip dan uneguip item)
+	//setter all primary and secondary berdasarkan item equipment (dipakai buat equip dan unequip item)
 	void setAttributesItem(int str, int end, int agi, int dex, float dmg, float cth, float eva, float spd, float mhp, float mst, int amr)
 	{
 		//primary attributes
@@ -85,7 +85,7 @@ private:
 		Jadi gini cara kerja untuk inventory (beda New Game dan Load Game hanya pada actual parameternya saja):
 
 			1. Di Main class, akan ada fungsi yang baca file untuk semua item yang ada di game.
-			   (including yang di eguip dan tidak) (save cuman 1 file kalo bisa) (read terjadi saat load game)
+			   (including yang di equip dan tidak) (save cuman 1 file kalo bisa) (read terjadi saat load game)
 
 			2. Saat load game, semua informasi item yang dibaca akan dimasukkan ke dalam sebuah vector<Item> yang di-declare
 			   di dalam class Main, bernama vShop. Vector ini tidak akan dapat berubah", jadi tidak usah khawatir akan
@@ -98,34 +98,34 @@ private:
 			   belum.
 
 			4. Semua yang sudah kita beli akan berada di vector vInventory Human, berupa pointer to Item. Dan yang kita
-			   eguip berupa sebuah array of pointer to Item. Hanya perlu 7, karena hanya ada 7 tipe item (termasuk pendant,
+			   equip berupa sebuah array of pointer to Item. Hanya perlu 7, karena hanya ada 7 tipe item (termasuk pendant,
 			   yang sebenernya ditambahin biar ada tipe ke 0, alias index ke-0)
 
-			5. Intinya, vShop tidak akan/dapat diubah oleh class Human, dan vInventory serta eguipment hanyalah sebuah pointer
+			5. Intinya, vShop tidak akan/dapat diubah oleh class Human, dan vInventory serta equipment hanyalah sebuah pointer
 			   to const object, si vShop itu sendiri.
 
-			6. vShop berisi semua item yang ada dalam game, entah itu uneguipped item, eguipped item, secret item, dsb.
+			6. vShop berisi semua item yang ada dalam game, entah itu unequipped item, equipped item, secret item, dsb.
 
 			7. Kalau mau beli item, tinggal ganti status bought di vector vShop jadi true pake setBought, lalu di push_back
 			   ke vector vInventory.
 
-			8. Kalau mau menjual item, cek dulu apakah item di vector vInventory sedang di-eguip atau tidak. Kita hanya bisa
-			   menjual item yang sedang tidak di-eguip
+			8. Kalau mau menjual item, cek dulu apakah item di vector vInventory sedang di-equip atau tidak. Kita hanya bisa
+			   menjual item yang sedang tidak di-equip
 
 			9. Untuk menjual item, tinggal saja vInventory.erase(vInventory.begin() + index). Index ditentukan dari Main class aja.
 
-			10. Untuk uneguip item, tinggal set eguipStatus[index] ke false, dan set eguipment[index] ke NULL;
+			10. Untuk unequip item, tinggal set equipStatus[index] ke false, dan set equipment[index] ke NULL;
 
-			11. Untuk eguip item, validasi dilakukan di main Class dengan mengecek apakah eguipStatus[index] false. Kalau true, break;
-				kalau false, maka set ke true, set eguipment[index] menjadi pointer ke Item tersebut, dan setEguipped(true) pada item tersebut.
+			11. Untuk equip item, validasi dilakukan di main Class dengan mengecek apakah equipStatus[index] false. Kalau true, break;
+				kalau false, maka set ke true, set equipment[index] menjadi pointer ke Item tersebut, dan setEquipped(true) pada item tersebut.
 
-			12. Setiap eguip dan uneguip, jangan lupa di-update attribute Humannya dengan setAttributesItem
+			12. Setiap equip dan unequip, jangan lupa di-update attribute Humannya dengan setAttributesItem
 	*/
-	vector <Item*> vInventory; // yang ada di inventory (termasuk yang sudah di-eguip)
+	vector <Item*> vInventory; // yang ada di inventory (termasuk yang sudah di-equip)
 	size_t nInventory; // jumlah barang yang ada di inventory
 
-	bool eguipStatus[EGUIPMENT_SLOT]; // true kalau item type ke-index (sesuai type di Item.h) sudah di-eguip, false kalau belum
-	Item* eguipment[EGUIPMENT_SLOT]; // yang sekarang sedang dipakai (penggunaan index sama dengan eguipStatus)
+	bool equipStatus[EQUIPMENT_SLOT]; // true kalau item type ke-index (sesuai type di Item.h) sudah di-equip, false kalau belum
+	Item* equipment[EQUIPMENT_SLOT]; // yang sekarang sedang dipakai (penggunaan index sama dengan equipStatus)
 
 	void checkInventory(vector<Item>&fileRead)
 	{
@@ -140,38 +140,38 @@ private:
 		nInventory = vInventory.size();
 	}
 
-	void checkEguipped() // cek apakah yang ada di vInventory sudah di-eguip atau belom
+	void checkEquipped() // cek apakah yang ada di vInventory sudah di-equip atau belom
 	{
 		// initialize
-		for (int i = 0; i < EGUIPMENT_SLOT; i++)
+		for (int i = 0; i < EQUIPMENT_SLOT; i++)
 		{
-			eguipStatus[i] = false; // awalnya set eguipped ke false dulu (character tidak wear apa")
-			eguipment[i] = NULL; // awalnya tidak menunjuk ke apa"
+			equipStatus[i] = false; // awalnya set equipped ke false dulu (character tidak wear apa")
+			equipment[i] = NULL; // awalnya tidak menunjuk ke apa"
 		}
 		
 		try
 		{
 			for (vector<Item*>::iterator iter = vInventory.begin(); iter != vInventory.end(); iter++)
 			{
-				// kalau sudah di-eguip
-				if ((*iter)->getEguipped()) // *iter = value dari vInventory = pointer to Item. jadi perlu di-dereference 2x
+				// kalau sudah di-equip
+				if ((*iter)->getEquipped()) // *iter = value dari vInventory = pointer to Item. jadi perlu di-dereference 2x
 				{
-					if (eguipStatus[(*iter)->getType()] == true) throw (*iter)->getType();
-					eguipment[(*iter)->getType()] = *iter; // valuenya adalah pointer dari iter, yakni value dari vInventory, yakni pointer to objek Item
-					eguipStatus[(*iter)->getType()] = true; // artinya sekarang sudah ada yang di-eguip
+					if (equipStatus[(*iter)->getType()] == true) throw (*iter)->getType();
+					equipment[(*iter)->getType()] = *iter; // valuenya adalah pointer dari iter, yakni value dari vInventory, yakni pointer to objek Item
+					equipStatus[(*iter)->getType()] = true; // artinya sekarang sudah ada yang di-equip
 				}
 			}
 		}
 		catch (int x)
 		{
 			Console::setColor(3);
-			Console::printf("\n(!)ERROR: EGUIPMENT POSITION-%d RE-EGUIP\n",x);
+			Console::printf("\n(!)ERROR: EQUIPMENT POSITION-%d RE-EQUIP\n",x);
 		}
 	}
 
 public:
 	//constructor buat new Game
-	// walaupun cuman new Game, vInventory dan eguipment juga perlu di-initialize
+	// walaupun cuman new Game, vInventory dan equipment juga perlu di-initialize
 	Human(vector <Item>& fileRead,int pilihanJob,string name)
 	{
 		vInventory.reserve(110); // jadi ada maksimal 110 item di inventory
@@ -184,7 +184,7 @@ public:
 		setPrimary(pilihanJob); // set primary pertama kali saat membuat character
 		setSecondary(strength, endurance, agility, dexterity); // set seconday pertama kali saat membuat character
 
-		checkEguipped(); // fungsi yang digunakan dari method ini hanya buat initialize eguipStatus dan eguipment jadi false
+		checkEquipped(); // fungsi yang digunakan dari method ini hanya buat initialize equipStatus dan equipment jadi false
 						 // semua dan NULL semua, secara berurutan
 		nInventory = vInventory.size(); // harusnya sama dengan 0 (nol)
 	}
@@ -213,7 +213,7 @@ public:
 
 		vInventory.reserve(110);
 		checkInventory(fileRead); // filter yang sudah di-bought
-		checkEguipped(); // filter yang sedang di-eguip
+		checkEquipped(); // filter yang sedang di-equip
 		nInventory = vInventory.size(); // update jumlah barang di inventory
 	}
 
@@ -230,8 +230,8 @@ public:
 
 	vector <Item*>& getInventory() { return vInventory; }
 	size_t getNumInventory() const { return nInventory; }
-	bool getEguipStatus(int index) const { return eguipStatus[index]; }
-	Item* getEguipment(int index) const { return eguipment[index]; }
+	bool getEquipStatus(int index) const { return equipStatus[index]; }
+	Item* getEquipment(int index) const { return equipment[index]; }
 
 	//Ini fungsi untuk set primary saat level up
 	void levelUp(int strength, int endurance, int agility, int dexterity)
@@ -259,20 +259,20 @@ public:
 		vInventory.erase(iter); // iter adalah sebuah pointer ke vInventory, dan pointernya adalah pointer ke objek Item yang dituju
 		nInventory = vInventory.size(); // update nInventory
 	}
-	void uneguipItem(int index, Item* pointer)
+	void unequipItem(int index, Item* pointer)
 	{
-		pointer->setEguip(0); // set status eguipped di Item menjadi false
-		eguipStatus[index] = false; // set status eguipped di Human menjadi false
-		eguipment[index] = NULL; // eguipment[index] di-uneguip
+		pointer->setEquip(0); // set status equipped di Item menjadi false
+		equipStatus[index] = false; // set status equipped di Human menjadi false
+		equipment[index] = NULL; // equipment[index] di-unequip
 		setAttributesItem(-1 * (pointer->getAgility()), -1 * (pointer->getEndurance()), -1 * (pointer->getAgility()), -1 * (pointer->getDexterity()),
 						-1 * (pointer->getDamage()), -1 * (pointer->getChanceToHit()), -1 * (pointer->getEvade()), -1 * (pointer->getSpeed()),
 						-1 * (pointer->getMaxHealth()), -1 * (pointer->getMaxStamina()), -1 * (pointer->getArmor)());
 	}
-	void eguipItem(int index, Item* pointer)
+	void equipItem(int index, Item* pointer)
 	{
-		pointer->setEguip(1); // set true
-		eguipStatus[index] = true;
-		eguipment[index] = pointer;
+		pointer->setEquip(1); // set true
+		equipStatus[index] = true;
+		equipment[index] = pointer;
 		setAttributesItem(pointer->getAgility(), pointer->getEndurance(), pointer->getAgility(), pointer->getDexterity(),
 							pointer->getDamage(), pointer->getChanceToHit(), pointer->getEvade(), pointer->getSpeed(),
 							pointer->getMaxHealth(), pointer->getMaxStamina(), pointer->getArmor());

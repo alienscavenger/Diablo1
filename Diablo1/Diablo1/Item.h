@@ -25,7 +25,7 @@ private:
 	int armor;
 	int type;
 	int restriction;
-	int eguipped; // 1 = true, 0 = false
+	int equipped; // 1 = true, 0 = false
 	int bought; // 1 = true, 0 = false
 	/* 
 	   type 0 = GAADA
@@ -52,7 +52,7 @@ private:
 	}
 public:
 	//constructor (gaada default constructor)
-	Item(string name, int price,string effect,int type,int restriction, int eguipped, int bought):
+	Item(string name, int price,string effect,int type,int restriction, int equipped, int bought):
 		strength(0),endurance(0),agility(0),dexterity(0),damage(0),chanceToHit(0),evade(0),speed(0),maxHealth(0),maxStamina(0),armor(0)
 	{
 		this->name = name; // KALAU PAKE VS15 / VS17, JANGAN LUPA PAKE _CRT_SECURE_NO_WARNINGS (CARI DI INTERNET)
@@ -73,7 +73,7 @@ public:
 
 		this->type = type;
 		this->restriction = restriction;
-		this->eguipped = eguipped;
+		this->equipped = equipped;
 		this->bought = bought;
 	}
 
@@ -94,7 +94,7 @@ public:
 	int getArmor() const { return armor; }
 	int getType() const { return type; }
 	int getRestriction() const { return restriction; }
-	int getEguipped() const { return eguipped; }
+	int getEquipped() const { return equipped; }
 	int getBought() const { return bought; }
 
 	//setter buat bought
@@ -102,10 +102,10 @@ public:
 	{
 		bought = ok;
 	}
-	//setter buat eguipped
-	void setEguip(int ok)
+	//setter buat equipped
+	void setEquip(int ok)
 	{
-		eguipped = ok;
+		equipped = ok;
 	}
 
 	//setter kalo mau ada kyk "upgrade weapon" dsb, tapi itu nanti aja

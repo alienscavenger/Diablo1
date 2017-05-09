@@ -66,7 +66,7 @@ private:
 	int price;
 	int type;
 	int restriction;
-	int eguipped;
+	int equipped;
 	int bought;
 
 	// -------------------------------- MAIN VARIABLE ----------------------------------------------------
@@ -125,12 +125,12 @@ private:
 			ztype = fgetc(save);
 			if (ztype == '#') // item
 			{
-				//#Nama Item, Price, *effect*, Type, Restriction, Eguipped, Bought
+				//#Nama Item, Price, *effect*, Type, Restriction, Equipped, Bought
 				fscanf(save, "%[^,],%d,%[^,],%d,%d,%d,%d\n",
-					tempName, &price, tempEffect, &type, &restriction, &eguipped, &bought);
+					tempName, &price, tempEffect, &type, &restriction, &equipped, &bought);
 				name = tempName;
 				effect = tempEffect;
-				vShop.push_back(Item(name, price, effect, type, restriction, eguipped, bought));
+				vShop.push_back(Item(name, price, effect, type, restriction, equipped, bought));
 			}
 			else // monster
 			{
@@ -156,12 +156,12 @@ private:
 			ztype = fgetc(default);
 			if (ztype == '#') // item
 			{
-				//#Nama Item, Price, *effect*, Type, Restriction, Eguipped, Bought
+				//#Nama Item, Price, *effect*, Type, Restriction, Equipped, Bought
 				fscanf(default, "%[^,],%d,%[^,],%d,%d,%d,%d\n",
-					tempName, &price, tempEffect, &type, &restriction, &eguipped, &bought);
+					tempName, &price, tempEffect, &type, &restriction, &equipped, &bought);
 				name = tempName;
 				effect = tempEffect;
-				vShop.push_back(Item(name, price, effect, type, restriction, eguipped, bought));
+				vShop.push_back(Item(name, price, effect, type, restriction, equipped, bought));
 			}
 			else // monster (ztype == '@')
 			{
@@ -199,7 +199,7 @@ private:
 		for (vector<Item>::iterator iterItem = vShop.begin(); iterItem != vShop.end(); iterItem++)
 		{
 			fprintf(save, "#%s,%d,%s,%d,%d,%d,%d\n", iterItem->getName().c_str(), iterItem->getPrice(), iterItem->getEffect().c_str(), iterItem->getType(),
-				iterItem->getRestriction(), iterItem->getEguipped(), iterItem->getBought());
+				iterItem->getRestriction(), iterItem->getEquipped(), iterItem->getBought());
 		}
 
 		// print data Monster
@@ -349,9 +349,9 @@ TEMPLATE SAVE
 Nama Karakter
 Level,Job,Gold,Experience,Strength,Endurance,Agility,Dexterity
 Damage,Chance to Hit,Evade,Speed,Max Health,Max Stamina,Armor
-#Nama Item1,Price,*effect*,Type,Restriction,Eguipped,Bought
-#Nama Item2,Price,*effect*,Type,Restriction,Eguipped,Bought
-#Nama Item3,Price,*effect*,Type,Restriction,Eguipped,Bought
+#Nama Item1,Price,*effect*,Type,Restriction,Equipped,Bought
+#Nama Item2,Price,*effect*,Type,Restriction,Equipped,Bought
+#Nama Item3,Price,*effect*,Type,Restriction,Equipped,Bought
 @Nama Monster1,Level,Gold,Damage,Chance to Hit,Evade,Speed,Max Health,Max Stamina,Armor,Experience,Offense,Defense,Killed
 @Nama Monster2,Level,Gold,Damage,Chance to Hit,Evade,Speed,Max Health,Max Stamina,Armor,Experience,Offense,Defense,Killed
 @Nama Monster3,Level,Gold,Damage,Chance to Hit,Evade,Speed,Max Health,Max Stamina,Armor,Experience,Offense,Defense,Killed
@@ -361,7 +361,7 @@ void Game::createDefaultSave()
 {
 	vector<char*> itemSave =
 	{
-		//#Nama Item1,Price,*effect*,Type,Restriction,Eguipped,Bought
+		//#Nama Item1,Price,*effect*,Type,Restriction,Equipped,Bought
 
 		//armors (chestpiece)
 		"#Quilted Armor,400,AMR+1 EVA+10,3,0,0,0\n",
