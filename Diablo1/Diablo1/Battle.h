@@ -3,8 +3,8 @@
 #ifndef BATTLE_H
 #define BATTLE_H
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <conio.h>
 #include <string>
 #include <vector>
@@ -58,6 +58,11 @@ private:
 	static float mStamina;
 	static float hHP;
 	static float mHP;
+
+	//special ability
+	static int coupDeGrace;
+	static int riposte;
+	static int momentum;
 
 	// helper function
 	static void printBox1(int x, int y)
@@ -171,6 +176,7 @@ private:
 	static int printSpeed(int& xYou, float speedYou, int& xEnemy, float speedEnemy)
 	{
 		Console::setColor(BLUE);
+		if (momentum) speedYou *= 3; // BARBARIAN
 		int sec = 0;
 		int speed = animationSpeed[index];
 		float mySpeed = speed / speedYou;
@@ -324,7 +330,7 @@ private:
 			//      !                                     !
 			printf("Attack enemy with 1.5x multiplier,");
 			Console::setCursorPos(23, 20);
-			printf("then STUN the enemy.");
+			printf("then STUN the enemy if hit didn't miss.");
 			Console::setCursorPos(23, 21);
 			printf("Uses 25 stamina");
 		}
@@ -340,6 +346,8 @@ private:
 	}
 	static int pickAction(Human& karakter, int& pickMenu)
 	{
+		if (pickMenu > 2) pickMenu = 2;
+
 		string ability;
 		switch (karakter.getJob())
 		{
@@ -430,30 +438,220 @@ private:
 				else delayFlag++;
 			}
 		}
+		// unpick menu
+		{
+			Console::setCursorPos(3, 19);
+			Console::resetColor();
+			printf(" Attack ");
+
+			Console::setCursorPos(3, 20);
+			printf(" Rest ");
+
+			Console::setCursorPos(3, 21);
+			printf(" %s ", ability.c_str());;
+		}
+		// return value
 		if (pickMenu == 2) return pickMenu + karakter.getJob();
 		else return pickMenu;
 	}
-	static void attack(int who, Human& karakter, Monster& enemy)
+	static void attack(int who, Human& karakter, Monster& enemy, deque<string>& log)
 	{
+		srand(time(NULL));
+		string text;
 		if (who == 0) // turn karakter
 		{
-			//float damage = karakter.getDamage() - enemy.getArmor();
-			HPchange(0, 30, karakter, enemy);
+			float change = (10.0f + karakter.getArmor()); // kurangin stamina;
+			hStamina -= change;
+			STAchange(0, karakter, enemy);
+
+			text += karakter.getName();
+			text += " attacks ";
+			text += enemy.getName();
+			text+=" with ";
+			
+			bool crit = false;
+			bool hit = false;
+			float chance = karakter.getChanceToHit() - enemy.getEvade();
+			if (coupDeGrace) chance += 25; // ASSASSIN
+			if (chance <= 100.0f)
+			{
+				text += to_string((int)(100 - chance));
+				text += "% MISS chance";
+				if (chance < 10.0f) chance = 10.0f; // kalau chance kurang dari 10%, jadiin 10%
+
+				int calculate = rand() % 100 + 1;
+				if (calculate < chance) hit = true;
+				else hit = false;
+			}
+			else
+			{
+				hit = true;
+				text += to_string((int)(chance - 100));
+				text += "% CRIT chance";
+
+				int calculate = fmod(rand(),chance) + 1;
+				if (calculate < 100.0f) crit = false;
+				else crit = true;
+			}
+			log.push_back(text);
+			printLog(log);
+
+			text.clear();
+			if (hit)
+			{
+				if (crit)
+				{
+					float damage = karakter.getDamage()*(1.0f + karakter.getStrength()*0.05f);
+					if (riposte) damage *= 1.5; // PALADIN
+
+
+					text += karakter.getName();
+					text += " CRITICAL HIT with ";
+					text += to_string((int)damage);
+					text += " damage!";
+					log.push_back(text);
+					printLog(log);
+
+					HPchange(0, damage, karakter, enemy);
+				}
+				else
+				{
+					float MinDamage = max(0, karakter.getDamage() - enemy.getArmor());
+					float MaxDamage = max(0, (karakter.getDamage()*(1.0f + (float)karakter.getStrength()*0.05f)) - enemy.getArmor());
+					int diff = ceil(MaxDamage - MinDamage);
+					float damage = MinDamage + (rand() % diff);
+					if (riposte) damage *= 1.5; // PALADIN
+
+					text += karakter.getName();
+					text += " HIT with ";
+					text += to_string((int)damage);
+					text += " damage!";
+					log.push_back(text);
+					printLog(log);
+
+					HPchange(0, damage, karakter, enemy);
+				}
+				if (riposte) // PALADIN
+				{
+					text.clear();
+					text = enemy.getName();
+					text += " stunned!";
+					log.push_back(text);
+					printLog(log);
+				}
+			}
+			else
+			{
+				if (riposte)riposte--; // PALADIN
+				text += karakter.getName();
+				text += " MISSED the hit!";
+				log.push_back(text);
+				printLog(log);
+			}
 		}
 		else // turn monster
 		{
-			HPchange(0, 30, karakter, enemy);
+			float change = (10.0f + enemy.getArmor()); // kurangin stamina;
+			mStamina -= change;
+			STAchange(1, karakter, enemy);
+
+			text += enemy.getName();
+			text += " attacks ";
+			text += karakter.getName();
+			text += " with ";
+
+			bool crit = false;
+			bool hit = false;
+			float chance = enemy.getChanceToHit() - karakter.getEvade();
+			if (chance <= 100)
+			{
+				text += to_string((int)(100 - chance));
+				text += "% MISS chance";
+				if (chance < 10.0f) chance = 10.0f;
+
+				int calculate = rand() % 100 + 1;
+				if (calculate < chance) hit = true;
+				else hit = false;
+			}
+			else
+			{
+				hit = true;
+				text += to_string((int)(chance - 100));
+				text += "% CRIT chance";
+
+				int calculate = fmod(rand(), chance) + 1;
+				if (calculate < 100.0f) crit = false;
+				else crit = true;
+			}
+			log.push_back(text);
+			printLog(log);
+
+			text.clear();
+			if (hit)
+			{
+				if (crit)
+				{
+					float damage = enemy.getDamage()*(1.0f + enemy.getLevel()*0.05f);
+
+					text += enemy.getName();
+					text += " CRITICAL HIT with ";
+					text += to_string((int)damage);
+					text += " damage!";
+					log.push_back(text);
+					printLog(log);
+
+					HPchange(0, damage, karakter, enemy);
+				}
+				else
+				{
+					float MinDamage = max(0, enemy.getDamage() - karakter.getArmor());
+					float MaxDamage = max(0, (enemy.getDamage()*(1.0f + (float)enemy.getLevel()*0.05f)) - karakter.getArmor());
+					int diff = ceil(MaxDamage - MinDamage);
+					float damage = MinDamage + (rand() % diff);
+
+					text += enemy.getName();
+					text += " HIT with ";
+					text += to_string((int)damage);
+					text += " damage!";
+					log.push_back(text);
+					printLog(log);
+
+					HPchange(1, damage, karakter, enemy);
+				}
+			}
+			else
+			{
+				text += enemy.getName();
+				text += " MISSED the hit!";
+				log.push_back(text);
+				printLog(log);
+			}
 		}
 	}
-	static void rest(int who,Human& karakter, Monster& enemy)
+	static void rest(int who,Human& karakter, Monster& enemy, deque<string>& log)
 	{
+		string text;
 		if (who == 0)
 		{
-			STAchange(who, 50 + karakter.getLevel(),karakter,enemy);
+			text += karakter.getName();
+			text += " rested and gain ";
+			text += to_string(50 + karakter.getLevel());
+			text += " stamina";
+			hStamina += (50 + karakter.getLevel());
+			STAchange(who,karakter,enemy);
+			log.push_back(text);
+			printLog(log);
 		}
 		else
 		{
-			STAchange(who, 50 + enemy.getLevel(),karakter,enemy);
+			text += enemy.getName();
+			text += " rested and gain ";
+			text += to_string(50 + enemy.getLevel());
+			text += " stamina";
+			mStamina += (50 + enemy.getLevel());
+			STAchange(who,karakter,enemy);
+			log.push_back(text);
+			printLog(log);
 		}
 	}
 	// HP dan STA change animation
@@ -462,28 +660,46 @@ private:
 	{
 		if (who == 0) // HP MONSTER yang berkurang
 		{
+			Console::setCursorPos(47, 9);
+			Console::setColor(RED);
+			if(!riposte)printf("BAMMMMM!");
+			else printf("STUNNED!");
 			if (mHP <= change)
 			{
 				// insta kill
-				mHP == 0;
-				Console::setColor(RED);
+				float box = enemy.getMaxHealth() / 22.0f;
+				float counter = 0;
 				int x = 0;
+				while (x<22 && counter <= mHP)
+				{
+					Console::setColor(WHITE);
+					Console::setCursorPos(40 + (x++), 4);
+					printf("%c", ASCII_BOX_FULL);
+					counter += box;
+				}
+				BattleDelay(1000);
+
+				mHP == 0;
+				Console::setColor(Console::COLOR_GRAY);
+				x = 0;
 				while (x<22)
 				{
 					Console::setCursorPos(40 + (x++), 4);
 					printf("%c", ASCII_BOX_EMPTY);
 				}
-				Console::delay(1000);
 				Console::resetColor();
 			}
 			else
 			{
 				float box = enemy.getMaxHealth() / 22.0f;
+				float HPbefore = mHP;
 				mHP -= change;
 
-				if (mHP > enemy.getMaxHealth()*0.5) Console::setColor(GREEN);
-				else if (mHP < enemy.getMaxHealth()*0.20)Console::setColor(RED);
-				else Console::setColor(YELLOW);
+				int color = WHITE;
+				if (mHP > enemy.getMaxHealth()*0.5) color = GREEN;
+				else if (mHP < enemy.getMaxHealth()*0.20) color = RED;
+				else color = YELLOW;
+				Console::setColor(color);
 
 				float counter = 0;
 				int x = 0;
@@ -493,38 +709,71 @@ private:
 					printf("%c", ASCII_BOX_FULL);
 					counter += box;
 				}
+				int xBefore = x; // simpen angka x sebelumnya
+				while (x<22 && counter <= HPbefore)
+				{
+					Console::setColor(WHITE);
+					Console::setCursorPos(40 + (x++), 4);
+					printf("%c", ASCII_BOX_FULL);
+					counter += box;
+				}
+				BattleDelay(1000);
+				x = xBefore;
 				while (x < 22)
 				{
+					Console::setColor(color);
 					Console::setCursorPos(40 + (x++), 4);
 					printf("%c", ASCII_BOX_EMPTY);
 				}
-				Console::delay(1000);
 			}
+
+
+			Console::setCursorPos(47, 9);
+			Console::resetColor();
+			printf("        ");
 		}
 		else
 		{
+			Console::setCursorPos(10, 9);
+			Console::setColor(RED);
+			printf("BAMMMMM!");
+
 			if (hHP <= change)
 			{
+				float box = karakter.getMaxHealth() / 22.0f;
+				float counter = 0;
+				int x = 0;
+				while (x<22 && counter <= hHP)
+				{
+					Console::setColor(WHITE);
+					Console::setCursorPos(7 + (x++), 4);
+					printf("%c", ASCII_BOX_FULL);
+					counter += box;
+				}
+				BattleDelay(1000);
+
 				// insta kill
 				hHP == 0;
-				Console::setColor(RED);
-				int x = 0;
+				Console::setColor(Console::COLOR_GRAY);
+				x = 0;
 				while (x<22)
 				{
-					Console::setCursorPos(40 + (x++), 4);
+					Console::setCursorPos(7 + (x++), 4);
 					printf("%c", ASCII_BOX_EMPTY);
 				}
-				Console::delay(1000);
 				Console::resetColor();
 			}
 			else
 			{
 				float box = karakter.getMaxHealth() / 22.0f;
+				float HPbefore = hHP;
 				hHP -= change;
 
-				if (hHP > karakter.getMaxHealth()*0.5) Console::setColor(GREEN);
-				else if (hHP < karakter.getMaxHealth()*0.20)Console::setColor(RED);
-				else Console::setColor(YELLOW);
+				int color;
+				if (hHP > karakter.getMaxHealth()*0.5) color = GREEN;
+				else if (hHP < karakter.getMaxHealth()*0.20) color = RED;
+				else color = YELLOW;
+				Console::setColor(color);
 
 				float counter = 0;
 				int x = 0;
@@ -534,25 +783,169 @@ private:
 					printf("%c", ASCII_BOX_FULL);
 					counter += box;
 				}
+				int xBefore = x;
+				while (x<22 && counter <= HPbefore)
+				{
+					Console::setColor(WHITE);
+					Console::setCursorPos(7 + (x++), 4);
+					printf("%c", ASCII_BOX_FULL);
+					counter += box;
+				}
+				BattleDelay(1000);
+				x = xBefore;
 				while (x < 22)
 				{
+					Console::setColor(color);
 					Console::setCursorPos(7 + (x++), 4);
 					printf("%c", ASCII_BOX_EMPTY);
 				}
-				Console::delay(1000);
 			}
+
+
+			Console::setCursorPos(10, 9);
+			Console::resetColor();
+			printf("        ");
 		}
 	}
-	static void STAchange(int who, float change, Human& karakter, Monster& enemy)
+	static void STAchange(int who, Human& karakter, Monster& enemy)
 	{
 		if (who == 0) // STA karakter yang bertambah
 		{
+			float box = karakter.getMaxStamina() / 22.0f;
+			if (hStamina > karakter.getMaxStamina()) hStamina = karakter.getMaxStamina();
+
+			Console::setColor(YELLOW);
+
+			float counter = 0;
+			int x = 0;
+			while (x<22 && counter <= hStamina)
+			{
+				Console::setCursorPos(7 + (x++), 5);
+				printf("%c", ASCII_BOX_FULL);
+				counter += box;
+			}
+			while (x < 22)
+			{
+				Console::setCursorPos(7 + (x++), 5);
+				printf("%c", ASCII_BOX_EMPTY);
+			}
 		}
 		else
 		{
+			float box = enemy.getMaxStamina() / 22.0f;
+			if (mStamina > enemy.getMaxStamina()) mStamina = enemy.getMaxStamina();
+
+			Console::setColor(YELLOW);
+
+			float counter = 0;
+			int x = 0;
+			while (x<22 && counter <= mStamina)
+			{
+				Console::setCursorPos(40 + (x++), 5);
+				printf("%c", ASCII_BOX_FULL);
+				counter += box;
+			}
+			while (x < 22)
+			{
+				Console::setCursorPos(40 + (x++), 5);
+				printf("%c", ASCII_BOX_EMPTY);
+			}
+		}
+
+		
+	}
+
+	static void printLog(deque<string>& log)
+	{
+		Console::resetColor();
+		// bersihin dulu
+		{
+			for (int i = 0; i < 5; i++)
+			{
+				for (int x = 0; x < 60; x++)
+				{
+					Console::setCursorPos(2 + x, 11 + i);
+					printf(" ");
+				}
+			}
+		}
+
+		if (log.size() > 5)
+		{
+			deque<string>::reverse_iterator iter = log.rbegin();
+			for (int i = 4; i >= 0; i--, iter++)
+			{
+				Console::setCursorPos(2, 11+i);
+				printf(" %s", iter->c_str());
+			}
+		}
+		else
+		{
+			int size = log.size();
+			deque<string>::iterator iter = log.begin();
+			for (int i = 0; i < size; i++,iter++)
+			{
+				Console::setCursorPos(2, 11+i);
+				printf(" %s", iter->c_str());
+			}
+		}
+
+		BattleDelay(1000);
+	}
+	
+	static void win(int who, Human& karakter, Monster& enemy, deque<string>& log)
+	{
+		if (who == 0)
+		{
+			// YOU WIN
+		}
+		else
+		{
+			// YOU LOST
 		}
 	}
 
+	//////////////////////////////////////////////////////////////////// delay
+	static void BattleDelay(int delay)
+	{
+		int delayFlag = 0;
+		char buff;
+		int x = 0;
+		float multiplier[3] = { 1,0.8,0.5 };
+		float tempDelay = delay*multiplier[index];
+		while (x<=tempDelay)
+		{
+			Console::delay(1);
+			x++;
+			buff = Console::getKeyPressed();
+			if (buff != -1)
+			{
+				if (delayFlag)
+				{
+					if (buff == VK_TAB)
+					{
+						index = (index + 1) % 3;
+						tempDelay = delay*multiplier[index];
+						printAnimationSpeed();
+					}
+					else if (buff == VK_ESCAPE)
+					{
+						autoAttack = toggleAutoAttack();
+					}
+					else if (buff == VK_RETURN)
+					{
+						//break;
+					}
+
+					delayFlag = 0;
+				}
+				else delayFlag++;
+			}
+		}
+		
+		return;
+	}
+	//////////////////////////////////////////////////////////////////////////
 public:
 	static void startBattle(Human& karakter, Monster& enemy)
 	{
@@ -710,25 +1103,40 @@ public:
 			printf("GOOD LUCK HAVE FUN           ");
 			Console::resetColor();
 		}
-		queue <string> log; // ===========================================  PERLU DIPIKIRIN CARA KERJANYA
+		deque <string> log; // ===========================================  PERLU DIPIKIRIN CARA KERJANYA
 		log.empty();
-		string text = "Begin Battle!";
-		log.push(text);
+		log.push_back("Begin Battle!");
+		printLog(log);
 
 		int turn = 0;
 		int xYou = 2;
 		int xEnemy = 35;
 		int pickMenu = 0;
+		coupDeGrace = 0;
+		riposte = 0;
+		momentum = 0;
+
+		////////////////////////////////////////////////////// MAIN LOOP //////////////////////////////////////////////////////////
 		while (1)
 		{
+			if (hHP <= 0) win(0,karakter,enemy,log);
+			else if (mHP <= 0) win(1,karakter,enemy,log);
 			// count speed
 			turn = printSpeed(xYou, karakter.getSpeed(), xEnemy, enemy.getSpeed());
 			colorSpeed(turn);
 			if (turn == 1) // turn karakter
 			{
+				if (coupDeGrace) coupDeGrace--; // ASSASSIN
+				if (riposte)riposte--; // PALADIN
+				if (momentum) momentum--; // BARBARIAN
+
+				log.push_back(karakter.getName() + " turn");
+				printLog(log);
 				if (autoAttack)
 				{
 					// =========================================== LOGIKANYA SAMA KYK MONSTER
+					if (hStamina < (10 + karakter.getArmor()) ) rest(0, karakter, enemy, log);
+					else attack(0, karakter, enemy, log);
 				}
 				else
 				{
@@ -740,24 +1148,146 @@ public:
 							if (hStamina < (10 + karakter.getArmor()))
 							{
 								// not enough stamina to attack
-								// =========================================== TAMBAHIN PROMPT UNTUK REST
+								// clear box4
+								{
+									Console::resetColor();
+									for (int i = 0; i < 3; i++)
+									{
+										for (int x = 0; x < 40; x++)
+										{
+											Console::setCursorPos(22 + x, 19 + i);
+											printf(" ");
+										}
+									}
+								}
+								Console::setCursorPos(22, 19);
+								printf(" You don't have enough STAMINA!");
+								Console::setCursorPos(22, 20);
+								printf("Please go REST!");
+								BattleDelay(1000);
 								continue;
 							}
 							else
 							{
-								attack(0, karakter, enemy);
-								// NTAR KURANGIN STAMINA
+								attack(0, karakter, enemy,log);
 								break;
 							}
 						}
 						else if (pickMenu == 1) // rest
 						{
-							rest(0, karakter, enemy);
+							rest(0, karakter, enemy,log);
 							// ===========================================  TAMBAHIN STAMINA
 							break;
 						}
 						else // special ability
 						{
+							string text;
+							switch (karakter.getJob())
+							{
+							case 1:
+								// assassin;
+								if (hStamina < 30)
+								{
+									// not enough stamina to use skill
+									// clear box4
+									{
+										Console::resetColor();
+										for (int i = 0; i < 3; i++)
+										{
+											for (int x = 0; x < 40; x++)
+											{
+												Console::setCursorPos(22 + x, 19 + i);
+												printf(" ");
+											}
+										}
+									}
+									Console::setCursorPos(22, 19);
+									printf(" You don't have enough STAMINA!");
+									BattleDelay(1000);
+									continue;
+								}
+								hStamina -= 30;
+								STAchange(0, karakter, enemy);
+								
+								text = karakter.getName();
+								text += " USES COUP DE GRACE!";
+								log.push_back(text);
+								printLog(log);
+								text.clear();
+								text = karakter.getName();
+								text += "'s current turn skipped";
+								log.push_back(text);
+								printLog(log);
+								coupDeGrace = 3;
+								break;
+							case 2:
+								if (hStamina < 30)
+								{
+									// not enough stamina to use skill
+									// clear box4
+									{
+										Console::resetColor();
+										for (int i = 0; i < 3; i++)
+										{
+											for (int x = 0; x < 40; x++)
+											{
+												Console::setCursorPos(22 + x, 19 + i);
+												printf(" ");
+											}
+										}
+									}
+									Console::setCursorPos(22, 19);
+									printf(" You don't have enough STAMINA!");
+									BattleDelay(1000);
+									continue;
+								}
+								hStamina -= 30;
+								STAchange(0, karakter, enemy);
+
+								text = karakter.getName();
+								text += " USES RIPOSTE!";
+								log.push_back(text);
+								printLog(log);
+								text.clear();
+								riposte = 1;
+								attack(0, karakter, enemy, log);
+								break;
+							case 3:
+								if (hStamina < 30)
+								{
+									// not enough stamina to use skill
+									// clear box4
+									{
+										Console::resetColor();
+										for (int i = 0; i < 3; i++)
+										{
+											for (int x = 0; x < 40; x++)
+											{
+												Console::setCursorPos(22 + x, 19 + i);
+												printf(" ");
+											}
+										}
+									}
+									Console::setCursorPos(22, 19);
+									printf(" You don't have enough STAMINA!");
+									BattleDelay(1000);
+									continue;
+								}
+								hStamina -= 30;
+								STAchange(0, karakter, enemy);
+
+								text = karakter.getName();
+								text += " USES MOMENTUM!";
+								log.push_back(text);
+								printLog(log);
+								text.clear();
+								text = karakter.getName();
+								text += "'s current turn skipped";
+								log.push_back(text);
+								printLog(log);
+								momentum = 3;
+								break;
+							}
 							break;
 						}
 					}
@@ -765,11 +1295,21 @@ public:
 
 				xYou = 2;
 			}
-			else
+			else if (!riposte)// giliran monster
 			{
+				log.push_back(enemy.getName() + " turn");
+				printLog(log);
 				// =========================================== KALAU STAMINA MONSTER CUKUP UNTUK ATTACK, MAKA ATACK
 				// =========================================== KALAU TIDAK, REST
-
+				if (mStamina < enemy.getArmor() + 10)
+				{
+					// rest
+					rest(1, karakter, enemy, log);
+				}
+				else
+				{
+					attack(1, karakter, enemy,log);
+				}
 				xEnemy = 35;
 			}
 			clearSpeed(turn);
@@ -785,5 +1325,8 @@ float Battle::hStamina = 0;
 float Battle::hHP = 0;
 float Battle::mStamina = 0;
 float Battle::mHP = 0;
+int Battle::coupDeGrace = 0;
+int Battle::riposte = 0;
+int Battle::momentum = 0;
 
 #endif
