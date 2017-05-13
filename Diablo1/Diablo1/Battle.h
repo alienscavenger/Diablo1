@@ -535,6 +535,7 @@ private:
 					text += " CRITICAL HIT with ";
 					text += to_string((int)damage);
 					text += " damage!";
+					text += " (" + to_string((int)mHP) + "->" + to_string((int)max(0,mHP - (int)damage)) + ')';
 					log.push_back(text);
 					printLog(log);
 
@@ -552,10 +553,11 @@ private:
 					text += " HIT with ";
 					text += to_string((int)damage);
 					text += " damage!";
+					text += " (" + to_string((int)mHP) + "->" + to_string((int)max(0,mHP - (int)damage)) + ')';
 					log.push_back(text);
 					printLog(log);
 
-					HPchange(0, 1000, karakter, enemy); // UBAH INI
+					HPchange(0, 10000, karakter, enemy); // UBAH INI KALAU MAU NGECHEAT
 				}
 				if (riposte) // PALADIN
 				{
@@ -623,10 +625,11 @@ private:
 					text += " CRITICAL HIT with ";
 					text += to_string((int)damage);
 					text += " damage!";
+					text += " (" + to_string((int)hHP) + "->" + to_string((int)max(0,hHP - (int)damage)) + ')';
 					log.push_back(text);
 					printLog(log);
 
-					HPchange(0, damage, karakter, enemy);
+					HPchange(1, damage, karakter, enemy);
 				}
 				else
 				{
@@ -639,10 +642,11 @@ private:
 					text += " HIT with ";
 					text += to_string((int)damage);
 					text += " damage!";
+					text += " (" + to_string((int)hHP) + "->" + to_string((int)max(0,hHP - (int)damage)) + ')';
 					log.push_back(text);
 					printLog(log);
 
-					HPchange(1, damage, karakter, enemy);
+					HPchange(1, damage, karakter, enemy); // UBAH INI KALAU MAU NGECHEAT
 				}
 			}
 			else
@@ -663,6 +667,7 @@ private:
 			text += " rested and gain ";
 			text += to_string(50 + karakter.getLevel());
 			text += " stamina.";
+			text += " (" + to_string((int)hStamina) + "->" + to_string((int)min(karakter.getMaxHealth(),(hStamina + (50 + karakter.getLevel())))) + ')';
 			hStamina += (50 + karakter.getLevel());
 			STAchange(who,karakter,enemy);
 			log.push_back(text);
@@ -674,6 +679,7 @@ private:
 			text += " rested and gain ";
 			text += to_string(50 + enemy.getLevel());
 			text += " stamina.";
+			text += " (" + to_string((int)mStamina) + "->" + to_string((int)min(enemy.getMaxStamina(),(mStamina + (50 + enemy.getLevel())))) + ')';
 			mStamina += (50 + enemy.getLevel());
 			STAchange(who,karakter,enemy);
 			log.push_back(text);
@@ -1207,7 +1213,51 @@ private:
 		for (int i = 1; i < gain; i++)	karakter.levelUp(0, 0, 0, 0); // khusus buat naikin level doang
 		system("cls");
 	}
-
+	static void gameOver()
+	{
+		char* text[] =
+		{ " _______  _______  _______  _______    _______           _______  _______ ",
+			"(  ____ \\(  ___  )(       )(  ____ \\  (  ___  )|\\     /|(  ____ \\(  ____ )",
+			"| (    \\/| (   ) || () () || (    \\/  | (   ) || )   ( || (    \\/| (    )|",
+			"| |      | (___) || || || || (__      | |   | || |   | || (__    | (____)|",
+			"| | ____ |  ___  || |(_)| ||  __)     | |   | |( (   ) )|  __)   |     __)",
+			"| | \\_  )| (   ) || |   | || (        | |   | | \\ \\_/ / | (      | (\\ (   ",
+			"| (___) || )   ( || )   ( || (____/\\  | (___) |  \\   /  | (____/\\| ) \\ \\__",
+			"(_______)|/     \\||/     \\|(_______/  (_______)   \\_/   (_______/|/   \\__/"
+		};
+		
+		system("cls");
+		printf("\n\n");
+		Console::setColor(RED);
+		for (int i = 0; i < 8; i++)
+		{
+			printf("          ");
+			printf("%s\n", text[i]);
+			Console::delay(300);
+		}
+		printf("\n\n");
+		Console::setColor(GREY);
+		Console::delay(300);
+		printf("          Press any key to go back to your home...");
+		_getch();
+	}
+	static void gameLog(deque<string>&log)
+	{
+		system("cls");
+		Console::setColor(Console::COLOR_CYAN);
+		printf("\n  === GAME LOG ===\n\n");
+		Console::resetColor();
+		deque<string>::iterator iter = log.begin();
+		for (; iter != log.end(); iter++)
+		{
+			cout << ' ' << *iter << '\n';
+		}
+		Console::setColor(GREY);
+		printf("\n Press enter to continue...");
+		Interface::pressEnterPlease();
+		system("cls");
+		Console::resetColor();
+	}
 	//////////////////////////////////////////////////////////////////// delay
 	static void BattleDelay(int delay)
 	{
@@ -1640,7 +1690,6 @@ public:
 			}
 			clearSpeed(turn);
 		}
-
 		if (win)
 		{
 			karakter.kill(); // nambahin jumlah monster yang dikill karakter sebesar 1
@@ -1650,6 +1699,9 @@ public:
 			int expBefore = karakter.getExperience();
 			int levelBefore = karakter.getLevel();
 			int expGained = (int)enemy.getExp();
+			int goldGained = enemy.getGold();
+			int prevGold = karakter.getGold();
+
 			text = karakter.getName();
 			text += " got ";
 			text += to_string((int)enemy.getExp());
@@ -1681,9 +1733,11 @@ public:
 
 			// prompt buat continue
 			Console::setCursorPos(1, 23);
+			Console::setColor(GREY);
+			printf("Press enter to see LOG...");
 			Console::resetColor();
-			printf("Press enter to continue...");
 			Interface::pressEnterPlease();
+			gameLog(log);
 			system("cls");
 
 			// print XP bar and increment
@@ -1696,36 +1750,8 @@ public:
 
 			//current XP
 			Console::setCursorPos(14, 2); printf("%5d/%-5d", expBefore-karakter.getExpRequirement(levelBefore), karakter.getExpRequirement(levelBefore + 1)-karakter.getExpRequirement(levelBefore));
-			//int box = (karakter.getExpRequirement(levelBefore + 1)-karakter.getExpRequirement(levelBefore)) / 30;
-
-			//int counter = 0;
-			//int x = 0;
-			//int second = 0;
-			//while (x<25 && counter < (expBefore-karakter.getExpRequirement(levelBefore)))
-			//{
-			//	Console::setCursorPos(20, 20);
-			//	printf("%d", x);
-			//	if (second%box == 0)
-			//	{
-			//		Console::setCursorPos(2 + (x++), 4);
-			//		printf("%c", ASCII_BOX_FULL);
-			//		cin.get();
-			//	}
-			//	counter++;
-			//	second++;
-			//}
-			//int tempX = x; // lokasi x terakhir
-			//while (x < 25)
-			//{
-			//	Console::setCursorPos(20, 20);
-			//	printf("%d", x);
-			//	Console::setCursorPos(2 + (x++), 4);
-			//	printf("%c", ASCII_BOX_EMPTY);
-			//}
-			//x = tempX;
-
-			// total ada 30 bar
-
+			
+			// total ada 25 bar
 			int levelCounter = 0;
 			{
 				int x = 0;
@@ -1810,13 +1836,46 @@ public:
 			Interface::pressEnterPlease();
 
 			if (levelCounter > 0) levelUpMenu(levelCounter, karakter);
+			system("cls");
+			Console::setCursorPos(3, 3);
+			Console::resetColor();
+			printf("You gained ");
+			Console::setColor(YELLOW);
+			printf("%d", goldGained);
+			Console::resetColor();
+			printf(" gold!");
+
+			Console::delay(700);
+			Console::setCursorPos(3, 5);
+			printf("Your gold: ");
+
+			int currGold = karakter.getGold();
+			Console::setColor(YELLOW);
+			int sec = 0;
+			int secDelay = 1000 / goldGained;
+			while (prevGold < currGold)
+			{
+				prevGold++;
+				Console::setCursorPos(14, 5);
+				printf("%d", prevGold);
+				if(sec%secDelay==0)Console::delay(1);
+			}
+			Console::delay(700);
+			Console::setColor(GREY);
+			Console::setCursorPos(3, 7);
+			printf("Press enter to continue...");
+			Interface::pressEnterPlease();
 		}
 		else
 		{
 			Console::setCursorPos(1, 23);
+			Console::setColor(GREY);
+			printf("Press enter to see LOG...");
 			Console::resetColor();
-			printf("Press enter to continue...");
 			Interface::pressEnterPlease();
+			gameLog(log);
+			system("cls");
+			gameOver();
 			return;
 		}
 	}

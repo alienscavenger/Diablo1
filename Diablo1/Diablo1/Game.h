@@ -338,7 +338,7 @@ public:
 					}
 					else
 					{
-						break;
+						continue;
 					}
 				}
 				else break;
