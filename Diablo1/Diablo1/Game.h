@@ -330,11 +330,18 @@ public:
 					Interface::shopMenu(vShop, karakter);
 				else if (milih ==2 )
 				{
-					/*printf("blom jadi mas..");
-					cin.get();*/
 					Battle::startBattle(*karakter, vMonster[0]);
+					system("cls");
+					if (Battle::getWin())
+					{
+						continue;
+					}
+					else
+					{
+						break;
+					}
 				}
-				else	break;
+				else break;
 			}
 			cout << "game saved!";
 			saveGame();

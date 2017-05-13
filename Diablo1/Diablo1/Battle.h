@@ -48,6 +48,9 @@ const int BLUE = Console::COLOR_BLUE;
 class Battle
 {
 private:
+	// post-battle variable
+	static bool win;
+
 	// mechanism variable
 	static int animationSpeed[4];
 	static int index;
@@ -146,6 +149,29 @@ private:
 		Console::setCursorPos(21, 18 + 4);
 		printf("%c", ASCII_DOUBLE_LOWER_LEFT);
 		for (int i = 0; i < 40; i++) printf("%c", ASCII_DOUBLE_SEPARATOR);
+		printf("%c", ASCII_DOUBLE_LOWER_RIGHT);
+	}
+
+	static void printXPBox()
+	{
+		Console::setCursorPos(1, 1);
+		printf("%c", ASCII_DOUBLE_UPPER_LEFT);
+		for (int i = 0; i < 25; i++) printf("%c", ASCII_DOUBLE_SEPARATOR);
+		printf("%c", ASCII_DOUBLE_UPPER_RIGHT);
+
+		Console::setCursorPos(1, 2); printf("%c", ASCII_DOUBLE_VERTICAL_SEPARATOR);
+		Console::setCursorPos(27, 2); printf("%c", ASCII_DOUBLE_VERTICAL_SEPARATOR);
+
+		Console::setCursorPos(1, 3); printf("%c", ASCII_DOUBLE_VERTICAL_SEPARATOR);
+		for (int i = 1; i <= 25; i++) printf("%c", ASCII_SINGLE_SEPARATOR);
+		Console::setCursorPos(27, 3); printf("%c", ASCII_DOUBLE_VERTICAL_SEPARATOR);
+
+		Console::setCursorPos(1, 4); printf("%c", ASCII_DOUBLE_VERTICAL_SEPARATOR);
+		Console::setCursorPos(27, 4); printf("%c", ASCII_DOUBLE_VERTICAL_SEPARATOR);
+
+		Console::setCursorPos(1, 5);
+		printf("%c", ASCII_DOUBLE_LOWER_LEFT);
+		for (int i = 0; i < 25; i++) printf("%c", ASCII_DOUBLE_SEPARATOR);
 		printf("%c", ASCII_DOUBLE_LOWER_RIGHT);
 	}
 
@@ -323,7 +349,7 @@ private:
 			Console::setCursorPos(23, 20);
 			printf("chance by 25 %% for 2 turns.");
 			Console::setCursorPos(23, 21);
-			printf("Skips turn, uses NO stamina.");
+			printf("Skips turn, uses 30 stamina.");
 		}
 		else if (pickMenu == 4) // riposte
 		{
@@ -332,7 +358,7 @@ private:
 			Console::setCursorPos(23, 20);
 			printf("then STUN the enemy if hit didn't miss.");
 			Console::setCursorPos(23, 21);
-			printf("Uses 25 stamina");
+			printf("Uses 30 stamina");
 		}
 		else if (pickMenu == 5) // momentum
 		{
@@ -476,7 +502,7 @@ private:
 			if (chance <= 100.0f)
 			{
 				text += to_string((int)(100 - chance));
-				text += "% MISS chance";
+				text += "% MISS chance.";
 				if (chance < 10.0f) chance = 10.0f; // kalau chance kurang dari 10%, jadiin 10%
 
 				int calculate = rand() % 100 + 1;
@@ -487,7 +513,7 @@ private:
 			{
 				hit = true;
 				text += to_string((int)(chance - 100));
-				text += "% CRIT chance";
+				text += "% CRIT chance.";
 
 				int calculate = fmod(rand(),chance) + 1;
 				if (calculate < 100.0f) crit = false;
@@ -529,7 +555,7 @@ private:
 					log.push_back(text);
 					printLog(log);
 
-					HPchange(0, damage, karakter, enemy);
+					HPchange(0, 1000, karakter, enemy); // UBAH INI
 				}
 				if (riposte) // PALADIN
 				{
@@ -566,7 +592,7 @@ private:
 			if (chance <= 100)
 			{
 				text += to_string((int)(100 - chance));
-				text += "% MISS chance";
+				text += "% MISS chance.";
 				if (chance < 10.0f) chance = 10.0f;
 
 				int calculate = rand() % 100 + 1;
@@ -577,7 +603,7 @@ private:
 			{
 				hit = true;
 				text += to_string((int)(chance - 100));
-				text += "% CRIT chance";
+				text += "% CRIT chance.";
 
 				int calculate = fmod(rand(), chance) + 1;
 				if (calculate < 100.0f) crit = false;
@@ -636,7 +662,7 @@ private:
 			text += karakter.getName();
 			text += " rested and gain ";
 			text += to_string(50 + karakter.getLevel());
-			text += " stamina";
+			text += " stamina.";
 			hStamina += (50 + karakter.getLevel());
 			STAchange(who,karakter,enemy);
 			log.push_back(text);
@@ -647,7 +673,7 @@ private:
 			text += enemy.getName();
 			text += " rested and gain ";
 			text += to_string(50 + enemy.getLevel());
-			text += " stamina";
+			text += " stamina.";
 			mStamina += (50 + enemy.getLevel());
 			STAchange(who,karakter,enemy);
 			log.push_back(text);
@@ -679,7 +705,7 @@ private:
 				}
 				BattleDelay(1000);
 
-				mHP == 0;
+				mHP = -1;
 				Console::setColor(Console::COLOR_GRAY);
 				x = 0;
 				while (x<22)
@@ -753,7 +779,7 @@ private:
 				BattleDelay(1000);
 
 				// insta kill
-				hHP == 0;
+				hHP = -1;
 				Console::setColor(Console::COLOR_GRAY);
 				x = 0;
 				while (x<22)
@@ -893,16 +919,293 @@ private:
 		BattleDelay(1000);
 	}
 	
-	static void win(int who, Human& karakter, Monster& enemy, deque<string>& log)
+	static void end(int who, Human& karakter, Monster& enemy, deque<string>& log)
 	{
+		string text;
 		if (who == 0)
 		{
 			// YOU WIN
+			win = true;
+			text = enemy.getName();
+			text += " died!";
+			log.push_back(text);
+			printLog(log);
+
+			text.clear();
+			text = karakter.getName();
+			text += " WIN!";
+			log.push_back(text);
+			printLog(log);
 		}
 		else
 		{
 			// YOU LOST
+			win = false;
+			text = karakter.getName();
+			text += " LOST!";
+			log.push_back(text);
+			printLog(log);
+
+			text.clear();
+			text = "GAME OVER...";
+			log.push_back(text);
+			printLog(log);
 		}
+	}
+
+	static void levelUpMenu(int gain, Human& karakter)
+	{
+		char* wallpaper[22] =
+		{
+			"                                  /   \\       ",
+			" _                        )      ((   ))     (",
+			"(@)                      /|\\      ))_((     /|\\",
+			"|-|                     / | \\    (/\\|/\\)   / | \\                      (@)",
+			"| | -------------------/--|-voV---\\`|'/--Vov-|--\\---------------------|-|",
+			"|-|                         '^`   (o o)  '^`                          | |",
+			"| |                               `\\Y/'                               |-|",
+			"|-|              _     _____ _     _____ _       _     ____           | |",
+			"|-|             / \\   /  __// \\ |\\/  __// \\     / \\ /\\/  __\\          | |",
+			"|-|             | |   |  \\  | | //|  \\  | |     | | |||  \\/|          | |",
+			"|-|             | |_/\\|  /_ | \\// |  /_ | |_/\\  | \\_/||  __/          | |",
+			"| |             \\____/\\____\\\\__/  \\____\\\\____/  \\____/\\_/             |-|",
+			"|-|                                                                   | |",
+			"| |                                                                   |-|",
+			"| |                                                                   |-|",
+			"| |                                                                   |-|",
+			"| |                                                                   |-|",
+			"|_|___________________________________________________________________| |",
+			"(@)              l   /\\ /         ( (       \\ /\\   l                `\\|-|",
+			"                 l /   V           \\ \\       V   \\ l                  (@)",
+			"                 l/                _) )_          \\I",
+			"                                   `\\ /'"
+		};
+
+		system("cls");
+		printf("\n");
+		Console::setColor(Console::COLOR_RED);
+		for (int i = 0; i < 22; i++)
+		{
+			printf("           %s\n", wallpaper[i]);
+		}
+		Console::setCursorVisibility(false);
+		Console::setColor(Console::COLOR_WHITE);
+		bool printFlag = true;
+		int sampahFlag = 0;
+		int pickMenu = 0;
+		char charMenu;
+		// stats counter
+		int STR = 0;
+		int END = 0;
+		int AGI = 0;
+		int DEX = 0;
+		int* stats[4] = { &STR,&END,&AGI,&DEX };
+		// -------------------------------------
+		int skillPoint = gain * 3;
+		while (1)
+		{
+			if (skillPoint == 0) // kalau sudah distribute semua skillPoint nya
+			{
+				Console::resetColor();
+				Console::setCursorPos(30, 24);
+				printf("Are you sure with the current configuration? ");
+				{
+					int pick = 1;
+					int printFlag__ = true;
+					int pickDelay = 0;
+					while (1)
+					{
+						if (printFlag__)
+						{
+							Console::setCursorPos(75, 24);
+							if (pick == 0)Console::setColor(79);
+							else Console::setColor(Console::COLOR_WHITE);
+							printf("YES");
+
+							Console::resetColor();
+							printf("/");
+
+							Console::setCursorPos(79, 24);
+							if (pick == 1)Console::setColor(79);
+							else Console::setColor(Console::COLOR_WHITE);
+							printf("NO");
+
+							printFlag__ = false;
+						}
+						char buff = Console::getKeyPressed();
+						if (buff != -1)
+						{
+							if (pickDelay)
+							{
+								if (buff == VK_LEFT || buff == 0x41) // 41 == 'a'
+								{
+									pick = (pick - 1 + 2) % 2;
+									printFlag__ = true;
+								}
+								else if (buff == VK_RIGHT || buff == 0x44) // 0x44 == 'd'
+								{
+									pick = (pick + 1) % 2;
+									printFlag__ = true;
+								}
+								else if (buff == VK_RETURN)
+								{
+									break;
+								}
+								pickDelay = 0;
+							}
+							else pickDelay++;
+						}
+					}
+
+					{ // reset tulisannya
+						Console::resetColor();
+						Console::setCursorPos(30, 24);
+						printf("                                                          ");
+					}
+
+					if (pick == 0) // YES
+					{
+						break; // keluar loop, lalu level up si karakter
+					}
+					else // NO
+					{
+						// reset variable awal
+						pickMenu = 0;
+						printFlag = true;
+						sampahFlag = 0;
+
+						// reset skill point lagi
+						{ 
+							for (int i = 0; i < 4; i++)
+							{
+								*stats[i] = 0;
+								Console::resetColor();
+								Console::setCursorPos(49, 14 + i);
+								printf("                 ");
+							}
+							skillPoint = gain * 3; // reset skill point remaining
+							Console::setCursorPos(64, 24);
+							printf("%-2d", skillPoint);
+						}
+						continue;
+					}
+				}
+			}
+			if (printFlag)
+			{
+				//Interface::setWindowSize(1000, 550);
+				Console::setColor(7);
+				Console::setCursorPos(5, 26);
+				Console::printf("Press WSAD to select, ENTER to add 1 skill point, DELETE to remove 1 skill point, and ESC to reset");
+				Console::setCursorPos(40, 24);
+				Console::resetColor();
+				printf("Skill Points remaining: %-2d", skillPoint);
+
+				Console::setCursorPos(24, 14);
+				if (pickMenu == 0)Console::setColor(79);
+				else Console::setColor(Console::COLOR_WHITE);
+				Console::printf("STRENGTH");
+				Console::resetColor();
+				printf(" (curr: %-2d)", karakter.getStrength());
+
+				Console::setCursorPos(24, 15);
+				if (pickMenu == 1)Console::setColor(79);
+				else Console::setColor(Console::COLOR_WHITE);
+				Console::printf("ENDURANCE");
+				Console::resetColor();
+				printf(" (curr: %-2d)", karakter.getEndurance());
+
+
+				Console::setCursorPos(24, 16);
+				if (pickMenu == 2)Console::setColor(79);
+				else Console::setColor(Console::COLOR_WHITE);
+				Console::printf("AGILITY");
+				Console::resetColor();
+				printf(" (curr: %-2d)", karakter.getAgility());
+
+				Console::setCursorPos(24, 17);
+				if (pickMenu == 3)Console::setColor(79);
+				else Console::setColor(Console::COLOR_WHITE);
+				Console::printf("DEXTERITY");
+				Console::resetColor();
+				printf(" (curr: %-2d)", karakter.getDexterity());
+
+				Console::resetColor();
+				for (int i = 0; i < 4; i++)
+				{
+					Console::setCursorPos(47, 14+i);
+					printf(":");
+				}
+				printFlag = false;
+			}
+			charMenu = Console::getKeyPressed();
+			if (charMenu != -1)
+			{
+				if (sampahFlag) // supaya key release tidak kebaca
+				{
+					if (charMenu == VK_UP || charMenu == 0x57) // 0x57 == 'w'
+					{
+						pickMenu = (pickMenu - 1 + 4) % 4;
+						printFlag = true;
+					}
+					else if (charMenu == VK_DOWN || charMenu == 0x53) // 0x53 == 's'
+					{
+						pickMenu = (pickMenu + 1) % 4;
+						printFlag = true;
+					}
+					else if (charMenu == VK_BACK) // delete
+					{
+						if ((*stats[pickMenu]) > 0) // kurangin kalau lebih dari 0
+						{
+							(*stats[pickMenu]) -= 1;
+							Console::setCursorPos(49 + *stats[pickMenu], 14 + pickMenu);
+							Console::setColor(GREEN);
+							printf(" ");
+
+
+							Console::resetColor();
+							Console::setCursorPos(64, 24);
+							skillPoint++;
+							printf("%-2d", skillPoint);
+						}
+					}
+					else if (charMenu == VK_ESCAPE) // reset
+					{
+						for (int i = 0; i < 4; i++)
+						{
+							*stats[i] = 0;
+							Console::resetColor();
+							Console::setCursorPos(49, 14 + i);
+							printf("                 ");
+						}
+						skillPoint = gain * 3; // reset skill point remaining
+						Console::setCursorPos(64, 24);
+						printf("%-2d", skillPoint);
+					}
+					else if (charMenu == VK_RETURN) // pickSKill
+					{
+						Console::setCursorPos(49 + *stats[pickMenu], 14 + pickMenu);
+						Console::setColor(GREEN);
+						printf("+");
+
+						(*stats[pickMenu])+=1;
+
+						Console::resetColor();
+						Console::setCursorPos(64, 24);
+						skillPoint--;
+						printf("%-2d", skillPoint);
+					}
+					int sampah = Console::getKeyPressed();
+					sampahFlag = 0;
+				}
+				else sampahFlag++;
+			}
+		} // endWhile
+		Console::setColor(Console::COLOR_WHITE);
+		
+		karakter.levelUp(STR, END, AGI, DEX);
+		for (int i = 1; i < gain; i++)	karakter.levelUp(0, 0, 0, 0); // khusus buat naikin level doang
+		system("cls");
 	}
 
 	//////////////////////////////////////////////////////////////////// delay
@@ -947,15 +1250,19 @@ private:
 	}
 	//////////////////////////////////////////////////////////////////////////
 public:
+	// post-battle getter
+	static bool getWin() { return win; }
+
+	// MAIN FUNCTION
 	static void startBattle(Human& karakter, Monster& enemy)
 	{
 		system("cls");
-		Console::setCursorPos(32, 0);
+		Console::setCursorPos(29, 0);
 		Console::resetColor();
 		printf("BATTLE\n");
-		printAnimationSpeed();
 		autoAttack = 1;
 		index = 0;
+		printAnimationSpeed();
 		autoAttack = toggleAutoAttack();
 		hStamina = karakter.getMaxStamina();
 		mStamina = enemy.getMaxStamina();
@@ -1119,8 +1426,17 @@ public:
 		////////////////////////////////////////////////////// MAIN LOOP //////////////////////////////////////////////////////////
 		while (1)
 		{
-			if (hHP <= 0) win(0,karakter,enemy,log);
-			else if (mHP <= 0) win(1,karakter,enemy,log);
+			// kalau sudah menang
+			if (mHP <= 0)
+			{
+				end(0, karakter, enemy, log);
+				break;
+			}
+			else if (hHP <= 0)
+			{
+				end(1, karakter, enemy, log);
+				break;
+			}
 			// count speed
 			turn = printSpeed(xYou, karakter.getSpeed(), xEnemy, enemy.getSpeed());
 			colorSpeed(turn);
@@ -1130,7 +1446,7 @@ public:
 				if (riposte)riposte--; // PALADIN
 				if (momentum) momentum--; // BARBARIAN
 
-				log.push_back(karakter.getName() + " turn");
+				log.push_back(karakter.getName() + " turn.");
 				printLog(log);
 				if (autoAttack)
 				{
@@ -1215,7 +1531,7 @@ public:
 								printLog(log);
 								text.clear();
 								text = karakter.getName();
-								text += "'s current turn skipped";
+								text += "'s current turn skipped.";
 								log.push_back(text);
 								printLog(log);
 								coupDeGrace = 3;
@@ -1282,7 +1598,7 @@ public:
 								printLog(log);
 								text.clear();
 								text = karakter.getName();
-								text += "'s current turn skipped";
+								text += "'s current turn skipped.";
 								log.push_back(text);
 								printLog(log);
 								momentum = 3;
@@ -1295,10 +1611,20 @@ public:
 
 				xYou = 2;
 			}
-			else if (!riposte)// giliran monster
+			else // giliran monster
 			{
-				log.push_back(enemy.getName() + " turn");
+				log.push_back(enemy.getName() + " turn.");
 				printLog(log);
+				if (riposte)
+				{
+					string text = enemy.getName();
+					text += " is still stunned!";
+					log.push_back(text);
+					printLog(log);
+					xEnemy = 35;
+					clearSpeed(turn);
+					continue;
+				}
 				// =========================================== KALAU STAMINA MONSTER CUKUP UNTUK ATTACK, MAKA ATACK
 				// =========================================== KALAU TIDAK, REST
 				if (mStamina < enemy.getArmor() + 10)
@@ -1314,6 +1640,185 @@ public:
 			}
 			clearSpeed(turn);
 		}
+
+		if (win)
+		{
+			karakter.kill(); // nambahin jumlah monster yang dikill karakter sebesar 1
+			bool levelUp;
+			string text;
+
+			int expBefore = karakter.getExperience();
+			int levelBefore = karakter.getLevel();
+			int expGained = (int)enemy.getExp();
+			text = karakter.getName();
+			text += " got ";
+			text += to_string((int)enemy.getExp());
+			text += " EXP and ";
+			text += to_string(enemy.getGold());
+			text += " Gold!";
+			log.push_back(text);
+
+			karakter.setExperience((int)enemy.getExp()); // tambahin exp
+			karakter.setGold(enemy.getGold()); // tambahin gold
+			if (karakter.getExperience() >= karakter.getExpRequirement(karakter.getLevel()+1))
+			{
+				// maka level up
+				levelUp = true;
+				text.clear();
+				text = karakter.getName();
+				text += " level UP!";
+				log.push_back(text);
+				printLog(log);
+			}
+			else levelUp = false;
+
+			enemy.die();
+			text.clear();
+			text = enemy.getName();
+			text += " level UP!";
+			log.push_back(text);
+			printLog(log);
+
+			// prompt buat continue
+			Console::setCursorPos(1, 23);
+			Console::resetColor();
+			printf("Press enter to continue...");
+			Interface::pressEnterPlease();
+			system("cls");
+
+			// print XP bar and increment
+			Console::setCursorPos(4, 9);
+			printf("You get %d EXP!", expGained);
+			Console::delay(1000);
+
+			printXPBox();
+			Console::setCursorPos(3, 2); printf("Experience");
+
+			//current XP
+			Console::setCursorPos(14, 2); printf("%5d/%-5d", expBefore-karakter.getExpRequirement(levelBefore), karakter.getExpRequirement(levelBefore + 1)-karakter.getExpRequirement(levelBefore));
+			//int box = (karakter.getExpRequirement(levelBefore + 1)-karakter.getExpRequirement(levelBefore)) / 30;
+
+			//int counter = 0;
+			//int x = 0;
+			//int second = 0;
+			//while (x<25 && counter < (expBefore-karakter.getExpRequirement(levelBefore)))
+			//{
+			//	Console::setCursorPos(20, 20);
+			//	printf("%d", x);
+			//	if (second%box == 0)
+			//	{
+			//		Console::setCursorPos(2 + (x++), 4);
+			//		printf("%c", ASCII_BOX_FULL);
+			//		cin.get();
+			//	}
+			//	counter++;
+			//	second++;
+			//}
+			//int tempX = x; // lokasi x terakhir
+			//while (x < 25)
+			//{
+			//	Console::setCursorPos(20, 20);
+			//	printf("%d", x);
+			//	Console::setCursorPos(2 + (x++), 4);
+			//	printf("%c", ASCII_BOX_EMPTY);
+			//}
+			//x = tempX;
+
+			// total ada 30 bar
+
+			int levelCounter = 0;
+			{
+				int x = 0;
+
+				int add = 0; // kalau level up berkali"
+				int gain = 0;
+				bool levelUp = false;
+				while (1)
+				{
+					levelUp = false;
+					if (gain == expGained) // kalau sudah sama
+					{
+						Console::setCursorPos(4, 10 + add - 1);
+						printf("Your EXP is now %d", karakter.getExperience());
+						Console::delay(1000);
+						break; // kalau sudah dapat semua xp-nya
+					}
+					int expRequired = karakter.getExpRequirement(levelBefore + 1 + add) - karakter.getExpRequirement(levelBefore + add); // xp setelah - sebelum
+					int box = expRequired / 25; // satu box berapa xp;
+					int counter = expBefore - karakter.getExpRequirement(levelBefore + add);
+					float sec = 0.0f;
+					float secondDelay = 1000 / expRequired;
+
+					//Console::setCursorPos(15, 15); printf("gain=%d,add=%d,levelBefore=%d,counter=%d,box=%d,expRequired=%d", gain, add, levelBefore, counter, box, expRequired);
+					if (add == 0)
+					{
+						while (x < 25)
+						{
+							Console::setCursorPos(2 + (x++), 4);
+							printf("%c", ASCII_BOX_EMPTY);
+						}
+						x = 0;
+						int counterPrint = 0;
+						while (counterPrint < counter)
+						{
+							if (counterPrint%box == 0)
+							{
+								Console::setCursorPos(2 + (x++), 4);
+								printf("%c", ASCII_BOX_FULL);
+							}
+							counterPrint++;
+						}
+					}
+					while ((x<25 || counter<expRequired) && gain<expGained)
+					{
+						sec++;
+						if (fmod(sec,secondDelay) == 0)Console::delay(1);
+						counter++;
+						gain++;
+						Console::setCursorPos(15, 2); printf("%5d/%-5d", counter, karakter.getExpRequirement(levelBefore + 1 + add)-karakter.getExpRequirement(levelBefore+add)); // update terus
+						if (counter%box == 0 && x<25)
+						{
+							Console::setCursorPos(2 + (x++), 4);
+							printf("%c", ASCII_BOX_FULL);
+						}
+
+					}
+					if (counter == karakter.getExpRequirement(levelBefore + 1 + add) - karakter.getExpRequirement(levelBefore + add)) // kalau level up
+					{
+						Console::setCursorPos(4, 10+add);
+						printf("LEVEL UP!");
+						Console::delay(500);
+						levelUp = true;
+					}
+					// reset box kalau levelUp
+					if (levelUp)
+					{
+						for (int i = 0; i < 25; i++)
+						{
+							Console::setCursorPos(2 + i, 4);
+							printf("%c", ASCII_BOX_EMPTY);
+						}
+					}
+
+					expBefore = karakter.getExpRequirement(levelBefore + 1 + add); // set xp before ke setelah lvl up
+					add++;
+					x = 0;
+				}
+				levelCounter = add-1;
+			}
+			Console::setCursorPos(4, 11+levelCounter); printf("Press enter to continue...");
+			Interface::pressEnterPlease();
+
+			if (levelCounter > 0) levelUpMenu(levelCounter, karakter);
+		}
+		else
+		{
+			Console::setCursorPos(1, 23);
+			Console::resetColor();
+			printf("Press enter to continue...");
+			Interface::pressEnterPlease();
+			return;
+		}
 	}
 };
 
@@ -1328,5 +1833,6 @@ float Battle::mHP = 0;
 int Battle::coupDeGrace = 0;
 int Battle::riposte = 0;
 int Battle::momentum = 0;
+bool Battle::win = false;
 
 #endif

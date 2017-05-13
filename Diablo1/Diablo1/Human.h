@@ -236,11 +236,19 @@ public:
 	//Ini fungsi untuk set primary saat level up
 	void levelUp(int strength, int endurance, int agility, int dexterity)
 	{
+		this->level++;
 		this->strength += strength;
 		this->endurance += endurance;
 		this->agility += agility;
 		this->dexterity += dexterity;
 	}
+	
+	// ini fungsi buat nambahin monster yang dikill
+	void kill()
+	{
+		this->monsterKilled += 1;
+	}
+
 	void buyItem(Item* pointer)
 	{
 		pointer->setBought(1); // set true
@@ -277,9 +285,9 @@ public:
 							pointer->getDamage(), pointer->getChanceToHit(), pointer->getEvade(), pointer->getSpeed(),
 							pointer->getMaxHealth(), pointer->getMaxStamina(), pointer->getArmor());
 	}
-	void setExperience(int exp)
+	void setExperience(float exp)
 	{
-		experience += exp;
+		experience += (int)exp;
 	}
 
 	//setter gold
