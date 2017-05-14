@@ -1,5 +1,5 @@
 Melvin
-1,2,2000000,0,14,12,6,8
+1,2,1960000,0,14,12,6,8
 3.0,96.0,12.0,154.0,190.0,178.0,0,0
 #Quilted Armor,400,AMR+1 EVA+10,3,0,0,0
 #Leather Armor,800,AMR+2 EVA+8,3,0,0,0
@@ -43,7 +43,7 @@ Melvin
 #Heavy Bracers,4100,AMR+7,2,0,0,0
 #Battle Gauntlets,5500,AMR+9 CTH+10,2,0,0,0
 #Ogre Gauntlets,8200,AMR+11 CTH+10 DMG+4,2,0,0,0
-#Crusader Gauntlets,18000,AMR+12 MHP+60 MST+60,2,2,0,0
+#Crusader Gauntlets,18000,AMR+12 MHP+60 MST+60,2,2,0,1
 #Cap,300,AMR+1 EVA+4,1,0,0,0
 #Skullcap,600,AMR+2 EVA+3,1,0,0,0
 #Basinet,1200,AMR+3 EVA+2,1,0,0,0
@@ -94,7 +94,7 @@ Melvin
 #Gladius,10000,DMG+24 END+4 DEX+2,5,2,0,0
 #Crystal Sword,13000,DMG+28 STR+4 DEX+2,5,2,0,0
 #Ancient Sword,16000,DMG+32 STR+4 END+2 DEX+2,5,2,0,0
-#Colossus Blade,22000,DMG+40 STR+4 END+4 DEX+4,5,2,0,0
+#Colossus Blade,22000,DMG+40 STR+4 END+4 DEX+4,5,2,0,1
 @Ghoul,1,300,20.0,86.0,3.0,66.0,120.0,90.0,2,1358.0,6,12,0
 @@Giant Spider,2,600,7.0,114.0,18.0,210.0,120.0,90.0,0,2683.0,8,16,0
 @@Vampire,4,800,30.0,109.0,8.0,112.0,142.0,100.0,1,4477.0,21,15,0
