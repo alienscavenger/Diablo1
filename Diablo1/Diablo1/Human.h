@@ -255,9 +255,8 @@ public:
 		vInventory.push_back(pointer);
 		nInventory = vInventory.size(); // update nInventory
 	}
-	void sellItem(Item* pointer) // secara implicit nambah gold karakter sebanyak setengah dari harga item yang dijual
+	void sellItem(Item* pointer)
 	{
-		setGold(pointer->getPrice()/2);
 		pointer->setBought(0); // set false
 		vector<Item*>::iterator iter;
 		for (iter = vInventory.begin(); iter != vInventory.end(); iter++)

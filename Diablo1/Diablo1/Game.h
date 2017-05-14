@@ -289,7 +289,7 @@ public:
 			while (1)
 			{
 				// INI INVENTORY dan PLAYER STATUS
-				Interface::inventMenu(vShop, vMonster, karakter);
+				Interface::homeMenu(vShop, vMonster, karakter,karakter->getInventory()); // HOME
 
 				Console::setCursorVisibility(true);
 				cout << "\nmau ke shop? (1=yes,2=battle,sisanya=exit)";
