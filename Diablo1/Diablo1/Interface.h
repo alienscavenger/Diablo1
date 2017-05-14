@@ -773,7 +773,7 @@ public:
 			vector<Item*>::iterator iter; // iterator untuk vector temporary (Item*)
 			int i = 1; // variable buat print index vector (tapi ini mulai dari 1, sedangkan vector mulai dari 0)
 			printf("\n");
-			printf("                                 - TRISTAM SHOP -\n");
+			printf("                                 - Tristam Shop -\n");
 			printf(" ======================================================================================\n");
 			printf(" %3s | %18s | %5s | %-28s | %10s | %6s\n", "No.", "ITEM NAME", "PRICE", "ITEM EFFECTS", "RESTRICTION","TYPE");
 			printf(" ======================================================================================\n");
@@ -1215,6 +1215,326 @@ public:
 		} // end while luar
 	}
 
+	static void equipmentMenu(Human*& karakter,vector<Item*>temporary, bool& active, int& state, int& filterType, bool& print, int& stillUnequiping, int which)
+	{
+		// int which -> CUMAN BUAT DEBUG
+		Console::resetColor();
+		Console::setCursorPos(50, 2);
+		printf("============== Character Equipment ==============");
+
+		if (print) // kalau print doang
+		{
+			int color[7];
+			for (int i = 0; i < 7; i++) color[i] = Console::COLOR_WHITE;
+			color[state] = 94; // highlight ungu-pink, text kuning
+			char*text[7] = {" ","Head","Left Arm","Right Arm","Hands","Torso","Legs"};
+			for (int i = 1; i < 7; i++)
+			{
+				Console::setColor(color[i]);
+				Console::setCursorPos(51, 3 + i);
+
+				if (karakter->getEquipStatus(i)) printf("%-9s: %s (%s)", text[i], karakter->getEquipment(i)->getName().c_str(), karakter->getEquipment(i)->getEffect().c_str());
+				else printf("%-9s: (empty)", text[i]);
+			}
+			Console::resetColor();
+
+			Console::setCursorPos(50, 11);
+			printf("=================================================");
+
+			return;
+		}
+		else
+		{
+			if (active) // lagi milih apa yang mau di-equip
+			{
+				Console::setCursorPos(50, 12);
+				Console::setColor(Console::COLOR_GRAY);
+				printf("(Preview when equipping/swapping item can be seen");
+				Console::setCursorPos(50, 13);
+				printf("On the left, with the difference inside the brackets)");
+				Console::resetColor();
+				Console::setCursorPos(50, 14);
+				printf("===== Equipment Menu =====");
+				Console::setCursorPos(50, 16);
+				int maxItem = temporary.size();
+				if (maxItem > 0)
+				{
+					while (1)
+					{
+						Console::setCursorPos(50, 16);
+						int equipThis = 0;
+						Console::setColor(79);
+						printf("Select item to equip (0=cancel) [0 to %d]:", maxItem);
+						Console::resetColor();
+						cin >> equipThis;
+						while (cin.fail() || equipThis<0 || equipThis>maxItem)
+						{
+							Interface::flush();
+							Console::setCursorPos(50, 17);
+							printf("INVALID INPUT!");
+							Console::setCursorPos(91, 16);
+							printf("                      ");
+							Console::setCursorPos(91, 16);
+							cin >> equipThis;
+						}
+						Interface::flush();
+
+						Console::setCursorPos(50, 17);
+						if (equipThis == 0)
+						{
+							active = false;
+							filterType = 0;
+							stillUnequiping = state-1;
+							state = 0;
+							print = true;
+							return;
+						}
+						if (temporary[equipThis - 1]->getRestriction() > 0 && temporary[equipThis - 1]->getRestriction() != karakter->getJob())
+						{
+							printf("YOU CANNOT EQUIP THIS! (see Restriction)");
+							Console::setCursorPos(50, 18);
+							Console::setColor(Console::COLOR_GRAY);
+							printf("(Press enter to continue)");
+							Interface::pressEnterPlease();
+							Console::resetColor();
+							Console::setCursorPos(91, 16);
+							printf("                       ");
+							Console::setCursorPos(50, 18);
+							printf("                         ");
+							Console::setCursorPos(50, 17);
+							printf("                                         ");
+							continue;
+						}
+						else
+						{
+							printf("Are you sure you want to equip this? ");
+							int pickWhat = 0;
+							int bufferDelay = 1;
+							bool flagPrint = true;
+							int currY = Console::getCursorY();
+							int currX = Console::getCursorX();
+							bool equip = false;
+							while (1)
+							{
+								if (flagPrint)
+								{
+									Console::setCursorPos(currX, currY);
+									if (pickWhat == 0)
+									{
+										Console::setColor(79);
+										printf("<YES>");
+										Console::setColor(Console::COLOR_WHITE);
+										printf(" NO ");
+									}
+									else
+									{
+										Console::setColor(Console::COLOR_WHITE);
+										printf(" YES ");
+										Console::setColor(79);
+										printf("<NO>");
+										Console::setColor(Console::COLOR_WHITE);
+									}
+									flagPrint = false;
+								}
+								int buff = Console::getKeyPressed();
+								if (buff != -1)
+								{
+									if (bufferDelay)
+									{
+										if (buff == VK_LEFT || buff == 0x41) // 41 == 'a'
+										{
+											pickWhat = (pickWhat - 1 + 2) % 2;
+											flagPrint = true;
+										}
+										else if (buff == VK_RIGHT || buff == 0x44) // 0x44 == 'd'
+										{
+											pickWhat = (pickWhat + 1) % 2;
+											flagPrint = true;
+										}
+										else if (buff == VK_RETURN)
+										{
+											if (pickWhat == 0) equip = true;
+											break;
+										}
+										bufferDelay = 0;
+									}
+									else bufferDelay++;
+								}
+							} // end while
+							if (equip)
+							{
+								karakter->equipItem(state, temporary[equipThis - 1]);
+								active = false;
+								state = 0;
+								filterType = 0;
+								print = true;
+								break;
+							}
+							else
+							{
+								Console::resetColor();
+								Console::setCursorPos(91, 16);
+								printf("                      ");
+								Console::setCursorPos(50, 17);
+								printf("                                               ");
+								continue;
+							}
+						} // end else
+					} // end while
+				}
+				else
+				{
+					Console::setColor(79);
+					printf("NO ITEM WITH THE TYPE ");
+					Console::resetColor();
+					int color;
+					string type = "<";
+					switch (filterType)
+					{
+					case 1: type += "HELMET"; color = Console::COLOR_BLUE; break;
+					case 2: type += "GLOVES"; color = Console::COLOR_CYAN; break;
+					case 3: type += "ARMOR"; color = Console::COLOR_GREEN; break;
+					case 4: type += "BOOTS"; color = Console::COLOR_MAGENTA; break;
+					case 5: type += "WEAPON"; color = Console::COLOR_RED; break;
+					case 6: type += "SHIELD"; color = Console::COLOR_YELLOW; break;
+					}
+					type += ">";
+					Console::setColor(color);
+					printf("%s", type.c_str());
+
+					Console::setCursorPos(50, 18);
+					Console::setColor(Console::COLOR_GRAY);
+					printf("(press enter to continue)");
+					Interface::pressEnterPlease();
+					active = false;
+					state = 0;
+					filterType = 0;
+					print = true;
+				}
+				return;
+			}
+			else
+			{
+				Console::setCursorPos(15, 1);
+				Console::setColor(Console::COLOR_GRAY);
+				printf("(Unequip Preview)");
+
+				//Human preview = *karakter; // copy stats karakter ke temporary Objek
+				
+				Console::setCursorPos(50, 12);
+				Console::setColor(Console::COLOR_GRAY);
+				printf("(Choose the equipment slot above to CHANGE EQUIPMENT,");
+				Console::setCursorPos(50, 13);
+				printf("WSAD to pick, BACKSPACE to UNEQUIP item, ESC to go back.)");
+				Console::resetColor();
+				Console::setCursorPos(50, 14);
+				printf("===== Equipment Menu =====");
+
+				bool printFlag = true;
+				int pickMenu = stillUnequiping<6? stillUnequiping : 6; // kalau pickMenu berada di 'back', tidak akan men-skip ke unequip
+				stillUnequiping = 6;
+				/*
+					menu 0-5 = equipment slot
+					menu 6 = back
+				*/
+				int delayFlag = 0;
+				while (1)
+				{
+					if (printFlag)
+					{
+						int color[7];
+						for (int i = 0; i < 7; i++) color[i] = Console::COLOR_WHITE;
+						color[pickMenu] = 79; // highlight merah, text putih
+						char*text[6] = { "Head","Left Arm","Right Arm","Hands","Torso","Legs" };
+						for (int i = 0; i < 6; i++)
+						{
+							Console::setColor(color[i]);
+							Console::setCursorPos(51, 4 + i);
+
+							if (karakter->getEquipStatus(i+1)) printf("%-9s: %s (%s)", text[i], karakter->getEquipment(i+1)->getName().c_str(), karakter->getEquipment(i+1)->getEffect().c_str());
+							else printf("%-9s: (empty)", text[i]);
+						}
+						Console::setCursorPos(50, 15);
+						Console::setColor(color[6]);
+						printf("Back");
+
+						Console::resetColor();
+
+						printFlag = false;
+					}
+					char buff = Console::getKeyPressed();
+					if (buff != -1)
+					{
+						if (delayFlag) // supaya key release tidak kebaca
+						{
+							if (buff == VK_UP || buff == 0x57) // 0x57 == 'w'
+							{
+								pickMenu = (pickMenu - 1 + 7) % 7;
+								printFlag = true;
+							}
+							else if (buff == VK_DOWN || buff == 0x53) // 0x53 == 's'
+							{
+								pickMenu = (pickMenu + 1) % 7;
+								printFlag = true;
+							}
+							else if (buff == VK_BACK)
+							{
+								if (pickMenu < 6 && karakter->getEquipStatus(pickMenu+1)) // kalau menu bukan di 'back', dan ada yang sedang di-equip
+								{
+									//unequip
+									karakter->unequipItem(pickMenu + 1, karakter->getEquipment(pickMenu + 1));
+									stillUnequiping = pickMenu;
+									print = true;
+									break;
+								}
+							}
+							else if (buff == VK_ESCAPE)
+							{
+								break;
+							}
+							else if (buff == VK_RETURN)
+							{
+								bool balik = false;
+								switch (pickMenu)
+								{
+								case 0:
+									filterType = 1;
+									break;
+								case 1:
+									filterType = -1; // weapon dan shield (5 dan 6)
+									break;
+								case 2:
+									filterType = 5;
+									break;
+								case 3:
+									filterType = 2;
+									break;
+								case 4:
+									filterType = 3;
+									break;
+								case 5:
+									filterType = 4;
+									break;
+								case 6:
+									balik = true;
+									break;
+								}
+								if (balik)break;
+								active = true;
+								state = pickMenu + 1;
+								break;
+							}
+							int sampah = Console::getKeyPressed();
+							delayFlag = 0;
+						}
+						else delayFlag++;
+					}
+				} // end while
+
+			} // end else kalau gk active
+		} // end else luar
+	}
+
 	static void playerStatus(Human*& karakter, vector<Monster>& vMonster) // print player status
 	{
 		Console::setCursorPos(0, 2);
@@ -1262,10 +1582,13 @@ public:
 	static void homeMenu(vector<Item>& vShop, vector<Monster>& vMonster, Human*& karakter, vector<Item*>& vInventory)
 	{
 		// 99% COPAS DARI SHOPMENU
-
 		int filterType = 0; // awalnya gk di-filter
 		int sortType = 0; // awalnya gk di-sort
 		int delayFlag = 0;
+		bool equipMenuPrintOnly = true; // true kalau mau print character equipment aja
+		bool equipMenuActive = false; // awalnya equipment menu gk active (kalau active, artinya, di dalem loop, akan masuk ke equipment menu, bukan player menu
+		int stillUnequiping = 6; // SATU"NYA WORKAROUND SUPAYA BISA CEPET BALIK KE UNEQUIP ITEM
+		int equipMenuState = 0; // kalau >0, artinya, equipment menu saat sedang ada di state "pick item to equip". Valuenya adalah index dari eguipment yang sedang dipilih
 		int pickMenu = 0; // awalnya pilihan menu di yang pertama
 						  /*
 						  pickMenu:
@@ -1278,8 +1601,10 @@ public:
 		while (1) // print/update terus selama belum beli/exit dan masih filter/sort
 		{
 			system("cls");
-			Console::setCursorPos(50, 0);
+			Console::setColor(Console::COLOR_RED);
+			Console::setCursorPos(45, 0);
 			printf("- %s's House -", karakter->getName().c_str());
+			Console::resetColor();
 
 			playerStatus(karakter, vMonster);
 
@@ -1292,7 +1617,14 @@ public:
 			temporary.clear(); // clear dulu
 
 			// -------------- masukin data item ke temporary vector ---------------------
-			if (filterType > 0) // kalau di-filter
+			if (filterType == -1) // kalau filternya <Weapon and Shield>
+			{
+				for (int i = 0; i < inventSize; i++)
+				{
+					if (vInventory[i]->getType() > 4) temporary.push_back(vInventory[i]); // filter 5 dan 6
+				}
+			}
+			else if (filterType > 0) // kalau di-filter
 			{
 				for (int i = 0; i < inventSize; i++)
 				{
@@ -1336,7 +1668,7 @@ public:
 			vector<Item*>::iterator iter; // iterator untuk vector temporary (Item*)
 			int i = 1; // variable buat print index vector (tapi ini mulai dari 1, sedangkan vector mulai dari 0)
 			printf("\n");
-			printf("                                 - MY INVENTORY -\n");
+			printf("                                 - My Inventory -\n");
 			printf(" ======================================================================================\n");
 			printf(" %3s | %18s | %5s | %-28s | %10s | %6s\n", "No.", "ITEM NAME", "PRICE", "ITEM EFFECTS", "RESTRICTION", "TYPE");
 			printf(" ======================================================================================\n");
@@ -1363,7 +1695,7 @@ public:
 					Console::resetColor();
 					printf(" //\n\n");
 				}
-				else printf("\n                         // EMPTY INVENTORY //\n\n"); // kalau inventory kosong
+				else printf("\n                              // EMPTY INVENTORY //\n\n"); // kalau inventory kosong
 			}
 
 			for (iter = temporary.begin(); iter != temporary.end(); iter++, i++)
@@ -1399,6 +1731,7 @@ public:
 				else Console::resetColor();
 
 				printf(" %2d.   %18s  %6d   %-28s   %11s   %6s\n", i, (*iter)->getName().c_str(), (*iter)->getPrice(), (*iter)->getEffect().c_str(), restriction.c_str(), type.c_str());
+				Console::resetColor();
 			}
 			printf(" ======================================================================================\n");
 
@@ -1411,6 +1744,10 @@ public:
 			char* filterText[7] = { "NONE","HELMET","GLOVE","ARMOR","BOOTS","WEAPON","SHIELD" };
 			switch (filterType)
 			{
+			case -1:
+				color[5] = Console::COLOR_RED;
+				color[6] = Console::COLOR_YELLOW;
+				break;
 			case 0:
 				color[0] = Console::COLOR_GRAY;
 				break;
@@ -1455,7 +1792,7 @@ public:
 			cout << " to change filter)\n\n";
 			Console::setColor(Console::COLOR_WHITE);
 
-			// ////////////////////////////////////////////////////////////
+			
 
 			cout << " ========= Player Menu ========\n\n";
 			Console::setColor(Console::COLOR_WHITE);
@@ -1464,10 +1801,17 @@ public:
 			int flag = 0;
 			bool printFlag = true;
 			pickMenu = 0;
+			if (equipMenuActive || stillUnequiping<=5)pickMenu = -1; // kalau equipMenu lagi active, jgn highlight selection di player menu
 
 			int currY = Console::getCursorY();
 			bool sortA = false; // saat di menu pilihan sort, click 'a'
 			bool sortD = false; // saat di menu pilihan sort, click 'd' (SEBENERNYA GK PERLU, TAPI GPP, BUAT KONSISTENSI)
+
+			// //////////////////////////////////////////////////////////// lokasi kode ini gk boleh diubah
+			equipmentMenu(karakter, temporary, equipMenuActive, equipMenuState, filterType, equipMenuPrintOnly,stillUnequiping,1); // state 0 kalau mau print doang, state>0 saat ada yang sedang dipilih
+			equipMenuPrintOnly = false;
+			// ////////////////////////////////////////////////////////////
+
 			while (1)
 			{
 				if (printFlag)
@@ -1559,6 +1903,7 @@ public:
 				char buff = Console::getKeyPressed();
 				if (buff != -1)
 				{
+					if (equipMenuActive || stillUnequiping<=5)break; // menjaga tidak tombol yang tak sengaja ditekan
 					if (delayFlag)
 					{
 						if (buff == VK_UP || buff == 0x57) // 0x57 == 'w'
@@ -1600,10 +1945,20 @@ public:
 					}
 					else delayFlag++;
 				}
+				if (equipMenuActive || stillUnequiping<=5)break; // kalau lagi di equp menu, break aja
 			} // end while dalem
+
+			if (equipMenuActive || stillUnequiping<=5) // kalau lagi active, artinya sedang milih item. kalau stillUnequiping<=5, artinya lagi unequip
+			{
+				equipmentMenu(karakter, temporary, equipMenuActive,equipMenuState, filterType, equipMenuPrintOnly,stillUnequiping,2);
+				equipMenuPrintOnly = true;
+				sortType = 0; // jangan di-sort
+				continue;
+			}
 
 			if (flag == 1)
 			{
+				equipMenuPrintOnly = true;
 				continue; // (teken tab) filter ulang
 			}
 
@@ -1614,6 +1969,7 @@ public:
 			{
 			case 0: // sort item by...
 			{
+				equipMenuPrintOnly = true;
 				int maks;
 				if (filterType == 0) maks = 3;
 				else maks = 4;
@@ -1624,6 +1980,7 @@ public:
 				break;
 			case 1: // sell item
 			{
+				equipMenuPrintOnly = true;
 				if (temporary.size() == 0)
 				{
 					Console::setColor(Console::COLOR_RED);
@@ -1658,7 +2015,7 @@ public:
 					Console::setColor(Console::COLOR_RED);
 					printf("\n THAT ITEM IS CURRENTLY EQUIPPED!!!\n");
 					Console::setColor(Console::COLOR_GRAY);
-					printf(" (press enter to continue");
+					printf(" (press enter to continue)");
 					Console::resetColor();
 					Interface::pressEnterPlease();
 					continue; // ulang lagi
@@ -1783,12 +2140,15 @@ public:
 					printf("\n (Press enter to continue)");
 					pressEnterPlease();
 					Console::setColor(Console::COLOR_WHITE);
-					return;
+					continue;
 				}
 			}
 				break;
 			case 2: // eguipment menu
-				// NANTI PRINT DI SEBELAH KANAN PLAYER STATUS
+				// PRINT DI SEBELAH KANAN PLAYER STATUS
+				equipmentMenu(karakter, temporary, equipMenuActive,equipMenuState,filterType, equipMenuPrintOnly,stillUnequiping,3); // (state 0, sedang tidak active, tapi akan di-set ke active)
+				sortType = 0;
+				equipMenuPrintOnly = true;
 				break;
 			case 3: // exit
 				return;

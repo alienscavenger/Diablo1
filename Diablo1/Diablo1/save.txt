@@ -1,7 +1,7 @@
 Melvin
-2,2,1980300,1358,14,12,9,8
-3.0,96.0,12.0,154.0,190.0,178.0,0,1
-#Quilted Armor,400,AMR+1 EVA+10,3,0,0,0
+2,2,1900800,1358,14,8,9,4
+-37.0,88.0,-1.0,142.0,150.0,130.0,-3,1
+#Quilted Armor,400,AMR+1 EVA+10,3,0,0,1
 #Leather Armor,800,AMR+2 EVA+8,3,0,0,0
 #Hard Leather Armor,1200,AMR+3 EVA+6,3,0,0,0
 #Studded Armor,1400,AMR+4 EVA+4,3,0,0,0
@@ -33,7 +33,7 @@ Melvin
 #Boneweave Boots,5000,AMR+8 MST+80 MHP+80,4,3,0,0
 #Mirrored Boots,6000,AMR+10 STR+2 END+2,4,0,0,0
 #Myrmidon Boots,5500,AMR+12 MHP+50 MST+50,4,2,0,0
-#Leather Gloves,400,AMR+1 EVA+5,2,0,0,0
+#Leather Gloves,400,AMR+1 EVA+5,2,0,0,1
 #Heavy Gloves,800,AMR+2 EVA+3,2,0,0,0
 #Chain Gloves,1200,AMR+3 EVA+1,2,0,0,0
 #Light Gauntlets,2000,AMR+4,2,0,0,0
@@ -44,9 +44,9 @@ Melvin
 #Battle Gauntlets,5500,AMR+9 CTH+10,2,0,0,0
 #Ogre Gauntlets,8200,AMR+11 CTH+10 DMG+4,2,0,0,0
 #Crusader Gauntlets,18000,AMR+12 MHP+60 MST+60,2,2,0,0
-#Cap,300,AMR+1 EVA+4,1,0,0,0
-#Skullcap,600,AMR+2 EVA+3,1,0,0,0
-#Basinet,1200,AMR+3 EVA+2,1,0,0,0
+#Cap,300,AMR+1 EVA+4,1,0,0,1
+#Skullcap,600,AMR+2 EVA+3,1,0,0,1
+#Basinet,1200,AMR+3 EVA+2,1,0,0,1
 #Shako,1500,AMR+3 EVA+5 AGI+2 DEX+1,1,1,0,0
 #Full Helm,2000,AMR+6,1,0,0,0
 #Hydraskull,1900,AMR+4 STR+3 END+3 DMG+2,1,3,0,0
@@ -60,10 +60,10 @@ Melvin
 #Death Mask,8000,AMR+8 STR+3 MHP+50 CTH+10,1,0,0,0
 #Grim Helm,7200,AMR+6 DEX+3 EVA+10 CTH+10,1,0,0,0
 #Winged Helm,9000,AMR+12 END+2 MHP+60 MST+60,1,2,0,0
-#Grand Crown,6900,AMR+9 EVA+10 CTH+10,1,0,0,0
-#Buckler,600,AMR+2,6,0,0,0
-#Small Shield,1000,AMR+4,6,0,0,0
-#Large Shield,1500,AMR+6,6,0,0,0
+#Grand Crown,6900,AMR+9 EVA+10 CTH+10,1,0,0,1
+#Buckler,600,AMR+2,6,0,0,1
+#Small Shield,1000,AMR+4,6,0,0,1
+#Large Shield,1500,AMR+6,6,0,0,1
 #Kite Shield,2000,AMR+8,6,0,0,0
 #Spiked Shield,2200,AMR+4 END+4 DMG+2,6,3,0,0
 #Bone Shield,4500,AMR+8 END+8 MST+100 DMG+4,6,3,0,0
@@ -82,7 +82,7 @@ Melvin
 #Dirk,1200,DMG+5 EVA+4 DEX+2,5,0,0,0
 #Kris,2500,DMG+8 EVA+4 DEX+4,5,0,0,0
 #Blade,3200,DMG+10 EVA+4 DEX+5,5,0,0,0
-#Stilleto,4600,DMG+11 CTH+10 DEX+4,5,1,0,0
+#Stilleto,4600,DMG+11 CTH+10 DEX+4,5,1,0,1
 #Mithril Point,8000,DMG+15 CTH+12 EVA+4 DEX+4,5,1,0,0
 #Legend Blade,14000,DMG+20 CTH+15 EVA+10 DEX+5,5,0,0,0
 #Short Sword,400,DMG+5,5,0,0,0
@@ -91,10 +91,10 @@ Melvin
 #Falchion,3000,DMG+14,5,0,0,0
 #Broad Sword,5000,DMG+17,5,0,0,0
 #Long Sword,7000,DMG+20,5,0,0,0
-#Gladius,10000,DMG+24 END+4 DEX+2,5,2,0,0
-#Crystal Sword,13000,DMG+28 STR+4 DEX+2,5,2,0,0
-#Ancient Sword,16000,DMG+32 STR+4 END+2 DEX+2,5,2,0,0
-#Colossus Blade,22000,DMG+40 STR+4 END+4 DEX+4,5,2,0,0
+#Gladius,10000,DMG+24 END+4 DEX+2,5,2,0,1
+#Crystal Sword,13000,DMG+28 STR+4 DEX+2,5,2,0,1
+#Ancient Sword,16000,DMG+32 STR+4 END+2 DEX+2,5,2,0,1
+#Colossus Blade,22000,DMG+40 STR+4 END+4 DEX+4,5,2,0,1
 @Ghoul,2,300,22.0,90.0,4.0,73.0,132.0,99.0,2,1697.5,6,12,1
 @@Giant Spider,2,600,7.0,114.0,18.0,210.0,120.0,90.0,0,2683.0,8,16,0
 @@Vampire,4,800,30.0,109.0,8.0,112.0,142.0,100.0,1,4477.0,21,15,0
