@@ -1119,8 +1119,9 @@ public:
 					Console::setColor(Console::COLOR_RED);
 					printf(" You don't have that much gold!\n");
 					Console::setColor(COLOR_GREY);
-					printf(" (press enter to continue");
+					printf(" (press enter to continue)");
 					pressEnterPlease();
+					Console::resetColor();
 				}
 				else
 				{
@@ -1203,9 +1204,9 @@ public:
 
 				if(buy)
 				{
-					karakter->buyItem(temporary[index - 1]);
-					karakter->setGold(-1*(temporary[index - 1]->getPrice()));
-					Console::setColor(Console::COLOR_WHITE);
+					karakter->buyItem(temporary[index - 1]); // beli Itemnya
+					karakter->setGold(-1*(temporary[index - 1]->getPrice())); // kurangin gold sebanyak harga item nya
+					Console::setColor(Console::COLOR_GREEN);
 					printf("\n\n You have successfuly bought the item!\n");
 
 					Console::setColor(COLOR_GREY);

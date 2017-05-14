@@ -1832,8 +1832,10 @@ public:
 				}
 				levelCounter = add-1;
 			}
-			Console::setCursorPos(4, 11+levelCounter); printf("Press enter to continue...");
+			Console::setColor(GREY);
+			Console::setCursorPos(4, 11+levelCounter+1); printf("Press enter to continue...");
 			Interface::pressEnterPlease();
+			Console::resetColor();
 
 			if (levelCounter > 0) levelUpMenu(levelCounter, karakter);
 			system("cls");

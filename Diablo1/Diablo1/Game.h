@@ -31,9 +31,6 @@
 class Game
 {
 private:
-
-	friend class Interface; // supaya Interface bisa akses variable Game
-
 	// TEMPORARY VARIABLE:
 	// base:
 	float damage, hDamage; // kiri buat monster/item, kanan buat human
@@ -216,31 +213,6 @@ private:
 
 	// ----------------------------------------------------------------------------------------------------
 
-
-	// -------------------------------- SHOP FUNCTION ----------------------------------------------------
-	int filterType;
-	struct ComparePrice { // comparator sort buat harga (ascending)
-		bool operator()(Item* struct1, Item* struct2) {
-			return (struct1->getPrice() < struct2->getPrice());
-		}
-	};
-	struct CompareName { // comparator sort buat name (ascending)
-		bool operator()(Item* struct1, Item* struct2) {
-			return (struct1->getName() < struct2->getName());
-		}
-	};
-	struct CompareArmor { // comparator sort buat armor (descending)
-		bool operator()(Item* struct1, Item* struct2) {
-			return (struct1->getArmor() > struct2->getArmor());
-		}
-	};
-	struct CompareDamage { // comparator sort buat armor (descending)
-		bool operator()(Item* struct1, Item* struct2) {
-			return (struct1->getDamage() < struct2->getDamage());
-		}
-	};
-	// -------------------------------------------------------------------------------------------------
-	
 public:
 	Game() // constructor
 	{
