@@ -816,10 +816,10 @@ public:
 			vector<Item*>::iterator iter; // iterator untuk vector temporary (Item*)
 			int i = 1; // variable buat print index vector (tapi ini mulai dari 1, sedangkan vector mulai dari 0)
 			printf("\n");
-			printf("                          - TRISTAM SHOP -\n");
-			printf(" =======================================================================\n");
-			printf(" %3s %18s %7s %28s %10s\n", "No.", "ITEM NAME", "PRICE", "ITEM EFFECTS", "RESTRICTION");
-			printf(" =======================================================================\n");
+			printf("                                 - TRISTAM SHOP -\n");
+			printf(" ======================================================================================\n");
+			printf(" %3s | %18s | %5s | %-28s | %10s | %6s\n", "No.", "ITEM NAME", "PRICE", "ITEM EFFECTS", "RESTRICTION","TYPE");
+			printf(" ======================================================================================\n");
 
 			for (iter = temporary.begin(); iter != temporary.end(); iter++, i++)
 			{
@@ -829,10 +829,32 @@ public:
 				else if (res == 1) restriction = "Assassin";
 				else if (res == 2) restriction = "Paladin";
 				else if (res == 3) restriction = "Barbarian";
+				
+				
+				/*
+				type 0 = GAADA
+				type 1 = helmet
+				type 2 = gloves
+				type 3 = armor
+				type 4 = boots
+				type 5 = weapon
+				type 6 = shield
+				*/
+				string type;
+				int tmp = (*iter)->getType();
+				switch (tmp)
+				{
+				case 1: type = "Helmet"; break;
+				case 2: type = "Gloves"; break;
+				case 3: type = "Armor"; break;
+				case 4: type = "Boots"; break;
+				case 5: type = "Weapon"; break;
+				case 6: type = "Shield"; break;
+				}
 
-				printf(" %2d. %18s %7d %28s %11s\n", i, (*iter)->getName().c_str(), (*iter)->getPrice(), (*iter)->getEffect().c_str(), restriction.c_str());
+				printf(" %2d.   %18s  %6d   %-28s   %11s   %6s\n", i, (*iter)->getName().c_str(), (*iter)->getPrice(), (*iter)->getEffect().c_str(), restriction.c_str(), type.c_str());
 			}
-			printf(" =======================================================================\n");
+			printf(" ======================================================================================\n");
 
 			//-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1242,10 +1264,10 @@ public:
 		}
 		else
 		{
-			printf("                          - MY INVENTORY -\n");
-			printf(" =======================================================================\n");
-			printf(" %3s %18s %7s %28s %10s\n", "No.", "ITEM NAME", "PRICE", "ITEM EFFECTS", "RESTRICTION");
-			printf(" =======================================================================\n");
+			printf("                               - MY INVENTORY -\n");
+			printf(" ======================================================================================\n");
+			printf(" %3s | %18s | %5s | %-28s | %10s | %6s\n", "No.", "ITEM NAME", "PRICE", "ITEM EFFECTS", "RESTRICTION", "TYPE");
+			printf(" ======================================================================================\n");
 
 			int i = 1;
 			for (auto iter = karakter->getInventory().begin(); iter != karakter->getInventory().end(); iter++, i++)
@@ -1257,10 +1279,33 @@ public:
 				else if (res == 2) restriction = "Paladin";
 				else if (res == 3) restriction = "Barbarian";
 
-				printf(" %2d. %18s %7d %28s %11s\n", i, (*iter)->getName().c_str(), (*iter)->getPrice(), (*iter)->getEffect().c_str(), restriction.c_str());
-			}
-			printf(" =======================================================================\n");
 
+				/*
+				type 0 = GAADA
+				type 1 = helmet
+				type 2 = gloves
+				type 3 = armor
+				type 4 = boots
+				type 5 = weapon
+				type 6 = shield
+				*/
+				string type;
+				int tmp = (*iter)->getType();
+				switch (tmp)
+				{
+				case 1: type = "Helmet"; break;
+				case 2: type = "Gloves"; break;
+				case 3: type = "Armor"; break;
+				case 4: type = "Boots"; break;
+				case 5: type = "Weapon"; break;
+				case 6: type = "Shield"; break;
+				}
+
+				printf(" %2d.   %18s  %6d   %-28s   %11s   %6s\n", i, (*iter)->getName().c_str(), (*iter)->getPrice(), (*iter)->getEffect().c_str(), restriction.c_str(), type.c_str());
+			}
+			printf(" ======================================================================================\n");
+
+			//-----------------------------------------------------------------------------------------------------------------------------------------------------------
 		}
 	}
 };
