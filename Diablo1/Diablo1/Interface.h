@@ -45,7 +45,103 @@ private:
 	};
 	// -------------------------------------------------------------------------------------------------
 
+	static void changeRed() { Console::setColor(Console::COLOR_RED); }
+	static void changeGreen() { Console::setColor(Console::COLOR_GREEN); }
+	static void resetColor() { Console::resetColor(); }
+	static void setPos(int x, int y) { Console::setCursorPos(x, y); }
 public:
+	static int getInt(int min, int max)
+	{
+		int x = Console::getCursorX()+1;
+		int y = Console::getCursorY(); 
+
+		stringstream output;
+		int output_int;
+		string out;
+		char buff;
+		Console::setCursorPos(x, y);
+		while (1)
+		{
+			buff = _getch();
+			if (buff == VK_RETURN)
+			{
+				if (out.size() > 0)
+				{
+					out.push_back('\n');
+					break;
+				}
+				else continue;
+			}
+			if (buff == VK_BACK)
+			{
+				if (out.size() > 0) // backspace kalau di dalem string out ada isinya
+				{
+					out.pop_back();
+					printf("\b \b");
+				}
+				continue;
+			}
+			if (buff == VK_ESCAPE) continue;
+			if (isalnum(buff))
+			{
+				out.push_back(buff);
+				printf("%c", buff);
+			}
+		}
+		output << out;
+		output >> output_int;
+
+		while(output.fail() || output_int<min || output_int>max)
+		{
+			// flush
+			{
+				output.clear();
+				output.ignore(10000000, '\n');
+				output.sync();
+				output.clear();
+				int counter = out.size();
+				for (int i = 0; i < counter; i++) printf("\b \b");
+				out.clear();
+				Console::setCursorPos(x, y);
+				Console::setColor(Console::COLOR_RED);
+				printf("INVALID INPUT!");
+				Console::delay(500);
+				Console::setCursorPos(x, y);
+				printf("               ");
+				Console::resetColor();
+			}
+			Console::setCursorPos(x, y);
+			// ulang lagi
+			while (1)
+			{
+				buff = _getch();
+				if (buff == VK_RETURN)
+				{
+					if (out.size() > 0)
+					{
+						out.push_back(buff);
+						break;
+					}
+					else continue;
+				}
+				if (buff == VK_BACK)
+				{
+					if (out.size() > 0) // backspace kalau di dalem string out ada isinya
+					{
+						out.pop_back();
+						printf("\b \b");
+					}
+					continue;
+				}
+				out.push_back(buff);
+				printf("%c", buff);
+			}
+			output << out;
+			output >> output_int;
+		}
+
+		return output_int;
+	}
 	static void pressEnterPlease()
 	{
 		while (1)
@@ -933,6 +1029,7 @@ public:
 			int currY = Console::getCursorY();
 			bool sortA = false; // saat di menu pilihan sort, click 'a'
 			bool sortD = false; // saat di menu pilihan sort, click 'd' (SEBENERNYA GK PERLU, TAPI GPP, BUAT KONSISTENSI)
+			delayFlag = 0;
 			while (1)
 			{	
 				if (printFlag)
@@ -1105,17 +1202,7 @@ public:
 					Console::setCursorVisibility(true);
 					printf("\n\n");
 					printf(" Input item number to buy ( 0 = cancel) [ 0 to %d ]: ", temporarySize);
-					cin >> index;
-					while (cin.fail() || index<0 || index>temporarySize)
-					{
-						flush();
-						Console::setColor(Console::COLOR_RED);
-						cout << " INVALID INPUT\n";
-						Console::setColor(Console::COLOR_WHITE);
-						printf(" Input item number to buy ( 0 = cancel) [ 0 to %d ]: ", temporarySize);
-						cin >> index;
-					}
-					flush();
+					index = Interface::getInt(0, temporarySize);
 
 					if (index == 0)
 					{
@@ -1212,7 +1299,7 @@ public:
 						Console::setColor(Console::COLOR_WHITE);
 						printf(" Are you sure you want to buy it?\n ");
 						int pickWhat = 0;
-						int bufferDelay = 1;
+						int bufferDelay = 0;
 						bool flagPrint = true;
 						int currY = Console::getCursorY();
 						while (1)
@@ -1282,7 +1369,7 @@ public:
 				{
 					Console::setColor(Console::COLOR_RED);
 					printf("\n\n No Item detected!");
-					Console::delay(1000);
+					Console::delay(700);
 					Console::resetColor();
 					continue;
 				}
@@ -1301,12 +1388,333 @@ public:
 		} // end while luar
 	}
 
+	static void printDiff(int doWhat,Human*& karakter, vector<Item*>temporary, int equipIndex, int itemIndex)
+	{
+		/*
+			doWhat 0 = reset (gk kasih liatin difference nya)
+			doWhat 1 = diff when equip
+			doWhat 2 = diff when unequip
+		*/
+		Item x = *temporary[itemIndex]; // local variable Item
+		Human compare = *karakter; // local variable Human
+		if (doWhat == 0)
+		{
+			resetColor();
+			for (int i = 0; i < 4; i++)
+			{
+				setPos(15, 8 + i);
+				printf("       ");
+			}
+			setPos(41, 8);
+			printf("       ");
+			for (int i = 0; i < 2; i++)
+			{
+				setPos(42, 9 + i);
+				printf("       ");
+			}
+			for (int i = 0; i < 4; i++)
+			{
+				setPos(41, 11 + i);
+				printf("       ");
+			}
+		}
+		else
+		{
+			if (doWhat == 1)
+			{
+				Item* temp = NULL;
+				if (compare.getEquipStatus(equipIndex)) // kalau lagi ada yang di-equip, maka harus di-unequip dulu
+				{
+					temp = karakter->getEquipment(equipIndex); // buat ntar di-reequip. Soalnya, pas unequip item,bakal di setEquip ke 0
+					if (temp == temporary[itemIndex])return; // kalau yang di-compare sama dengan yang sedang di-equip
+					compare.unequipItem(equipIndex); // kalau sudah ada yg di-equip, maka unequip itu (secara implicit, manggil setEquip di item itu)
+					
+				}
+				compare.equipItem(equipIndex,&x); // equip yang baru
+				if(temp!=NULL)temp->setEquip(1); // di-set ke equipped lagi item yang lama (urutannya jgn dibalik sama setEquip yang di atas, karena bisa jadi item lama = item baru)
+			}
+			else if (doWhat == 2)
+			{
+				if (compare.getEquipStatus(equipIndex)) // kalau lagi ada yang di-equip
+				{
+					Item* temp = karakter->getEquipment(equipIndex);
+					compare.unequipItem(equipIndex);
+					temp->setEquip(1); // set equipped untuk karakter utama;
+				}
+				else return;
+			}
+
+			int str = compare.getStrength() - karakter->getStrength();
+			int end = compare.getEndurance() - karakter->getEndurance();
+			int agi = compare.getAgility() - karakter->getAgility();
+			int dex = compare.getDexterity() - karakter->getDexterity();
+			int dmg = compare.getDamage() - karakter->getDamage();
+			int cth = floor(compare.getChanceToHit() - karakter->getChanceToHit());
+			int eva = floor(compare.getEvade() - karakter->getEvade());
+			int spd = floor(compare.getSpeed() - karakter->getSpeed());
+			int hp = floor(compare.getMaxHealth() - karakter->getMaxHealth());
+			int sta = floor(compare.getMaxStamina() - karakter->getMaxStamina());
+			int amr = compare.getArmor() - karakter->getArmor();
+
+			resetColor();
+			if (str < 0)
+			{
+				setPos(12, 8);
+				printf("%3d ", karakter->getStrength());
+				resetColor();
+				printf("(");
+				changeRed();
+				printf("%d", str);
+				resetColor();
+				printf(")");
+			}
+			else if (str > 0)
+			{
+				setPos(12, 8);
+				printf("%3d ", karakter->getStrength());
+				resetColor();
+				printf("(");
+				changeGreen();
+				printf("+%d", str);
+				resetColor();
+				printf(")");
+
+			}
+			if (end < 0)
+			{
+				setPos(12, 9);
+				printf("%3d ", karakter->getEndurance());
+				resetColor();
+				printf("(");
+				changeRed();
+				printf("%d", end);
+				resetColor();
+				printf(")");
+			}
+			else if (end > 0)
+			{
+				setPos(12, 9);
+				printf("%3d ", karakter->getEndurance());
+				resetColor();
+				printf("(");
+				changeGreen();
+				printf("+%d", end);
+				resetColor();
+				printf(")");
+			}
+			if (agi < 0)
+			{
+				setPos(12, 10);
+				printf("%3d ", karakter->getAgility());
+				resetColor();
+				printf("(");
+				changeRed();
+				printf("%d", agi);
+				resetColor();
+				printf(")");
+			}
+			else if (agi > 0)
+			{
+				setPos(12, 10);
+				printf("%3d ", karakter->getAgility());
+				resetColor();
+				printf("(");
+				changeGreen();
+				printf("+%d", agi);
+				resetColor();
+				printf(")");
+			}
+			if (dex < 0)
+			{
+				setPos(12, 11);
+				printf("%3d ", karakter->getDexterity());
+				resetColor();
+				printf("(");
+				changeRed();
+				printf("%d", dex);
+				resetColor();
+				printf(")");
+			}
+			else if (dex > 0)
+			{
+				setPos(12, 11);
+				printf("%3d ", karakter->getDexterity());
+				resetColor();
+				printf("(");
+				changeGreen();
+				printf("+%d", dex);
+				resetColor();
+				printf(")");
+			}
+			if (dmg < 0)
+			{
+				setPos(38, 8);
+				printf("%3.0f ", karakter->getDamage());
+				resetColor();
+				printf("(");
+				changeRed();
+				printf("%d", dmg);
+				resetColor();
+				printf(")");
+			}
+			else if (dmg > 0)
+			{
+				setPos(38, 8);
+				printf("%3.0f ", karakter->getDamage());
+				resetColor();
+				printf("(");
+				changeGreen();
+				printf("+%d", dmg);
+				resetColor();
+				printf(")");
+			}
+			if (cth < 0)
+			{
+				setPos(38, 9);
+				printf("%3.0f%% ", karakter->getChanceToHit());
+				resetColor();
+				printf("(");
+				changeRed();
+				printf("%d", cth);
+				resetColor();
+				printf(")");
+			}
+			else if (cth > 0)
+			{
+				setPos(38, 9);
+				printf("%3.0f%% ", karakter->getChanceToHit());
+				resetColor();
+				printf("(");
+				changeGreen();
+				printf("+%d", cth);
+				resetColor();
+				printf(")");
+			}
+			if (eva < 0)
+			{
+				setPos(38, 10);
+				printf("%3.0f%% ", karakter->getEvade());
+				resetColor();
+				printf("(");
+				changeRed();
+				printf("%d", eva);
+				resetColor();
+				printf(")");
+			}
+			else if (eva > 0)
+			{
+				setPos(38, 10);
+				printf("%3.0f%% ", karakter->getEvade());
+				resetColor();
+				printf("(");
+				changeGreen();
+				printf("+%d", eva);
+				resetColor();
+				printf(")");
+			}
+			if (spd < 0)
+			{
+				setPos(38, 11);
+				printf("%3.0f ", karakter->getSpeed());
+				resetColor();
+				printf("(");
+				changeRed();
+				printf("%d", spd);
+				resetColor();
+				printf(")");
+			}
+			else if (spd > 0)
+			{
+				setPos(38, 11);
+				printf("%3.0f ", karakter->getSpeed());
+				resetColor();
+				printf("(");
+				changeGreen();
+				printf("+%d", eva);
+				resetColor();
+				printf(")");
+			}
+			if (hp < 0)
+			{
+				setPos(38, 12);
+				printf("%3.0f ", karakter->getMaxHealth());
+				resetColor();
+				printf("(");
+				changeRed();
+				printf("%d", hp);
+				resetColor();
+				printf(")");
+			}
+			else if (hp > 0)
+			{
+				setPos(38, 12);
+				printf("%3.0f ", karakter->getMaxHealth());
+				resetColor();
+				printf("(");
+				changeGreen();
+				printf("+%d", hp);
+				resetColor();
+				printf(")");
+			}
+			if (sta < 0)
+			{
+				setPos(38, 13);
+				printf("%3.0f ", karakter->getMaxStamina());
+				resetColor();
+				printf("(");
+				changeRed();
+				printf("%d", sta);
+				resetColor();
+				printf(")");
+			}
+			else if (sta > 0)
+			{
+				setPos(38, 13);
+				printf("%3.0f ", karakter->getMaxStamina());
+				resetColor();
+				printf("(");
+				changeGreen();
+				printf("+%d", sta);
+				resetColor();
+				printf(")");
+			}
+			if (amr < 0)
+			{
+				setPos(38, 14);
+				printf("%3d ", karakter->getArmor());
+				resetColor();
+				printf("(");
+				changeRed();
+				printf("%d", amr);
+				resetColor();
+				printf(")");
+			}
+			else if (amr > 0)
+			{
+				setPos(38, 14);
+				printf("%3d ", karakter->getArmor());
+				resetColor();
+				printf("(");
+				changeGreen();
+				printf("+%d", amr);
+				resetColor();
+				printf(")");
+			}
+			Console::setCursorPos(0, 18);
+			// di bawah ini buat debug
+			/*printf("(str=%d,end=%d,agi=%d,dex=%d,dmg=%d,cth=%d,eva=%d,spd=%d,hp=%d,sta=%d,amr=%d)", str, end, agi, dex, dmg, cth, eva, spd, hp, sta, amr);
+			printf("(\nstr=%d,end=%d,agi=%d,dex=%d,dmg=%.0f,cth=%.0f,eva=%.0f,spd=%.0f,hp=%.0f,sta=%.0f,amr=%d)",
+				compare.getStrength(), compare.getEndurance(), compare.getAgility(), compare.getDexterity(), compare.getDamage(), compare.getChanceToHit(),
+				compare.getEvade(), compare.getSpeed(), compare.getMaxHealth(), compare.getMaxStamina(), compare.getArmor());*/
+		}
+	}
+
 	static void equipmentMenu(Human*& karakter,vector<Item*>temporary, bool& active, int& state, int& filterType, bool& print, int& stillUnequiping, int which)
 	{
 		// int which -> CUMAN BUAT DEBUG
 		Console::resetColor();
 		Console::setCursorPos(50, 2);
-		printf("============== Character Equipment ==============");
+		printf("============== Character Equipment ==============",which);
 
 		if (print) // kalau print doang
 		{
@@ -1353,18 +1761,7 @@ public:
 						printf("Select item to equip (0=cancel) [0 to %d]:", maxItem);
 						Console::resetColor();
 						Console::setCursorVisibility(true);
-						cin >> equipThis;
-						while (cin.fail() || equipThis<0 || equipThis>maxItem)
-						{
-							Interface::flush();
-							Console::setCursorPos(50, 17);
-							printf("INVALID INPUT!");
-							Console::setCursorPos(91, 16);
-							printf("                      ");
-							Console::setCursorPos(91, 16);
-							cin >> equipThis;
-						}
-						Interface::flush();
+						equipThis = Interface::getInt(0,maxItem);
 						Console::setCursorVisibility(false);
 
 						Console::setCursorPos(50, 17);
@@ -1377,7 +1774,23 @@ public:
 							print = true;
 							return;
 						}
-						if (temporary[equipThis - 1]->getRestriction() > 0 && temporary[equipThis - 1]->getRestriction() != karakter->getJob())
+						if (temporary[equipThis - 1]->getEquipped())
+						{
+							printf("YOU ARE CURRENTLY EQUIPPING THIS!");
+							Console::setCursorPos(50, 18);
+							Console::setColor(Console::COLOR_GRAY);
+							printf("(Press enter to continue)");
+							Interface::pressEnterPlease();
+							Console::resetColor();
+							Console::setCursorPos(91, 16);
+							printf("                       ");
+							Console::setCursorPos(50, 18);
+							printf("                         ");
+							Console::setCursorPos(50, 17);
+							printf("                                         ");
+							continue;
+						}
+						else if (temporary[equipThis - 1]->getRestriction() > 0 && temporary[equipThis - 1]->getRestriction() != karakter->getJob())
 						{
 							printf("YOU CANNOT EQUIP THIS! (see Restriction)");
 							Console::setCursorPos(50, 18);
@@ -1395,9 +1808,11 @@ public:
 						}
 						else
 						{
-							printf("Are you sure you want to equip this? ");
+							printDiff(1,karakter, temporary, state, equipThis - 1);
+							Console::setCursorPos(50, 17);
+							printf("Are you sure you want to equip *%s*? ",temporary[equipThis-1]->getName().c_str());
 							int pickWhat = 0;
-							int bufferDelay = 1;
+							int bufferDelay = 0;
 							bool flagPrint = true;
 							int currY = Console::getCursorY();
 							int currX = Console::getCursorX();
@@ -1451,7 +1866,24 @@ public:
 							} // end while
 							if (equip)
 							{
-								karakter->equipItem(state, temporary[equipThis - 1]);
+								if (state == 2 && temporary[equipThis-1]->getType()==5 && !(karakter->getEquipStatus(3))) // kalau sedang equip weapon di left hand, tapi tangan kanan masih kosong
+								{
+									// prioritaskan tangan kanan
+									Console::setColor(Console::COLOR_CYAN);
+									Console::setCursorPos(50, 18);
+									printf("RIGHT HAND IS EMPTY! EQUIPPING IN RIGHT HAND...");
+									state = 3;
+									Console::setCursorPos(50, 19);
+									Console::setColor(Console::COLOR_GRAY);
+									printf("(Press enter to continue)");
+									Interface::pressEnterPlease();
+									Console::resetColor();
+								}
+								else if (karakter->getEquipStatus(state))
+								{
+									karakter->unequipItem(state);
+								}
+								karakter->equipItem(state,temporary[equipThis - 1]);
 								active = false;
 								state = 0;
 								filterType = 0;
@@ -1460,11 +1892,14 @@ public:
 							}
 							else
 							{
+								printDiff(0, karakter, temporary, 0, 0);
 								Console::resetColor();
 								Console::setCursorPos(91, 16);
 								printf("                      ");
 								Console::setCursorPos(50, 17);
-								printf("                                               ");
+								printf("                                                      ");
+								Console::setCursorPos(currX, currY);
+								printf("          ");
 								continue;
 							}
 						} // end else
@@ -1531,6 +1966,8 @@ public:
 				{
 					if (printFlag)
 					{
+						printDiff(0, karakter, temporary, 0, 0);//reset yang sebelumnya ada aja)
+						printDiff(2, karakter, temporary, pickMenu+1, 0);//print perbedaannya
 						int color[7];
 						for (int i = 0; i < 7; i++) color[i] = Console::COLOR_WHITE;
 						color[pickMenu] = 79; // highlight merah, text putih
@@ -1571,7 +2008,7 @@ public:
 								if (pickMenu < 6 && karakter->getEquipStatus(pickMenu+1)) // kalau menu bukan di 'back', dan ada yang sedang di-equip
 								{
 									//unequip
-									karakter->unequipItem(pickMenu + 1, karakter->getEquipment(pickMenu + 1));
+									karakter->unequipItem(pickMenu + 1);
 									stillUnequiping = pickMenu;
 									print = true;
 									break;
@@ -1619,9 +2056,282 @@ public:
 						else delayFlag++;
 					}
 				} // end while
+				printDiff(0, karakter, temporary, 0, 0);//reset yang sebelumnya ada aja)
 
 			} // end else kalau gk active
 		} // end else luar
+	}
+
+	static void compareEquipment(Human*& karakter, vector<Item*>temporary)
+	{
+		Console::setCursorPos(20, 17);
+		Console::setColor(Console::COLOR_GREEN);
+		printf("<COMPARE CURRENTLY EQUIPPED WITH THE SELECTED ITEM>");
+		Console::setCursorPos(8, 18);
+		Console::setColor(Console::COLOR_GREEN);
+		printf("<tab> ");
+		Console::resetColor();
+		printf("<Camera: ");
+		Console::setColor(Console::COLOR_YELLOW);
+		printf("DYNAMIC ");
+		Console::resetColor();
+		printf(", compare");
+		Console::setColor(Console::COLOR_YELLOW);
+		printf(" LEFT HAND ");
+		Console::resetColor();
+		printf("when there's 2 weapon> ");
+		Console::setColor(Console::COLOR_GREEN);
+		printf("<enter>     ");
+		Console::resetColor();
+
+		Console::setCursorPos(0, 23);
+		Console::resetColor();
+		int size = temporary.size();
+		int printDelay = 0;
+		bool printFlag = true;
+		int leftHand = 1;
+		int i = 0;
+		int fixedCamera = 0;
+		while (1)
+		{
+			if (printFlag)
+			{
+				Console::setCursorPos(0, 23 + i);
+				
+				int res = temporary[i]->getRestriction();
+				string restriction;
+				if (res == 0) restriction = "-";
+				else if (res == 1) restriction = "Assassin";
+				else if (res == 2) restriction = "Paladin";
+				else if (res == 3) restriction = "Barbarian";
+
+				string type;
+				int tmp = temporary[i]->getType();
+				switch (tmp)
+				{
+				case 1: type = "Helmet"; break;
+				case 2: type = "Gloves"; break;
+				case 3: type = "Armor"; break;
+				case 4: type = "Boots"; break;
+				case 5: type = "Weapon"; break;
+				case 6: type = "Shield"; break;
+				}
+
+				if (temporary[i]->getEquipped())Console::setColor(94);
+				else Console::setColor(78);
+
+				printf(" %2d.   %18s  %6d   %-28s   %11s   %6s\n",i+1,temporary[i]->getName().c_str(),temporary[i]->getPrice(),
+					temporary[i]->getEffect().c_str(), restriction.c_str(), type.c_str());
+				
+				int index;
+				switch(temporary[i]->getType())
+				{
+				case 1:
+					index = 1;
+					break;
+				case 2:
+					index = 4;
+					break;
+				case 3:
+					index = 5;
+					break;
+				case 4:
+					index = 6;
+					break;
+				case 5:
+				{
+					// kalau tangan kiri kosong atau tangan kiri ada shield, cek tangan kanan
+					if (!(karakter->getEquipStatus(2)) || (karakter->getEquipment(2)->getType()==2)) { index = 3; }
+					else
+					{
+						// kalau kiri kanan weapon
+						if (leftHand)index = 2;
+						else index = 3;
+					}
+					break;
+				}
+				break;
+				case 6:
+					index = 2;
+					break;
+				}
+				printDiff(0, karakter, temporary, 0, 0);
+				printDiff(1, karakter, temporary, index, i);
+				if(fixedCamera)Console::setCursorPos(0, 0); // supaya gk loncat" cameranya
+				else Console::setCursorPos(0, 23 + i);
+				printFlag = false;
+			}
+			char buff = Console::getKeyPressed();
+			if (buff != -1)
+			{
+				if (printDelay)
+				{
+					if (buff == VK_UP || buff == 0x57) // 0x57 == 'w'
+					{
+						// reset warna sebelumnya ke putih/highlight merah dulu
+						{
+							if (temporary[i]->getEquipped())Console::setColor(79);
+							else Console::resetColor();
+							Console::setCursorPos(0, 23 + i);
+
+							int res = temporary[i]->getRestriction();
+							string restriction;
+							if (res == 0) restriction = "-";
+							else if (res == 1) restriction = "Assassin";
+							else if (res == 2) restriction = "Paladin";
+							else if (res == 3) restriction = "Barbarian";
+
+							string type;
+							int tmp = temporary[i]->getType();
+							switch (tmp)
+							{
+							case 1: type = "Helmet"; break;
+							case 2: type = "Gloves"; break;
+							case 3: type = "Armor"; break;
+							case 4: type = "Boots"; break;
+							case 5: type = "Weapon"; break;
+							case 6: type = "Shield"; break;
+							}
+							printf(" %2d.   %18s  %6d   %-28s   %11s   %6s\n", i + 1, temporary[i]->getName().c_str(), temporary[i]->getPrice(),
+								temporary[i]->getEffect().c_str(), restriction.c_str(), type.c_str());
+						}
+						i = (i - 1 + size) % size;
+						printFlag = true;
+					}
+					else if (buff == VK_DOWN || buff == 0x53) // 0x53 == 's'
+					{
+						// reset warna sebelumnya ke putih/highlight dulu
+						{
+							if (temporary[i]->getEquipped())Console::setColor(79);
+							else Console::resetColor();
+							Console::setCursorPos(0, 23 + i);
+
+							int res = temporary[i]->getRestriction();
+							string restriction;
+							if (res == 0) restriction = "-";
+							else if (res == 1) restriction = "Assassin";
+							else if (res == 2) restriction = "Paladin";
+							else if (res == 3) restriction = "Barbarian";
+
+							string type;
+							int tmp = temporary[i]->getType();
+							switch (tmp)
+							{
+							case 1: type = "Helmet"; break;
+							case 2: type = "Gloves"; break;
+							case 3: type = "Armor"; break;
+							case 4: type = "Boots"; break;
+							case 5: type = "Weapon"; break;
+							case 6: type = "Shield"; break;
+							}
+							printf(" %2d.   %18s  %6d   %-28s   %11s   %6s\n", i + 1, temporary[i]->getName().c_str(), temporary[i]->getPrice(),
+								temporary[i]->getEffect().c_str(), restriction.c_str(), type.c_str());
+						}
+						i = (i + 1) % size;
+						printFlag = true;
+					}
+					else if (buff == VK_TAB)
+					{
+						fixedCamera = (fixedCamera + 1) % 2; // toggle fixed camera
+						if (fixedCamera)Console::setCursorPos(0, 0); // supaya gk loncat" cameranya
+						else Console::setCursorPos(0, 23 + i);
+						Console::setCursorPos(8, 18);
+						Console::setColor(Console::COLOR_GREEN);
+						printf("<tab> ");
+						Console::resetColor();
+						if (fixedCamera)
+						{
+							printf("<Camera: ");
+							Console::setColor(Console::COLOR_YELLOW);
+							printf("FIXED");
+							Console::resetColor();
+						}
+						else
+						{
+							printf("<Camera: ");
+							Console::setColor(Console::COLOR_YELLOW);
+							printf("DYNAMIC");
+						}
+						if (leftHand)
+						{
+							Console::resetColor();
+							printf(", compare");
+							Console::setColor(Console::COLOR_YELLOW);
+							printf(" LEFT HAND ");
+							Console::resetColor();
+							printf("when there's 2 weapon> ");
+							Console::setColor(Console::COLOR_GREEN);
+							printf("<enter>     ");
+							Console::resetColor();
+						}
+						else
+						{
+							Console::resetColor();
+							printf(", compare");
+							Console::setColor(Console::COLOR_YELLOW);
+							printf(" RIGHT HAND ");
+							Console::resetColor();
+							printf("when there's 2 weapon> ");
+							Console::setColor(Console::COLOR_GREEN);
+							printf("<enter>     ");
+							Console::resetColor();
+						}
+					}
+					else if (buff == VK_RETURN)
+					{
+						leftHand = (leftHand + 1) % 2;
+						Console::setCursorPos(8, 18);
+						Console::setColor(Console::COLOR_GREEN);
+						printf("<tab> ");
+						Console::resetColor();
+						if (fixedCamera)
+						{
+							printf("<Camera: ");
+							Console::setColor(Console::COLOR_YELLOW);
+							printf("FIXED");
+							Console::resetColor();
+						}
+						else
+						{
+							printf("<Camera: ");
+							Console::setColor(Console::COLOR_YELLOW);
+							printf("DYNAMIC");
+						}
+						if (leftHand)
+						{
+							Console::resetColor();
+							printf(", compare");
+							Console::setColor(Console::COLOR_YELLOW);
+							printf(" LEFT HAND ");
+							Console::resetColor();
+							printf("when there's 2 weapon> ");
+							Console::setColor(Console::COLOR_GREEN);
+							printf("<enter>     ");
+							Console::resetColor();
+						}
+						else
+						{
+							Console::resetColor();
+							printf(", compare");
+							Console::setColor(Console::COLOR_YELLOW);
+							printf(" RIGHT HAND ");
+							Console::resetColor();
+							printf("when there's 2 weapon> ");
+							Console::setColor(Console::COLOR_GREEN);
+							printf("<enter>     ");
+							Console::resetColor();
+						}
+					}
+					else if (buff == VK_ESCAPE)
+					{
+						break;
+					}
+					printDelay = 0;
+				}
+				else printDelay++;
+			}
+		}
+		Console::resetColor();
 	}
 
 	static void playerStatus(Human*& karakter, vector<Monster>& vMonster) // print player status
@@ -1684,7 +2394,8 @@ public:
 						  0 = Sort Items
 						  1 = Sell Item
 						  2 = My Equipment
-						  3 = Exit
+						  3 = Compare Equipment
+						  4 = Exit
 						  */
 
 		while (1) // print/update terus selama belum beli/exit dan masih filter/sort
@@ -1890,7 +2601,7 @@ public:
 			int flag = 0;
 			bool printFlag = true;
 			pickMenu = 0;
-			if (equipMenuActive || stillUnequiping<=5)pickMenu = -1; // kalau equipMenu lagi active, jgn highlight selection di player menu
+			if (equipMenuActive || stillUnequiping<=5) pickMenu = -1; // kalau equipMenu lagi active, jgn highlight selection di player menu
 
 			int currY = Console::getCursorY();
 			bool sortA = false; // saat di menu pilihan sort, click 'a'
@@ -1982,7 +2693,21 @@ public:
 
 					Console::setColor(Console::COLOR_WHITE);
 					printf("\n ");
-					if (pickMenu == 3) Console::setColor(79);
+					if (temporary.size() == 0)
+					{
+						if (pickMenu == 3) Console::setColor(72); // highlight merah, text abu"
+						else Console::setColor(Console::COLOR_GRAY);
+					}
+					else
+					{
+						if (pickMenu == 3) Console::setColor(79);
+						else Console::setColor(Console::COLOR_WHITE);
+					}
+					cout << "COMPARE EQUIPMENT";
+
+					Console::setColor(Console::COLOR_WHITE);
+					printf("\n ");
+					if (pickMenu == 4) Console::setColor(79);
 					else Console::setColor(Console::COLOR_WHITE);
 					cout << "EXIT";
 
@@ -1997,12 +2722,12 @@ public:
 					{
 						if (buff == VK_UP || buff == 0x57) // 0x57 == 'w'
 						{
-							pickMenu = (pickMenu - 1 + 4) % 4;
+							pickMenu = (pickMenu - 1 + 5) % 5;
 							printFlag = true;
 						}
 						else if (buff == VK_DOWN || buff == 0x53) // 0x53 == 's'
 						{
-							pickMenu = (pickMenu + 1) % 4;
+							pickMenu = (pickMenu + 1) % 5;
 							printFlag = true;
 						}
 						else if (buff == VK_TAB)
@@ -2053,7 +2778,7 @@ public:
 
 			int index;
 			int temporarySize = temporary.size();
-			bool buy = false;
+			bool sell = false;
 			switch (pickMenu)
 			{
 			case 0: // sort item by...
@@ -2075,23 +2800,13 @@ public:
 					Console::setColor(Console::COLOR_RED);
 					printf("\n\n");
 					printf(" No Item detected!");
-					Console::delay(1000);
+					Console::delay(700);
 					continue;
 				}
 				Console::setCursorVisibility(true);
 				printf("\n\n");
-				printf(" Input item number to sell ( 0 = cancel) [ 0 to %d ]: ", temporarySize);
-				cin >> index;
-				while (cin.fail() || index<0 || index>temporarySize)
-				{
-					flush();
-					Console::setColor(Console::COLOR_RED);
-					cout << " INVALID INPUT\n";
-					Console::setColor(Console::COLOR_WHITE);
-					printf(" Input item number to sell ( 0 = cancel) [ 0 to %d ]: ", temporarySize);
-					cin >> index;
-				}
-				flush();
+				printf(" Input item number to sell ( 0 = cancel) [ 0 to %d ]:", temporarySize);
+				index = Interface::getInt(0, temporarySize);
 
 				if (index == 0)
 				{
@@ -2167,7 +2882,7 @@ public:
 				Console::setColor(Console::COLOR_WHITE);
 				printf(" Are you sure you want to sell it?\n ");
 				int pickWhat = 0;
-				int bufferDelay = 1;
+				int bufferDelay = 0;
 				bool flagPrint = true;
 				int currY = Console::getCursorY();
 				while (1)
@@ -2209,7 +2924,7 @@ public:
 							}
 							else if (buff == VK_RETURN)
 							{
-								if (pickWhat == 0) buy = true;
+								if (pickWhat == 0) sell = true;
 								break;
 							}
 							bufferDelay = 0;
@@ -2218,7 +2933,7 @@ public:
 					}
 				} // end while
 
-				if (buy)
+				if (sell)
 				{
 					karakter->sellItem(temporary[index - 1]); // jual Itemnya
 					karakter->setGold((temporary[index - 1]->getPrice()) / 2); // tambah gold sebanyak 50% harga item nya
@@ -2239,7 +2954,18 @@ public:
 				sortType = 0;
 				equipMenuPrintOnly = true;
 				break;
-			case 3: // exit
+			case 3: // compare equipment
+				if (temporary.size() ==0)
+				{
+					Console::setColor(Console::COLOR_RED);
+					printf("\n\n No item detected!");
+					Console::resetColor();
+					Console::delay(700);
+				}
+				else compareEquipment(karakter, temporary);
+				equipMenuPrintOnly = true;
+				continue;
+			case 4: // exit
 				return;
 			} // end switch
 

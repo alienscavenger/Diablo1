@@ -222,6 +222,16 @@ public:
 		Interface::loading();
 		Interface::intro();*/
 
+		// Interface::getInt(x,y) tester
+		/*while(1)
+		{
+			system("cls");
+			printf("Input:");
+			int x = Interface::getInt(0, 20);
+			printf("\n\n\n%d", x);
+			Console::delay(500);
+		}*/
+
 		karakter = NULL; // state karakter pertama
 		vShop.reserve(MAX_ITEM);
 		vMonster.reserve(MAX_MONSTER);

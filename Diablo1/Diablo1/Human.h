@@ -126,7 +126,15 @@ private:
 
 	bool equipStatus[EQUIPMENT_SLOT]; // true kalau item type ke-index (sesuai type di Item.h) sudah di-equip, false kalau belum
 	Item* equipment[EQUIPMENT_SLOT]; // yang sekarang sedang dipakai (penggunaan index sama dengan equipStatus)
+	/*
+		index 1 = helmet(type 1)
+		index 2 = weapon&shield(type 5 dan type 6)
+		index 3 = weapon(type 5)
+		index 4 = gloves(type 2)
+		index 5 = armor(type 3)
+		index 6 = boots(type 4)
 
+	*/
 	void checkInventory(vector<Item>&fileRead)
 	{
 		int i = 0;
@@ -140,6 +148,8 @@ private:
 		nInventory = vInventory.size();
 	}
 
+
+	// MINOR WEAKNESS: LOKASI KIRI/KANAN WEAPON (KALAU 2-2NYA WEAPON YANG DIEQUIP) TIDAK AKAN KETAHUAN
 	void checkEquipped() // cek apakah yang ada di vInventory sudah di-equip atau belom
 	{
 		// initialize
@@ -149,23 +159,41 @@ private:
 			equipment[i] = NULL; // awalnya tidak menunjuk ke apa"
 		}
 		
-		try
+		bool weaponEquipped = false; // awalnya belom ada weapon yang di-equip
+		for (vector<Item*>::iterator iter = vInventory.begin(); iter != vInventory.end(); iter++)
 		{
-			for (vector<Item*>::iterator iter = vInventory.begin(); iter != vInventory.end(); iter++)
+			// kalau sudah di-equip
+			if ((*iter)->getEquipped()) // *iter = value dari vInventory = pointer to Item. jadi perlu di-dereference 2x
 			{
-				// kalau sudah di-equip
-				if ((*iter)->getEquipped()) // *iter = value dari vInventory = pointer to Item. jadi perlu di-dereference 2x
+				int index;
+				switch ((*iter)->getType())
 				{
-					if (equipStatus[(*iter)->getType()] == true) throw (*iter)->getType();
-					equipment[(*iter)->getType()] = *iter; // valuenya adalah pointer dari iter, yakni value dari vInventory, yakni pointer to objek Item
-					equipStatus[(*iter)->getType()] = true; // artinya sekarang sudah ada yang di-equip
+				case 1:
+					index = 1;
+					break;
+				case 2:
+					index = 4;
+					break;
+				case 3:
+					index = 5;
+					break;
+				case 4:
+					index = 6;
+					break;
+				case 5:
+				{
+					if (weaponEquipped) { index = 2; } // kalau sudah ada weapon yang di-equipped, maka pindahin ke tangan kiri
+					else { index = 3; weaponEquipped = true; } // tangan kanan di-prioritas
+					break;
 				}
+					break;
+				case 6:
+					index = 2;
+					break;
+				}
+				equipment[index] = *iter; // valuenya adalah pointer dari iter, yakni value dari vInventory, yakni pointer to objek Item
+				equipStatus[index] = true; // artinya sekarang sudah ada yang di-equip
 			}
-		}
-		catch (int x)
-		{
-			Console::setColor(3);
-			Console::printf("\n(!)ERROR: EQUIPMENT POSITION-%d RE-EQUIP\n",x);
 		}
 	}
 
@@ -217,6 +245,39 @@ public:
 		nInventory = vInventory.size(); // update jumlah barang di inventory
 	}
 
+	//copy constructor
+	Human(const Human& k)
+	{
+		agility = k.getAgility();
+		dexterity = k.getDexterity();
+		endurance = k.getEndurance();
+		for (int i = 0; i < EQUIPMENT_SLOT; i++)
+		{
+			equipment[i] = k.getEquipment(i);
+			equipStatus[i] = k.getEquipStatus(i);
+		}
+		armor = k.getArmor();
+		chanceToHit = k.getChanceToHit();
+		damage = k.getDamage();
+		evade = k.getEvade();
+		level = k.getLevel();
+		maxHealth = k.getMaxHealth();
+		maxStamina = k.getMaxStamina();
+		name = k.getName();
+		speed = k.getSpeed();
+
+		experience = k.getExperience();
+		gold = k.getGold();
+		job = k.getJob();
+		monsterKilled = k.getMonsterKilled();
+		nInventory = k.getNumInventory();
+		strength = k.getStrength();
+		vInventory.reserve(110);
+		vInventory.clear();
+		vInventory = k.getInventory();
+
+	}
+
 	//getter baru (tidak ada pada Base.h)
 	int getMonsterKilled() const { return monsterKilled; }
 	int getStrength() const { return strength; }
@@ -228,7 +289,7 @@ public:
 	int getExperience() const { return experience; }
 	static int getExpRequirement(int index) { return expRequirement[index]; }
 
-	vector <Item*>& getInventory() { return vInventory; }
+	vector <Item*> getInventory() const { return vInventory; }
 	size_t getNumInventory() const { return nInventory; }
 	bool getEquipStatus(int index) const { return equipStatus[index]; }
 	Item* getEquipment(int index) const { return equipment[index]; }
@@ -266,21 +327,22 @@ public:
 		vInventory.erase(iter); // iter adalah sebuah pointer ke vInventory, dan pointernya adalah pointer ke objek Item yang dituju
 		nInventory = vInventory.size(); // update nInventory
 	}
-	void unequipItem(int index, Item* pointer)
+	void unequipItem(int index)
 	{
+		Item* pointer = this->equipment[index];
 		pointer->setEquip(0); // set status equipped di Item menjadi false
 		equipStatus[index] = false; // set status equipped di Human menjadi false
 		equipment[index] = NULL; // equipment[index] di-unequip
-		setAttributesItem(-1 * (pointer->getAgility()), -1 * (pointer->getEndurance()), -1 * (pointer->getAgility()), -1 * (pointer->getDexterity()),
+		setAttributesItem(-1 * (pointer->getStrength()), -1 * (pointer->getEndurance()), -1 * (pointer->getAgility()), -1 * (pointer->getDexterity()),
 						-1 * (pointer->getDamage()), -1 * (pointer->getChanceToHit()), -1 * (pointer->getEvade()), -1 * (pointer->getSpeed()),
 						-1 * (pointer->getMaxHealth()), -1 * (pointer->getMaxStamina()), -1 * (pointer->getArmor)());
 	}
-	void equipItem(int index, Item* pointer)
+	void equipItem(int index,Item* pointer)
 	{
 		pointer->setEquip(1); // set true
 		equipStatus[index] = true;
 		equipment[index] = pointer;
-		setAttributesItem(pointer->getAgility(), pointer->getEndurance(), pointer->getAgility(), pointer->getDexterity(),
+		setAttributesItem(pointer->getStrength(), pointer->getEndurance(), pointer->getAgility(), pointer->getDexterity(),
 							pointer->getDamage(), pointer->getChanceToHit(), pointer->getEvade(), pointer->getSpeed(),
 							pointer->getMaxHealth(), pointer->getMaxStamina(), pointer->getArmor());
 	}
