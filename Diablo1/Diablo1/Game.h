@@ -288,19 +288,23 @@ public:
 			}
 			while (1)
 			{
-				// INI INVENTORY dan PLAYER STATUS
-				Interface::homeMenu(vShop, vMonster, karakter,karakter->getInventory()); // HOME
-
 				Console::setCursorVisibility(true);
-				cout << "\nmau ke shop? (1=yes,2=battle,sisanya=exit)";
+				Console::resetColor();
+				system("cls");
+				cout << "1 = Home\n2 = Shop\n5 = Battle\n123 = Save and Quit\n>>";
 				int milih;
 				cin >> milih;
 				Interface::flush();
 				Console::setCursorVisibility(false);
 				if (milih == 1)
+				{
+					// INI HOME YANG BERISI INVENTORY dan PLAYER STATUS
+					Interface::homeMenu(vShop, vMonster, karakter, karakter->getInventory());
+				}
+				else if (milih == 2)
 					// INI SHOP
 					Interface::shopMenu(vShop, karakter);
-				else if (milih ==2 )
+				else if (milih == 5)
 				{
 					Battle::startBattle(*karakter, vMonster[0]);
 					system("cls");
@@ -313,10 +317,15 @@ public:
 						continue;
 					}
 				}
-				else break;
+				else if (milih == 123)
+				{
+					break;
+				}
+				else continue;
+
 			}
-			cout << "game saved!";
 			saveGame();
+			cout << "game saved!";
 			Interface::flush();
 		}
 	} // END constructor

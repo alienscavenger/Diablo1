@@ -711,11 +711,14 @@ public:
 		int sortType = 0; // awalnya gk di-sort
 		int delayFlag = 1;
 		int pickMenu = 0; // awalnya pilihan menu di yang pertama
+		int nonBoughtSize = 0; // banyak item di shop yang blom dibeli
+		bool yourClassOnly = false;
 		/*
 			pickMenu:
 				0 = Sort Items
 				1 = Buy Item
-				2 = Exit
+				2 = (insert job name here) class only: ON/OFF
+				3 = Exit
 		*/
 
 		while (1) // print/update terus selama belum beli/exit dan masih filter/sort
@@ -731,17 +734,40 @@ public:
 			// -------------- masukin data item ke temporary vector ---------------------
 			if (filterType > 0) // kalau di-filter
 			{
-				for (int i = 0; i < shopSize; i++)
+				if (yourClassOnly)
 				{
-					if (!(vShop[i].getBought()) && vShop[i].getType() == filterType) temporary.push_back(&vShop[i]);
+					int myJob = karakter->getJob();
+					for (int i = 0; i < shopSize; i++)
+					{
+						if ((vShop[i].getRestriction()==myJob || vShop[i].getRestriction() == 0) && !(vShop[i].getBought()) && vShop[i].getType() == filterType) temporary.push_back(&vShop[i]);
+					}
+				}
+				else
+				{
+					for (int i = 0; i < shopSize; i++)
+					{
+						if (!(vShop[i].getBought()) && vShop[i].getType() == filterType) temporary.push_back(&vShop[i]);
+					}
 				}
 			}
 			else // kalau gk di-filter
 			{
-				for (int i = 0; i < shopSize; i++) // ini buat baca di vShop, yang mana yang belum dibeli. (yang belum dibeli doang yang bakal di-push_back)
+				if (yourClassOnly)
 				{
-					if (!(vShop[i].getBought())) temporary.push_back(&vShop[i]);
+					int myJob = karakter->getJob();
+					for (int i = 0; i < shopSize; i++) // ini buat baca di vShop, yang mana yang belum dibeli. (yang belum dibeli doang yang bakal di-push_back)
+					{
+						if ((vShop[i].getRestriction() == myJob || vShop[i].getRestriction()==0) && !(vShop[i].getBought())) temporary.push_back(&vShop[i]);
+					}
 				}
+				else
+				{
+					for (int i = 0; i < shopSize; i++) // ini buat baca di vShop, yang mana yang belum dibeli. (yang belum dibeli doang yang bakal di-push_back)
+					{
+						if (!(vShop[i].getBought())) temporary.push_back(&vShop[i]);
+					}
+				}
+				nonBoughtSize = temporary.size(); // update banyak item yang blom dibeli di shop
 			}
 			// --------------------------------------------------------------------------
 
@@ -773,10 +799,37 @@ public:
 			vector<Item*>::iterator iter; // iterator untuk vector temporary (Item*)
 			int i = 1; // variable buat print index vector (tapi ini mulai dari 1, sedangkan vector mulai dari 0)
 			printf("\n");
+			Console::setColor(Console::COLOR_YELLOW);
 			printf("                                 - Tristam Shop -\n");
+			Console::resetColor();
 			printf(" ======================================================================================\n");
 			printf(" %3s | %18s | %5s | %-28s | %10s | %6s\n", "No.", "ITEM NAME", "PRICE", "ITEM EFFECTS", "RESTRICTION","TYPE");
 			printf(" ======================================================================================\n");
+
+			if (temporary.size() == 0)
+			{
+				if (nonBoughtSize > 0)
+				{
+					printf("\n                          // NO ITEM WITH THE TYPE ");
+					int color;
+					string type = "<";
+					switch (filterType)
+					{
+					case 1: type += "HELMET"; color = Console::COLOR_BLUE; break;
+					case 2: type += "GLOVES"; color = Console::COLOR_CYAN; break;
+					case 3: type += "ARMOR"; color = Console::COLOR_GREEN; break;
+					case 4: type += "BOOTS"; color = Console::COLOR_MAGENTA; break;
+					case 5: type += "WEAPON"; color = Console::COLOR_RED; break;
+					case 6: type += "SHIELD"; color = Console::COLOR_YELLOW; break;
+					}
+					type += ">";
+					Console::setColor(color);
+					printf("%s", type.c_str());
+					Console::resetColor();
+					printf(" //\n\n");
+				}
+				else printf("\n                              // EMPTY SHOP //\n\n"); // kalau inventory kosong
+			}
 
 			for (iter = temporary.begin(); iter != temporary.end(); iter++, i++)
 			{
@@ -875,7 +928,7 @@ public:
 			Console::setCursorVisibility(false);
 			int flag = 0;
 			bool printFlag = true;
-			pickMenu = 0;
+			//pickMenu = 0;
 
 			int currY = Console::getCursorY();
 			bool sortA = false; // saat di menu pilihan sort, click 'a'
@@ -952,10 +1005,27 @@ public:
 					if (pickMenu == 1) Console::setColor(79);
 					else Console::setColor(Console::COLOR_WHITE);
 					cout << "BUY ITEM";
-					
+
 					Console::setColor(Console::COLOR_WHITE);
 					printf("\n ");
 					if (pickMenu == 2) Console::setColor(79);
+					else Console::setColor(Console::COLOR_WHITE);
+					string job;
+					switch (karakter->getJob())
+					{
+					case 1: job = "ASSASSIN"; break;
+					case 2: job = "PALADIN"; break;
+					case 3: job = "BARBARIAN"; break;
+					}
+					cout << job << " COMPATIBLE ONLY: ";
+					Console::setColor(Console::COLOR_YELLOW);
+					if (pickMenu == 2) Console::setColor(78);
+					if (yourClassOnly) printf("YES");
+					else printf("NO");
+
+					Console::setColor(Console::COLOR_WHITE);
+					printf("\n ");
+					if (pickMenu == 3) Console::setColor(79);
 					else Console::setColor(Console::COLOR_WHITE);
 					cout << "BACK";
 
@@ -969,12 +1039,12 @@ public:
 					{
 						if (buff == VK_UP || buff == 0x57) // 0x57 == 'w'
 						{
-							pickMenu = (pickMenu - 1 + 3) % 3;
+							pickMenu = (pickMenu - 1 + 4) % 4;
 							printFlag = true;
 						}
 						else if (buff == VK_DOWN || buff == 0x53) // 0x53 == 's'
 						{
-							pickMenu = (pickMenu + 1) % 3;
+							pickMenu = (pickMenu + 1) % 4;
 							printFlag = true;
 						}
 						else if (buff == VK_TAB)
@@ -990,13 +1060,13 @@ public:
 							delayFlag = 0;
 							break;
 						}
-						else if (pickMenu == 0 && buff == 0x41) // 'a'
+						else if (pickMenu == 0 && (buff == 0x41 || buff == VK_LEFT)) // 'a'
 						{
 							sortA = true;
 							delayFlag = 0;
 							break;
 						}
-						else if (pickMenu == 0 && buff == 0x44) // 'd'
+						else if (pickMenu == 0 && (buff == 0x44 || buff == VK_RIGHT)) // 'd'
 						{
 							sortD = true;
 							delayFlag = 0;
@@ -1030,184 +1100,200 @@ public:
 				break;
 			case 1: // buy item
 			{
-				Console::setCursorVisibility(true);
-				printf("\n\n");
-				printf(" Input item number to buy ( 0 = cancel) [ 0 to %d ]: ", temporarySize);
-				cin >> index;
-				while (cin.fail() || index<0 || index>temporarySize)
+				if (temporary.size() > 0)
 				{
-					flush();
-					Console::setColor(Console::COLOR_RED);
-					cout << " INVALID INPUT\n";
-					Console::setColor(Console::COLOR_WHITE);
+					Console::setCursorVisibility(true);
+					printf("\n\n");
 					printf(" Input item number to buy ( 0 = cancel) [ 0 to %d ]: ", temporarySize);
 					cin >> index;
+					while (cin.fail() || index<0 || index>temporarySize)
+					{
+						flush();
+						Console::setColor(Console::COLOR_RED);
+						cout << " INVALID INPUT\n";
+						Console::setColor(Console::COLOR_WHITE);
+						printf(" Input item number to buy ( 0 = cancel) [ 0 to %d ]: ", temporarySize);
+						cin >> index;
+					}
+					flush();
+
+					if (index == 0)
+					{
+						delayFlag = 1;
+						continue;
+					}
+
+					printf("\n ========== Confirmation ==========\n");
+					printf(" Item name  : %s\n", temporary[index - 1]->getName().c_str());
+					printf(" Item type  : ");
+
+					switch (temporary[index - 1]->getType())
+					{
+					case 1:
+						printf("Helmet");
+						break;
+					case 2:
+						printf("Gloves");
+						break;
+					case 3:
+						printf("Armor");
+						break;
+					case 4:
+						printf("Boots");
+						break;
+					case 5:
+						printf("Weapon");
+						break;
+					case 6:
+						printf("Shield");
+						break;
+					}
+
+					printf("\n Effects    : %s", temporary[index - 1]->getEffect().c_str());
+					printf("\n Restriction: ");
+
+					switch (temporary[index - 1]->getRestriction())
+					{
+					case 0:
+						cout << "-";
+						break;
+					case 1:
+						cout << "Assassin";
+						break;
+					case 2:
+						cout << "Paladin";
+						break;
+					case 3:
+						cout << "Barbarian";
+						break;
+					}
+					printf("\n ==================================\n");
+
+					Console::setColor(Console::COLOR_WHITE);
+					printf("\n It will cost you ");
+					Console::setColor(Console::COLOR_YELLOW);
+					printf("%d G\n\n", temporary[index - 1]->getPrice());
+					Console::setColor(Console::COLOR_WHITE);
+
+					Console::setCursorVisibility(false);
+					if (temporary[index - 1]->getPrice() > karakter->getGold())
+					{
+						Console::setColor(Console::COLOR_RED);
+						printf(" You don't have that much gold!\n");
+						Console::setColor(COLOR_GREY);
+						printf(" (press enter to continue)");
+						pressEnterPlease();
+						Console::resetColor();
+					}
+					else
+					{
+						if ((temporary[index - 1]->getRestriction() > 0) && (temporary[index - 1]->getRestriction() != karakter->getJob()))
+						{
+							Console::setColor(Console::COLOR_MAGENTA);
+							printf(" WARNING: THE ITEM HAS RESTRICTION <");
+							switch (temporary[index - 1]->getRestriction())
+							{
+							case 1:
+								Console::setColor(Console::COLOR_RED);
+								printf("ASSASSIN");
+								break;
+							case 2:
+								Console::setColor(Console::COLOR_GREEN);
+								printf("PALADIN");
+								break;
+							case 3:
+								Console::setColor(Console::COLOR_YELLOW);
+								printf("BARBARIAN");
+								break;
+							}
+							Console::setColor(Console::COLOR_MAGENTA);
+							printf("> ONLY!\n");
+						}
+						Console::setColor(Console::COLOR_WHITE);
+						printf(" Are you sure you want to buy it?\n ");
+						int pickWhat = 0;
+						int bufferDelay = 1;
+						bool flagPrint = true;
+						int currY = Console::getCursorY();
+						while (1)
+						{
+							if (flagPrint)
+							{
+								Console::setCursorPos(0, currY);
+								if (pickWhat == 0)
+								{
+									Console::setColor(79);
+									printf("<YES>");
+									Console::setColor(Console::COLOR_WHITE);
+									printf(" NO ");
+								}
+								else
+								{
+									Console::setColor(Console::COLOR_WHITE);
+									printf(" YES ");
+									Console::setColor(79);
+									printf("<NO>");
+									Console::setColor(Console::COLOR_WHITE);
+								}
+								flagPrint = false;
+							}
+							int buff = Console::getKeyPressed();
+							if (buff != -1)
+							{
+								if (bufferDelay)
+								{
+									if (buff == VK_LEFT || buff == 0x41) // 41 == 'a'
+									{
+										pickWhat = (pickWhat - 1 + 2) % 2;
+										flagPrint = true;
+									}
+									else if (buff == VK_RIGHT || buff == 0x44) // 0x44 == 'd'
+									{
+										pickWhat = (pickWhat + 1) % 2;
+										flagPrint = true;
+									}
+									else if (buff == VK_RETURN)
+									{
+										if (pickWhat == 0) buy = true;
+										break;
+									}
+									bufferDelay = 0;
+								}
+								else bufferDelay++;
+							}
+						} // end while
+					}
+
+					if (buy)
+					{
+						karakter->buyItem(temporary[index - 1]); // beli Itemnya
+						karakter->setGold(-1 * (temporary[index - 1]->getPrice())); // kurangin gold sebanyak harga item nya
+						Console::setColor(Console::COLOR_GREEN);
+						printf("\n\n You have successfuly bought the item!\n");
+
+						Console::setColor(COLOR_GREY);
+						printf("\n (Press enter to continue)");
+						pressEnterPlease();
+						Console::setColor(Console::COLOR_WHITE);
+						continue;
+					}
 				}
-				flush();
-
-				if (index == 0)
-				{
-					delayFlag = 1;
-					continue;
-				}
-
-				printf("\n ========== Confirmation ==========\n");
-				printf(" Item name  : %s\n", temporary[index - 1]->getName().c_str());
-				printf(" Item type  : ");
-
-				switch (temporary[index - 1]->getType())
-				{
-				case 1:
-					printf("Helmet");
-					break;
-				case 2:
-					printf("Gloves");
-					break;
-				case 3:
-					printf("Armor");
-					break;
-				case 4:
-					printf("Boots");
-					break;
-				case 5:
-					printf("Weapon");
-					break;
-				case 6:
-					printf("Shield");
-					break;
-				}
-
-				printf("\n Effects    : %s", temporary[index - 1]->getEffect().c_str());
-				printf("\n Restriction: ");
-
-				switch (temporary[index - 1]->getRestriction())
-				{
-				case 0:
-					cout << "-";
-					break;
-				case 1:
-					cout << "Assassin";
-					break;
-				case 2:
-					cout << "Paladin";
-					break;
-				case 3:
-					cout << "Barbarian";
-					break;
-				}
-				printf("\n ==================================\n");
-
-				Console::setColor(Console::COLOR_WHITE);
-				printf("\n It will cost you ");
-				Console::setColor(Console::COLOR_YELLOW);
-				printf("%d G\n\n", temporary[index - 1]->getPrice());
-				Console::setColor(Console::COLOR_WHITE);
-
-				Console::setCursorVisibility(false);
-				if (temporary[index - 1]->getPrice() > karakter->getGold())
+				else // kalau gk ada item di shop
 				{
 					Console::setColor(Console::COLOR_RED);
-					printf(" You don't have that much gold!\n");
-					Console::setColor(COLOR_GREY);
-					printf(" (press enter to continue)");
-					pressEnterPlease();
+					printf("\n\n No Item detected!");
+					Console::delay(1000);
 					Console::resetColor();
-				}
-				else
-				{
-					if ((temporary[index - 1]->getRestriction() > 0) && (temporary[index - 1]->getRestriction() != karakter->getJob()))
-					{
-						Console::setColor(Console::COLOR_MAGENTA);
-						printf(" WARNING: THE ITEM HAS RESTRICTION <");
-						switch (temporary[index - 1]->getRestriction())
-						{
-						case 1:
-							Console::setColor(Console::COLOR_RED);
-							printf("ASSASSIN");
-							break;
-						case 2:
-							Console::setColor(Console::COLOR_GREEN);
-							printf("PALADIN");
-							break;
-						case 3:
-							Console::setColor(Console::COLOR_YELLOW);
-							printf("BARBARIAN");
-							break;
-						}
-						Console::setColor(Console::COLOR_MAGENTA);
-						printf("> ONLY!\n");
-					}
-					Console::setColor(Console::COLOR_WHITE);
-					printf(" Are you sure you want to buy it?\n ");
-					int pickWhat = 0;
-					int bufferDelay = 1;
-					bool flagPrint = true;
-					int currY = Console::getCursorY();
-					while (1)
-					{
-						if (flagPrint)
-						{
-							Console::setCursorPos(0, currY);
-							if (pickWhat == 0)
-							{
-								Console::setColor(79);
-								printf("<YES>");
-								Console::setColor(Console::COLOR_WHITE);
-								printf(" NO ");
-							}
-							else
-							{
-								Console::setColor(Console::COLOR_WHITE);
-								printf(" YES ");
-								Console::setColor(79);
-								printf("<NO>");
-								Console::setColor(Console::COLOR_WHITE);
-							}
-							flagPrint = false;
-						}
-						int buff = Console::getKeyPressed();
-						if (buff != -1)
-						{
-							if (bufferDelay)
-							{
-								if (buff == VK_LEFT || buff == 0x41) // 41 == 'a'
-								{
-									pickWhat = (pickWhat - 1 + 2) % 2;
-									flagPrint = true;
-								}
-								else if (buff == VK_RIGHT || buff == 0x44) // 0x44 == 'd'
-								{
-									pickWhat = (pickWhat + 1) % 2;
-									flagPrint = true;
-								}
-								else if (buff == VK_RETURN)
-								{
-									if (pickWhat == 0) buy = true;
-									break;
-								}
-								bufferDelay = 0;
-							}
-							else bufferDelay++;
-						}
-					} // end while
-				}
-
-				if (buy)
-				{
-					karakter->buyItem(temporary[index - 1]); // beli Itemnya
-					karakter->setGold(-1 * (temporary[index - 1]->getPrice())); // kurangin gold sebanyak harga item nya
-					Console::setColor(Console::COLOR_GREEN);
-					printf("\n\n You have successfuly bought the item!\n");
-
-					Console::setColor(COLOR_GREY);
-					printf("\n (Press enter to continue)");
-					pressEnterPlease();
-					Console::setColor(Console::COLOR_WHITE);
-					return;
+					continue;
 				}
 			}
 				break;
-			case 2: // exit
+			case 2:
+				// toggle your class only
+				if (yourClassOnly) yourClassOnly = false;
+				else yourClassOnly = true;
+				break;
+			case 3: // exit
 				return;
 			} // end switch
 
@@ -1266,6 +1352,7 @@ public:
 						Console::setColor(79);
 						printf("Select item to equip (0=cancel) [0 to %d]:", maxItem);
 						Console::resetColor();
+						Console::setCursorVisibility(true);
 						cin >> equipThis;
 						while (cin.fail() || equipThis<0 || equipThis>maxItem)
 						{
@@ -1278,6 +1365,7 @@ public:
 							cin >> equipThis;
 						}
 						Interface::flush();
+						Console::setCursorVisibility(false);
 
 						Console::setCursorPos(50, 17);
 						if (equipThis == 0)
@@ -1385,8 +1473,9 @@ public:
 				else
 				{
 					Console::setColor(79);
-					printf("NO ITEM WITH THE TYPE ");
+					printf("NO ITEM WITH THE TYPE:");
 					Console::resetColor();
+					printf(" ");
 					int color;
 					string type = "<";
 					switch (filterType)
@@ -1929,13 +2018,13 @@ public:
 							delayFlag = 0;
 							break;
 						}
-						else if (pickMenu == 0 && buff == 0x41) // 'a'
+						else if (pickMenu == 0 && (buff == 0x41 || buff == VK_LEFT)) // 'a'
 						{
 							sortA = true;
 							delayFlag = 0;
 							break;
 						}
-						else if (pickMenu == 0 && buff == 0x44) // 'd'
+						else if (pickMenu == 0 && (buff == 0x44 || buff == VK_RIGHT)) // 'd'
 						{
 							sortD = true;
 							delayFlag = 0;
@@ -2160,9 +2249,9 @@ public:
 	}
 
 
-};
+}; // END CLASS
 
 int Interface::delayScreen = 0;
-int Interface::delayFlag = 0;
+int Interface::delayFlag = 0; // GLOBAL VARIABLE BUAT PRE-GAME INTRO
 
 #endif

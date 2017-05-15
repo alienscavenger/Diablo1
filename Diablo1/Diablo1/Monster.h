@@ -51,7 +51,8 @@ public:
 	{
 		this->killed += 1;
 		level += 1;
-		exp = exp*1.25f;
+		// exp nambah 25%
+		exp = ceil(exp*1.25f);
 		// cth tambah 4 persen setial level up
 		chanceToHit = chanceToHit + 4; 
 		// sisanya nambah 10 persen setiap level up
