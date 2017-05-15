@@ -2073,7 +2073,7 @@ public:
 		Console::resetColor();
 		printf("<Camera: ");
 		Console::setColor(Console::COLOR_YELLOW);
-		printf("DYNAMIC ");
+		printf("DYNAMIC");
 		Console::resetColor();
 		printf(", compare");
 		Console::setColor(Console::COLOR_YELLOW);
@@ -2321,6 +2321,7 @@ public:
 							printf("<enter>     ");
 							Console::resetColor();
 						}
+						printFlag = true;
 					}
 					else if (buff == VK_ESCAPE)
 					{
@@ -2402,7 +2403,7 @@ public:
 		{
 			system("cls");
 			Console::setColor(Console::COLOR_RED);
-			Console::setCursorPos(45, 0);
+			Console::setCursorPos(40, 0);
 			printf("- %s's House -", karakter->getName().c_str());
 			Console::resetColor();
 

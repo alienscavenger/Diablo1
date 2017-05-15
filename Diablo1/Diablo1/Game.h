@@ -217,7 +217,7 @@ public:
 	Game() // constructor
 	{
 		Interface::setDefaultFont(18);
-		Interface::setWindowSize(1000, 600);
+		Interface::setWindowSize(1100, 600);
 		/*Interface::titleScreen();
 		Interface::loading();
 		Interface::intro();*/
