@@ -51,7 +51,13 @@ private:
 		}
 	}
 public:
-	//constructor (gaada default constructor)
+	// empty constructor
+	Item()
+	{
+
+	}
+
+	//constructor
 	Item(string name, int price,string effect,int type,int restriction, int equipped, int bought):
 		strength(0),endurance(0),agility(0),dexterity(0),damage(0),chanceToHit(0),evade(0),speed(0),maxHealth(0),maxStamina(0),armor(0)
 	{

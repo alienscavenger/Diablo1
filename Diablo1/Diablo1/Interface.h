@@ -1395,7 +1395,14 @@ public:
 			doWhat 1 = diff when equip
 			doWhat 2 = diff when unequip
 		*/
-		Item x = *temporary[itemIndex]; // local variable Item
+		Item x;
+		Item* xP = NULL;
+		if (!temporary.empty())
+		{
+			x = *temporary[itemIndex]; // local variable Item
+			xP = &x;
+		}
+
 		Human compare = *karakter; // local variable Human
 		if (doWhat == 0)
 		{
@@ -1430,7 +1437,7 @@ public:
 					compare.unequipItem(equipIndex); // kalau sudah ada yg di-equip, maka unequip itu (secara implicit, manggil setEquip di item itu)
 					
 				}
-				compare.equipItem(equipIndex,&x); // equip yang baru
+				compare.equipItem(equipIndex,xP); // equip yang baru
 				if(temp!=NULL)temp->setEquip(1); // di-set ke equipped lagi item yang lama (urutannya jgn dibalik sama setEquip yang di atas, karena bisa jadi item lama = item baru)
 			}
 			else if (doWhat == 2)
@@ -1714,7 +1721,7 @@ public:
 		// int which -> CUMAN BUAT DEBUG
 		Console::resetColor();
 		Console::setCursorPos(50, 2);
-		printf("============== Character Equipment ==============",which);
+		printf("============== Character Equipment ============%d=",which);
 
 		if (print) // kalau print doang
 		{
@@ -1930,6 +1937,7 @@ public:
 					Console::setColor(Console::COLOR_GRAY);
 					printf("(press enter to continue)");
 					Interface::pressEnterPlease();
+					stillUnequiping = state-1;
 					active = false;
 					state = 0;
 					filterType = 0;

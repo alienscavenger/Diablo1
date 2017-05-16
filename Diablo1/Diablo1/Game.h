@@ -309,7 +309,7 @@ public:
 				if (milih == 1)
 				{
 					// INI HOME YANG BERISI INVENTORY dan PLAYER STATUS
-					Interface::homeMenu(vShop, vMonster, karakter, karakter->getInventory());
+					Interface::homeMenu(vShop, vMonster, karakter, karakter->getInventoryRef());
 				}
 				else if (milih == 2)
 					// INI SHOP

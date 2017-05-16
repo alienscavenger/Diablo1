@@ -290,6 +290,7 @@ public:
 	static int getExpRequirement(int index) { return expRequirement[index]; }
 
 	vector <Item*> getInventory() const { return vInventory; }
+	vector <Item*>& getInventoryRef() { return vInventory; }
 	size_t getNumInventory() const { return nInventory; }
 	bool getEquipStatus(int index) const { return equipStatus[index]; }
 	Item* getEquipment(int index) const { return equipment[index]; }
