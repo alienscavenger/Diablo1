@@ -1,6 +1,6 @@
-a
-1,1,1989400,0,7,7,13,12
-23.0,104.0,27.0,201.0,105.0,115.0,6,0
+aditya
+2,2,1982300,1358,21,16,6,8
+3.0,96.0,12.0,154.0,250.0,230.0,22,1
 #Quilted Armor,400,AMR+1 EVA+10,3,0,0,0
 #Leather Armor,800,AMR+2 EVA+8,3,0,0,0
 #Hard Leather Armor,1200,AMR+3 EVA+6,3,0,0,0
@@ -21,7 +21,7 @@ a
 #Sacred Armor,20000,AMR+32 END+10 STR+4 MST+200,3,2,0,0
 #Kraken Shell,20000,AMR+18 END+10 STR+10 MHP+150,3,3,0,0
 #Leather Boots,200,AMR+1 EVA+2,4,0,0,0
-#Heavy Boots,800,AMR+2 EVA+1,4,0,1,1
+#Heavy Boots,800,AMR+2 EVA+1,4,0,0,0
 #Chain Boots,1200,AMR+3 END+1,4,0,0,0
 #Light Plated Boots,1500,AMR+5,4,0,0,0
 #Greaves,2000,AMR+8 END+2,4,2,0,0
@@ -62,7 +62,7 @@ a
 #Winged Helm,9000,AMR+12 END+2 MHP+60 MST+60,1,2,0,0
 #Grand Crown,6900,AMR+9 EVA+10 CTH+10,1,0,0,0
 #Buckler,600,AMR+2,6,0,0,0
-#Small Shield,1000,AMR+4,6,0,1,1
+#Small Shield,1000,AMR+4,6,0,0,0
 #Large Shield,1500,AMR+6,6,0,0,0
 #Kite Shield,2000,AMR+8,6,0,0,0
 #Spiked Shield,2200,AMR+4 END+4 DMG+2,6,3,0,0
@@ -71,7 +71,7 @@ a
 #Gothic Shield,8000,AMR+16,6,2,0,0
 #Barbed Shield,900,AMR+2 END+2 STR+2 DMG+1,6,3,0,0
 #Pavise,5000,AMR+10 MHP+100 MST+100,6,2,0,0
-#Ancient Shield,18000,AMR+22 STR+4 END+4,6,2,0,0
+#Ancient Shield,18000,AMR+22 STR+4 END+4,6,2,1,1
 #Hand Axe,500,DMG+4,5,0,0,0
 #Double Axe,1000,DMG+8,5,0,0,0
 #Military Pick,2000,DMG+12,5,0,0,0
@@ -90,12 +90,12 @@ a
 #Sabre,1500,DMG+11,5,0,0,0
 #Falchion,3000,DMG+14,5,0,0,0
 #Broad Sword,5000,DMG+17,5,0,0,0
-#Long Sword,7000,DMG+20,5,0,1,1
+#Long Sword,7000,DMG+20,5,0,0,0
 #Gladius,10000,DMG+24 END+4 DEX+2,5,2,0,0
 #Crystal Sword,13000,DMG+28 STR+4 DEX+2,5,2,0,0
 #Ancient Sword,16000,DMG+32 STR+4 END+2 DEX+2,5,2,0,0
 #Colossus Blade,22000,DMG+40 STR+4 END+4 DEX+4,5,2,0,0
-@Ghoul,1,300,20.0,86.0,3.0,66.0,120.0,90.0,2,1358.0,6,12,0
+@Ghoul,2,300,22.0,90.0,4.0,73.0,132.0,99.0,2,1698.0,6,12,1
 @@Giant Spider,2,600,7.0,114.0,18.0,210.0,120.0,90.0,0,2683.0,8,16,0
 @@Vampire,4,800,30.0,109.0,8.0,112.0,142.0,100.0,1,4477.0,21,15,0
 @@Gargoyle Trap,4,920,20.0,98.0,0.0,89.0,300.0,150.0,5,4682.0,14,41,0
