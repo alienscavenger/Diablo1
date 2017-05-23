@@ -324,6 +324,8 @@ public:
 					Music::playBackgroundMusic(3);
 					Battle::startBattle(*karakter, vMonster[0]);
 					system("cls");
+					Music::stopBackgroundMusic();
+					Music::playBackgroundMusic(1);
 					if (Battle::getWin())
 					{
 						continue;
@@ -338,8 +340,6 @@ public:
 					break;
 				}
 				else continue;
-				Music::stopBackgroundMusic();
-				Music::playBackgroundMusic(1);
 			}
 			saveGame();
 			cout << "game saved!";
