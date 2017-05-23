@@ -81,8 +81,8 @@ public:
 				}
 				continue;
 			}
-			if (buff == VK_ESCAPE) continue;
-			if (isalnum(buff))
+			//if (buff == VK_ESCAPE) continue;
+			if (buff >= '0' && buff <= '9')
 			{
 				out.push_back(buff);
 				printf("%c", buff);
@@ -119,7 +119,7 @@ public:
 				{
 					if (out.size() > 0)
 					{
-						out.push_back(buff);
+						out.push_back('\n');
 						break;
 					}
 					else continue;
@@ -133,8 +133,12 @@ public:
 					}
 					continue;
 				}
-				out.push_back(buff);
-				printf("%c", buff);
+				if (buff == VK_ESCAPE) continue;
+				if (buff>='0' && buff<='9')
+				{
+					out.push_back(buff);
+					printf("%c", buff);
+				}
 			}
 			output << out;
 			output >> output_int;
@@ -2235,7 +2239,7 @@ public:
 				printDiff(0, karakter, temporary, 0, 0);
 				if (!(temporary[i]->getEquipped()) || (type!=1))printDiff(1, karakter, temporary, index, i); // kalau gk lagi di-equip atau type!=1, print difference nya
 				if(fixedCamera)Console::setCursorPos(0, 0); // supaya gk loncat" cameranya
-				else Console::setCursorPos(0, 23 + i);
+				else Console::setCursorPos(0, 25 + i);
 				printFlag = false;
 			}
 			char buff = Console::getKeyPressed();
