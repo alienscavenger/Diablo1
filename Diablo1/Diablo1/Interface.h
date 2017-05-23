@@ -1918,7 +1918,7 @@ public:
 				else
 				{
 					Console::setColor(79);
-					printf("NO ITEM WITH THE TYPE:");
+					printf("NO ITEM WITH THE TYPE: ");
 					Console::resetColor();
 					printf(" ");
 					int color;
@@ -1930,7 +1930,7 @@ public:
 					case 3: type += "ARMOR"; color = Console::COLOR_GREEN; break;
 					case 4: type += "BOOTS"; color = Console::COLOR_MAGENTA; break;
 					case 5: type += "WEAPON"; color = Console::COLOR_RED; break;
-					case 6: type += "SHIELD"; color = Console::COLOR_YELLOW; break;
+					case -1: type += "WEAPON/SHIELD"; color = Console::COLOR_YELLOW; break;
 					}
 					type += ">";
 					Console::setColor(color);
