@@ -53,7 +53,9 @@ public:
 		mciSendString("play musik", NULL, 0, NULL);
 	}
 
-	static void stopBackgroundMusic() {	//karena gw pakai alias nya sama buat semua place BGM jadi kalau play lagi, programnya akan nunggu lagu yang pertama selesai dulu
+
+	//karena gw pakai alias nya sama buat semua place BGM jadi kalau play lagi, programnya akan nunggu lagu yang pertama selesai dulu. Solusinya adalah kita stop sendiri
+	static void stopBackgroundMusic() {	
 		mciSendString("close musik", NULL, 0, 0);
 	}
 

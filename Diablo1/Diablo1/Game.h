@@ -338,6 +338,7 @@ public:
 					break;
 				}
 				else continue;
+				Music::stopBackgroundMusic();
 				Music::playBackgroundMusic(1);
 			}
 			saveGame();
