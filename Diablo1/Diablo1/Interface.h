@@ -142,6 +142,7 @@ public:
 
 		return output_int;
 	}
+
 	static void pressEnterPlease()
 	{
 		while (1)
@@ -164,6 +165,7 @@ public:
 			printf("\b"); // backspace
 		}
 	}
+
 	static void flush()
 	{
 		cin.clear();
@@ -208,6 +210,7 @@ public:
 		}
 		Console::setColor(Console::COLOR_WHITE);
 	}
+
 	static void titleScreen() {
 		system("cls");
 		Console::setCursorVisibility(false);
