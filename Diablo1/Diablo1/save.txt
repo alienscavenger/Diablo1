@@ -1,6 +1,6 @@
 aditya
-2,2,1982300,1358,21,16,6,8
-3.0,96.0,12.0,154.0,250.0,230.0,22,1
+1,2,2000000,0,14,12,6,8
+3.0,96.0,12.0,154.0,190.0,178.0,0,0
 #Quilted Armor,400,AMR+1 EVA+10,3,0,0,0
 #Leather Armor,800,AMR+2 EVA+8,3,0,0,0
 #Hard Leather Armor,1200,AMR+3 EVA+6,3,0,0,0
@@ -71,7 +71,7 @@ aditya
 #Gothic Shield,8000,AMR+16,6,2,0,0
 #Barbed Shield,900,AMR+2 END+2 STR+2 DMG+1,6,3,0,0
 #Pavise,5000,AMR+10 MHP+100 MST+100,6,2,0,0
-#Ancient Shield,18000,AMR+22 STR+4 END+4,6,2,1,1
+#Ancient Shield,18000,AMR+22 STR+4 END+4,6,2,0,0
 #Hand Axe,500,DMG+4,5,0,0,0
 #Double Axe,1000,DMG+8,5,0,0,0
 #Military Pick,2000,DMG+12,5,0,0,0
@@ -95,7 +95,7 @@ aditya
 #Crystal Sword,13000,DMG+28 STR+4 DEX+2,5,2,0,0
 #Ancient Sword,16000,DMG+32 STR+4 END+2 DEX+2,5,2,0,0
 #Colossus Blade,22000,DMG+40 STR+4 END+4 DEX+4,5,2,0,0
-@Ghoul,2,300,22.0,90.0,4.0,73.0,132.0,99.0,2,1698.0,6,12,1
+@Ghoul,1,300,20.0,86.0,3.0,66.0,120.0,90.0,2,1358.0,6,12,0
 @@Giant Spider,2,600,7.0,114.0,18.0,210.0,120.0,90.0,0,2683.0,8,16,0
 @@Vampire,4,800,30.0,109.0,8.0,112.0,142.0,100.0,1,4477.0,21,15,0
 @@Gargoyle Trap,4,920,20.0,98.0,0.0,89.0,300.0,150.0,5,4682.0,14,41,0
