@@ -2,7 +2,7 @@
 #ifndef INTERFACE_H
 #define INTERFACE_H
 
-#include <stdio.h>
+#include <cstdio>
 #include <stdlib.h>
 #include <conio.h>
 #include <string>
@@ -146,6 +146,7 @@ public:
 
 		return output_int;
 	}
+
 	static void pressEnterPlease()
 	{
 		while (1)
@@ -168,6 +169,7 @@ public:
 			printf("\b"); // backspace
 		}
 	}
+
 	static void flush()
 	{
 		cin.clear();
@@ -212,6 +214,7 @@ public:
 		}
 		Console::setColor(Console::COLOR_WHITE);
 	}
+
 	static void titleScreen() {
 		system("cls");
 		Console::setCursorVisibility(false);
@@ -1764,19 +1767,20 @@ public:
 				int maxItem = temporary.size();
 				if (maxItem > 0)
 				{
+					int equipThis = 1;
 					while (1)
 					{
-						Console::setCursorPos(50, 16);
-						int equipThis = 0;
+						Console::setCursorPos(50, 15);
 						Console::setColor(79);
-						printf("Select item to equip (0=cancel) [0 to %d]:", maxItem);
+						printf("Select item to equip below (ESC to cancel) (ENTER to choose)");
 						Console::resetColor();
-						Console::setCursorVisibility(true);
-						equipThis = Interface::getInt(0,maxItem);
-						Console::setCursorVisibility(false);
+						///Console::setCursorVisibility(true);
+						///equipThis = Interface::getInt(0,maxItem);
+						equipThis = compareEquipment(filterType, karakter, temporary, 1,equipThis-1); // -1 karena masalah indexingnya. Coba ganti ke 0 biar ngerti
+						///Console::setCursorVisibility(false);
 
 						Console::setCursorPos(50, 17);
-						if (equipThis == 0)
+						if (equipThis == -1)
 						{
 							active = false;
 							filterType = 0;
@@ -1787,41 +1791,44 @@ public:
 						}
 						if (temporary[equipThis - 1]->getEquipped())
 						{
+							Console::setCursorPos(90, 23 + equipThis-1);
 							printf("YOU ARE CURRENTLY EQUIPPING THIS!");
-							Console::setCursorPos(50, 18);
+							Console::setCursorPos(90, 23 + equipThis);
 							Console::setColor(Console::COLOR_GRAY);
 							printf("(Press enter to continue)");
 							Interface::pressEnterPlease();
 							Console::resetColor();
-							Console::setCursorPos(91, 16);
-							printf("                       ");
-							Console::setCursorPos(50, 18);
+							Console::setCursorPos(90, 23 + equipThis - 1);
+							printf("                                  ");
+							Console::setCursorPos(90, 23 + equipThis);
 							printf("                         ");
-							Console::setCursorPos(50, 17);
-							printf("                                         ");
 							continue;
 						}
 						else if (temporary[equipThis - 1]->getRestriction() > 0 && temporary[equipThis - 1]->getRestriction() != karakter->getJob())
 						{
+							Console::setCursorPos(90, 23 + equipThis - 1);
 							printf("YOU CANNOT EQUIP THIS! (see Restriction)");
-							Console::setCursorPos(50, 18);
+							Console::setCursorPos(90, 23 + equipThis);
 							Console::setColor(Console::COLOR_GRAY);
 							printf("(Press enter to continue)");
 							Interface::pressEnterPlease();
 							Console::resetColor();
-							Console::setCursorPos(91, 16);
-							printf("                       ");
-							Console::setCursorPos(50, 18);
+							Console::setCursorPos(90, 23 + equipThis - 1);
+							printf("                                        ");
+							Console::setCursorPos(90, 23 + equipThis);
 							printf("                         ");
-							Console::setCursorPos(50, 17);
-							printf("                                         ");
 							continue;
 						}
 						else
 						{
 							printDiff(1,karakter, temporary, state, equipThis - 1);
-							Console::setCursorPos(50, 17);
-							printf("Are you sure you want to equip *%s*? ",temporary[equipThis-1]->getName().c_str());
+							Console::setCursorPos(90, 23+equipThis-1);
+							printf("Are you sure you want to equip");
+							Console::setCursorPos(90, 23 + equipThis);
+							Console::setColor(Console::COLOR_CYAN);
+							printf("*%s*",temporary[equipThis-1]->getName().c_str());
+							Console::resetColor();
+							Console::printf(" ?");
 							int pickWhat = 0;
 							int bufferDelay = 0;
 							bool flagPrint = true;
@@ -1881,10 +1888,12 @@ public:
 								{
 									// prioritaskan tangan kanan
 									Console::setColor(Console::COLOR_CYAN);
-									Console::setCursorPos(50, 18);
-									printf("RIGHT HAND IS EMPTY! EQUIPPING IN RIGHT HAND...");
+									Console::setCursorPos(90, 23 + equipThis+2);
+									printf("RIGHT HAND IS EMPTY!");
+									Console::setCursorPos(90, 23 + equipThis + 3);
+									printf("EQUIPPING IN RIGHT HAND...");
 									state = 3;
-									Console::setCursorPos(50, 19);
+									Console::setCursorPos(90, 23 + equipThis+4);
 									Console::setColor(Console::COLOR_GRAY);
 									printf("(Press enter to continue)");
 									Interface::pressEnterPlease();
@@ -1903,6 +1912,10 @@ public:
 							}
 							else
 							{
+								Console::setCursorPos(90, 23 + equipThis - 1);
+								printf("                                    ");
+								Console::setCursorPos(90, 23 + equipThis);
+								printf("                                    ");
 								printDiff(0, karakter, temporary, 0, 0);
 								Console::resetColor();
 								Console::setCursorPos(91, 16);
@@ -2074,27 +2087,47 @@ public:
 		} // end else luar
 	}
 
-	static void compareEquipment(Human*& karakter, vector<Item*>temporary)
+	static int compareEquipment(int currFilterType, Human*& karakter, vector<Item*>temporary, int type, int curr) // type 0 = cek doang, type 1 = equip, curr = i saat equip (balik ke pilihan sebelumnya)
 	{
-		Console::setCursorPos(20, 17);
+		Console::setCursorPos(18, 17);
 		Console::setColor(Console::COLOR_GREEN);
-		printf("<COMPARE CURRENTLY EQUIPPED WITH THE SELECTED ITEM>");
-		Console::setCursorPos(8, 18);
+		if (type == 1)
+		{
+			Console::setColor(Console::COLOR_RED);
+			printf("        <CHOOSE THE ITEM TO BE EQUIPPED>");
+		}
+		else printf("<COMPARE CURRENTLY EQUIPPED WITH THE SELECTED ITEM>");
+
+		Console::setCursorPos(28, 18);
+		if (currFilterType == 5 || currFilterType == -1 && type != 1) Console::setCursorPos(16, 18); // kalau lagi filter weapon
 		Console::setColor(Console::COLOR_GREEN);
 		printf("<tab> ");
+
 		Console::resetColor();
 		printf("<Camera: ");
+
 		Console::setColor(Console::COLOR_YELLOW);
 		printf("DYNAMIC");
+		
 		Console::resetColor();
-		printf(", compare");
-		Console::setColor(Console::COLOR_YELLOW);
-		printf(" LEFT HAND ");
-		Console::resetColor();
-		printf("when there's 2 weapon> ");
-		Console::setColor(Console::COLOR_GREEN);
-		printf("<enter>     ");
-		Console::resetColor();
+		printf(">  ");
+
+		if (currFilterType == 5 || currFilterType == -1 && type != 1) // kalau lagi filter weapon
+		{
+			Console::resetColor();
+			printf("<Compare with");
+
+			Console::setColor(Console::COLOR_YELLOW);
+			printf(" LEFT HAND>");
+
+			Console::setColor(Console::COLOR_GREEN);
+			printf(" <space>     ");
+		}
+		else
+		{
+			printf("                ");
+		}
+		
 
 		Console::setCursorPos(0, 23);
 		Console::resetColor();
@@ -2103,13 +2136,17 @@ public:
 		bool printFlag = true;
 		int leftHand = 1;
 		int i = 0;
-		int fixedCamera = 0;
-		while (1)
+		if (type == 1)
 		{
-			if (printFlag)
+			if (currFilterType == 5) leftHand = 0;
+			else if (currFilterType == -1) leftHand = 1;
+			i = curr;
+			// reset warna sebelumnya ke putih/highlight merah dulu
 			{
+				if (temporary[i]->getEquipped())Console::setColor(79);
+				else Console::resetColor();
 				Console::setCursorPos(0, 23 + i);
-				
+
 				int res = temporary[i]->getRestriction();
 				string restriction;
 				if (res == 0) restriction = "-";
@@ -2128,12 +2165,41 @@ public:
 				case 5: type = "Weapon"; break;
 				case 6: type = "Shield"; break;
 				}
+				printf(" %2d.   %18s  %6d   %-28s   %11s   %6s\n", i + 1, temporary[i]->getName().c_str(), temporary[i]->getPrice(),
+					temporary[i]->getEffect().c_str(), restriction.c_str(), type.c_str());
+			}
+		}
+		int fixedCamera = 0;
+		while (1)
+		{
+			if (printFlag)
+			{
+				Console::setCursorPos(0, 23 + i);
+				
+				int res = temporary[i]->getRestriction();
+				string restriction;
+				if (res == 0) restriction = "-";
+				else if (res == 1) restriction = "Assassin";
+				else if (res == 2) restriction = "Paladin";
+				else if (res == 3) restriction = "Barbarian";
+
+				string type_;
+				int tmp = temporary[i]->getType();
+				switch (tmp)
+				{
+				case 1: type_ = "Helmet"; break;
+				case 2: type_ = "Gloves"; break;
+				case 3: type_ = "Armor"; break;
+				case 4: type_ = "Boots"; break;
+				case 5: type_ = "Weapon"; break;
+				case 6: type_ = "Shield"; break;
+				}
 
 				if (temporary[i]->getEquipped())Console::setColor(94);
 				else Console::setColor(78);
 
 				printf(" %2d.   %18s  %6d   %-28s   %11s   %6s\n",i+1,temporary[i]->getName().c_str(),temporary[i]->getPrice(),
-					temporary[i]->getEffect().c_str(), restriction.c_str(), type.c_str());
+					temporary[i]->getEffect().c_str(), restriction.c_str(), type_.c_str());
 				
 				int index;
 				switch(temporary[i]->getType())
@@ -2152,14 +2218,17 @@ public:
 					break;
 				case 5:
 				{
-					// kalau tangan kiri kosong atau tangan kiri ada shield, cek tangan kanan
-					if (!(karakter->getEquipStatus(2)) || (karakter->getEquipment(2)->getType()==2)) { index = 3; }
-					else
-					{
-						// kalau kiri kanan weapon
-						if (leftHand)index = 2;
-						else index = 3;
-					}
+					//// kalau tangan kiri kosong atau tangan kiri ada shield, cek tangan kanan
+
+					//if (!(karakter->getEquipStatus(2)) || (karakter->getEquipment(2)->getType()==2)) { index = 3; }
+					//else
+					//{
+					//	// kalau kiri kanan weapon
+					//	if (leftHand)index = 2;
+					//	else index = 3;
+					//}
+					if (leftHand) index = 2;
+					else index = 3;
 					break;
 				}
 				break;
@@ -2168,7 +2237,7 @@ public:
 					break;
 				}
 				printDiff(0, karakter, temporary, 0, 0);
-				printDiff(1, karakter, temporary, index, i);
+				if (!(temporary[i]->getEquipped()) || (type!=1))printDiff(1, karakter, temporary, index, i); // kalau gk lagi di-equip atau type!=1, print difference nya
 				if(fixedCamera)Console::setCursorPos(0, 0); // supaya gk loncat" cameranya
 				else Console::setCursorPos(0, 25 + i);
 				printFlag = false;
@@ -2247,96 +2316,130 @@ public:
 						fixedCamera = (fixedCamera + 1) % 2; // toggle fixed camera
 						if (fixedCamera)Console::setCursorPos(0, 0); // supaya gk loncat" cameranya
 						else Console::setCursorPos(0, 23 + i);
-						Console::setCursorPos(8, 18);
-						Console::setColor(Console::COLOR_GREEN);
-						printf("<tab> ");
-						Console::resetColor();
-						if (fixedCamera)
 						{
-							printf("<Camera: ");
-							Console::setColor(Console::COLOR_YELLOW);
-							printf("FIXED");
-							Console::resetColor();
-						}
-						else
-						{
-							printf("<Camera: ");
-							Console::setColor(Console::COLOR_YELLOW);
-							printf("DYNAMIC");
-						}
-						if (leftHand)
-						{
-							Console::resetColor();
-							printf(", compare");
-							Console::setColor(Console::COLOR_YELLOW);
-							printf(" LEFT HAND ");
-							Console::resetColor();
-							printf("when there's 2 weapon> ");
+							Console::setCursorPos(28, 18);
+							if (currFilterType == 5 || currFilterType == -1 && type != 1) Console::setCursorPos(16, 18); // kalau lagi filter weapon
 							Console::setColor(Console::COLOR_GREEN);
-							printf("<enter>     ");
+							printf("<tab> ");
 							Console::resetColor();
-						}
-						else
-						{
+							if (fixedCamera)
+							{
+								printf("<Camera: ");
+								Console::setColor(Console::COLOR_YELLOW);
+								printf("FIXED");
+								Console::resetColor();
+							}
+							else
+							{
+								printf("<Camera: ");
+								Console::setColor(Console::COLOR_YELLOW);
+								printf("DYNAMIC");
+							}
+
 							Console::resetColor();
-							printf(", compare");
-							Console::setColor(Console::COLOR_YELLOW);
-							printf(" RIGHT HAND ");
-							Console::resetColor();
-							printf("when there's 2 weapon> ");
-							Console::setColor(Console::COLOR_GREEN);
-							printf("<enter>     ");
-							Console::resetColor();
+							printf(">  ");
+
+							if (currFilterType == 5 || currFilterType == -1 && type != 1) // kalau lagi filter weapon
+							{
+								if (leftHand)
+								{
+									Console::resetColor();
+									printf("<Compare with");
+
+									Console::setColor(Console::COLOR_YELLOW);
+									printf(" LEFT HAND>");
+
+									Console::setColor(Console::COLOR_GREEN);
+									printf("<space>      ");
+								}
+								else
+								{
+									Console::resetColor();
+									printf("<Compare with");
+
+									Console::setColor(Console::COLOR_YELLOW);
+									printf(" RIGHT HAND>");
+
+									Console::setColor(Console::COLOR_GREEN);
+									printf("<space>     ");
+								}
+							}
+							else
+							{
+								printf("                ");
+							}
 						}
 					}
-					else if (buff == VK_RETURN)
+					else if (buff == VK_SPACE && ( currFilterType == 5 || currFilterType == -1 && type != 1))
 					{
 						leftHand = (leftHand + 1) % 2;
-						Console::setCursorPos(8, 18);
-						Console::setColor(Console::COLOR_GREEN);
-						printf("<tab> ");
-						Console::resetColor();
-						if (fixedCamera)
 						{
-							printf("<Camera: ");
-							Console::setColor(Console::COLOR_YELLOW);
-							printf("FIXED");
-							Console::resetColor();
-						}
-						else
-						{
-							printf("<Camera: ");
-							Console::setColor(Console::COLOR_YELLOW);
-							printf("DYNAMIC");
-						}
-						if (leftHand)
-						{
-							Console::resetColor();
-							printf(", compare");
-							Console::setColor(Console::COLOR_YELLOW);
-							printf(" LEFT HAND ");
-							Console::resetColor();
-							printf("when there's 2 weapon> ");
+							Console::setCursorPos(28, 18);
+							if (currFilterType == 5 || currFilterType == -1 && type != 1) Console::setCursorPos(16, 18); // kalau lagi filter weapon
 							Console::setColor(Console::COLOR_GREEN);
-							printf("<enter>     ");
+							printf("<tab> ");
 							Console::resetColor();
-						}
-						else
-						{
+							if (fixedCamera)
+							{
+								printf("<Camera: ");
+								Console::setColor(Console::COLOR_YELLOW);
+								printf("FIXED");
+								Console::resetColor();
+							}
+							else
+							{
+								printf("<Camera: ");
+								Console::setColor(Console::COLOR_YELLOW);
+								printf("DYNAMIC");
+							}
+
 							Console::resetColor();
-							printf(", compare");
-							Console::setColor(Console::COLOR_YELLOW);
-							printf(" RIGHT HAND ");
-							Console::resetColor();
-							printf("when there's 2 weapon> ");
-							Console::setColor(Console::COLOR_GREEN);
-							printf("<enter>     ");
-							Console::resetColor();
+							printf(">  ");
+
+							if (currFilterType == 5 || currFilterType == -1 && type != 1) // kalau lagi filter weapon
+							{
+								if (leftHand)
+								{
+									Console::resetColor();
+									printf("<Compare with");
+
+									Console::setColor(Console::COLOR_YELLOW);
+									printf(" LEFT HAND>");
+
+									Console::setColor(Console::COLOR_GREEN);
+									printf("<space>      ");
+								}
+								else
+								{
+									Console::resetColor();
+									printf("<Compare with");
+
+									Console::setColor(Console::COLOR_YELLOW);
+									printf(" RIGHT HAND>");
+
+									Console::setColor(Console::COLOR_GREEN);
+									printf("<space>     ");
+								}
+							}
+							else
+							{
+								printf("                ");
+							}
 						}
 						printFlag = true;
 					}
+					else if (buff == VK_RETURN && type==1)
+					{
+						Console::resetColor();
+						return i+1;
+					}
 					else if (buff == VK_ESCAPE)
 					{
+						if (type == 1)
+						{
+							Console::resetColor();
+							return -1;
+						}
 						break;
 					}
 					printDelay = 0;
@@ -2345,6 +2448,7 @@ public:
 			}
 		}
 		Console::resetColor();
+		return 0;
 	}
 
 	static void playerStatus(Human*& karakter, vector<Monster>& vMonster) // print player status
@@ -2501,6 +2605,7 @@ public:
 					case 4: type += "BOOTS"; color = Console::COLOR_MAGENTA; break;
 					case 5: type += "WEAPON"; color = Console::COLOR_RED; break;
 					case 6: type += "SHIELD"; color = Console::COLOR_YELLOW; break;
+					case -1: type += "WEAPON OR SHIELD"; color = Console::COLOR_YELLOW; break;
 					}
 					type += ">";
 					Console::setColor(color);
@@ -2975,7 +3080,7 @@ public:
 					Console::resetColor();
 					Console::delay(700);
 				}
-				else compareEquipment(karakter, temporary);
+				else compareEquipment(filterType, karakter, temporary,0,0);
 				equipMenuPrintOnly = true;
 				continue;
 			case 4: // exit

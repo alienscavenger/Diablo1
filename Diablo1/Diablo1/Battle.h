@@ -88,7 +88,6 @@ private:
 		for (int i = 0; i < 27; i++) printf("%c", ASCII_DOUBLE_SEPARATOR);
 		printf("%c", ASCII_DOUBLE_LOWER_RIGHT);
 	}
-
 	static void printBox2()
 	{
 		Console::setCursorPos(1, 10);
@@ -109,7 +108,6 @@ private:
 		for (int i = 0; i < 60; i++) printf("%c", ASCII_DOUBLE_SEPARATOR);
 		printf("%c", ASCII_DOUBLE_LOWER_RIGHT);
 	}
-
 	static void printBox3()
 	{
 		Console::setCursorPos(1, 18);
@@ -130,7 +128,6 @@ private:
 		for (int i = 0; i < 17; i++) printf("%c", ASCII_DOUBLE_SEPARATOR);
 		printf("%c", ASCII_DOUBLE_LOWER_RIGHT);
 	}
-
 	static void printBox4()
 	{
 		Console::setCursorPos(21, 18);
@@ -151,7 +148,6 @@ private:
 		for (int i = 0; i < 40; i++) printf("%c", ASCII_DOUBLE_SEPARATOR);
 		printf("%c", ASCII_DOUBLE_LOWER_RIGHT);
 	}
-
 	static void printXPBox()
 	{
 		Console::setCursorPos(1, 1);
@@ -174,7 +170,6 @@ private:
 		for (int i = 0; i < 25; i++) printf("%c", ASCII_DOUBLE_SEPARATOR);
 		printf("%c", ASCII_DOUBLE_LOWER_RIGHT);
 	}
-
 	static int toggleAutoAttack()
 	{
 		Console::setCursorPos(3, 17);
