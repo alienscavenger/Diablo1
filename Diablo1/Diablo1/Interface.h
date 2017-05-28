@@ -2484,7 +2484,14 @@ public:
 		printf(" %21s %-13s: %3.0f\n", " ", "Max Health", karakter->getMaxHealth());
 		printf(" %-5s: %7d G%6s%-13s: %3.0f\n", "Gold", karakter->getGold(), " ", "Max Stamina", karakter->getMaxStamina());
 		stringstream temp;
-		temp << karakter->getExperience() << '/' << karakter->getExpRequirement(karakter->getLevel() + 1);
+		if (karakter->getLevel() < Human::MAX_LEVEL)
+		{
+			temp << karakter->getExperience() << '/' << karakter->getExpRequirement(karakter->getLevel() + 1);
+		}
+		else
+		{
+			temp << "MAX LEVEL!!!";
+		}
 		string exp_string;
 		getline(temp, exp_string);
 		printf(" %-5s: %-14s %-13s: %3d\n\n", "Exp", exp_string.c_str(), "Armor", karakter->getArmor());

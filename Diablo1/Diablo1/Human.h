@@ -9,7 +9,6 @@
 #include <vector>
 #include <string>
 #define EQUIPMENT_SLOT 7
-#define MAX_LEVEL 31
 using namespace std;
 
 class Human : public Base
@@ -21,7 +20,7 @@ private:
 	int dexterity;
 	int gold;
 	int experience;
-	static int expRequirement[MAX_LEVEL]; // misalnya, expRequirement[2] = 1000, artinya, untuk level up ke 2, player memerlukan exp >= 1000 (di-initialize di bawah)
+	static int expRequirement[]; // misalnya, expRequirement[2] = 1000, artinya, untuk level up ke 2, player memerlukan exp >= 1000 (di-initialize di bawah)
 	int job;
 	int monsterKilled;
 
@@ -198,6 +197,8 @@ private:
 	}
 
 public:
+	static const int MAX_LEVEL;
+
 	//constructor buat new Game
 	// walaupun cuman new Game, vInventory dan equipment juga perlu di-initialize
 	Human(vector <Item>& fileRead,int pilihanJob,string name)
@@ -205,7 +206,7 @@ public:
 		vInventory.reserve(110); // jadi ada maksimal 110 item di inventory
 		monsterKilled = 0;
 		level = 1;
-		gold = 2000000;
+		gold = 5000;
 		experience = 0;
 		this->name = name;
 		job = pilihanJob;
@@ -299,10 +300,17 @@ public:
 	void levelUp(int strength, int endurance, int agility, int dexterity)
 	{
 		this->level++;
+
 		this->strength += strength;
 		this->endurance += endurance;
 		this->agility += agility;
 		this->dexterity += dexterity;
+
+		chanceToHit += (2 * dexterity);
+		evade += (2 * agility);
+		speed += (5 * agility) + (3 * dexterity);
+		maxHealth += (5 * strength) + (10 * endurance);
+		maxStamina += (3 * strength) + (10 * endurance) + (2 * dexterity);
 	}
 	
 	// ini fungsi buat nambahin monster yang dikill
@@ -350,6 +358,10 @@ public:
 	void setExperience(float exp)
 	{
 		experience += (int)exp;
+		if (experience >= getExpRequirement(MAX_LEVEL))
+		{
+			experience = getExpRequirement(MAX_LEVEL);
+		}
 	}
 
 	//setter gold
@@ -360,8 +372,10 @@ public:
 	}
 };
 
-int Human::expRequirement[31] = {
-	0,0,1000,5000,10000,15000,20000,25000,30000,40000,50000,65000,80000,95000,110000,125000,140000,160000,180000,200000,220000,240000,260000,280000,300000,330000,360000,390000,420000,450000,500000
-}; //    ^lv2											^lv10															^lv20																	^lv30
+const int Human::MAX_LEVEL = 30;
+
+int Human::expRequirement[MAX_LEVEL+2] = {
+	0,0,1000,5000,10000,15000,20000,25000,30000,40000,50000,65000,80000,95000,110000,125000,140000,160000,180000,200000,220000,240000,260000,280000,300000,330000,360000,390000,420000,450000,500000,500001
+}; //    ^lv2											^lv10															^lv20																	^lv30 ^placeholder
 
 #endif // !HUMAN_H

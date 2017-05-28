@@ -552,7 +552,7 @@ private:
 					log.push_back(text);
 					printLog(log);
 
-					HPchange(0, 10000, karakter, enemy); // UBAH INI KALAU MAU NGECHEAT
+					HPchange(0, damage, karakter, enemy); // UBAH INI KALAU MAU NGECHEAT
 				}
 				if (riposte) // PALADIN
 				{
@@ -960,8 +960,8 @@ private:
 		{
 			"                                  /   \\       ",
 			" _                        )      ((   ))     (",
-			"(@)                      /|\\      ))_((     /|\\",
-			"|-|                     / | \\    (/\\|/\\)   / | \\                      (@)",
+			"(@)                      /|\\      ))_((     /|\\                       (@)",
+			"|-|                     / | \\    (/\\|/\\)   / | \\                      |-|",
 			"| | -------------------/--|-voV---\\`|'/--Vov-|--\\---------------------|-|",
 			"|-|                         '^`   (o o)  '^`                          | |",
 			"| |                               `\\Y/'                               |-|",
@@ -976,8 +976,8 @@ private:
 			"| |                                                                   |-|",
 			"| |                                                                   |-|",
 			"|_|___________________________________________________________________| |",
-			"(@)              l   /\\ /         ( (       \\ /\\   l                `\\|-|",
-			"                 l /   V           \\ \\       V   \\ l                  (@)",
+			"|-|/`            l   /\\ /         ( (       \\ /\\   l                `\\|-|",
+			"(@)              l /   V           \\ \\       V   \\ l                  (@)",
 			"                 l/                _) )_          \\I",
 			"                                   `\\ /'"
 		};
@@ -1082,7 +1082,7 @@ private:
 								*stats[i] = 0;
 								Console::resetColor();
 								Console::setCursorPos(49, 14 + i);
-								printf("                 ");
+								printf("                                ");
 							}
 							skillPoint = gain * 3; // reset skill point remaining
 							Console::setCursorPos(64, 24);
@@ -1177,7 +1177,7 @@ private:
 							*stats[i] = 0;
 							Console::resetColor();
 							Console::setCursorPos(49, 14 + i);
-							printf("                 ");
+							printf("                                ");
 						}
 						skillPoint = gain * 3; // reset skill point remaining
 						Console::setCursorPos(64, 24);
@@ -1204,8 +1204,8 @@ private:
 		} // endWhile
 		Console::setColor(Console::COLOR_WHITE);
 		
-		karakter.levelUp(STR, END, AGI, DEX);
-		for (int i = 1; i < gain; i++)	karakter.levelUp(0, 0, 0, 0); // khusus buat naikin level doang
+		karakter.levelUp(STR, END, AGI, DEX); // naik level sekali, untuk semua stats yang diambil
+		for (int i = 1; i < gain; i++)	karakter.levelUp(0, 0, 0, 0); // khusus buat naikin level doang (jika naik level lebih dari 1x)
 		system("cls");
 	}
 	static void gameOver()
@@ -1689,11 +1689,14 @@ public:
 		{
 			karakter.kill(); // nambahin jumlah monster yang dikill karakter sebesar 1
 			bool levelUp;
+			bool levelToMax = false;
+			bool maxLevel = karakter.getLevel() == 30 ? true : false;
 			string text;
 
 			int expBefore = karakter.getExperience();
 			int levelBefore = karakter.getLevel();
 			int expGained = (int)enemy.getExp();
+			///expGained = 555000; // UBAH INI KALO MAU NGECHEAT
 			int goldGained = enemy.getGold();
 			int prevGold = karakter.getGold();
 
@@ -1705,9 +1708,30 @@ public:
 			text += " Gold!";
 			log.push_back(text);
 
-			karakter.setExperience((int)enemy.getExp()); // tambahin exp
-			karakter.setGold(enemy.getGold()); // tambahin gold
-			if (karakter.getExperience() >= karakter.getExpRequirement(karakter.getLevel()+1))
+			karakter.setExperience(expGained); // tambahin exp
+			karakter.setGold(goldGained); // tambahin gold
+			if (maxLevel) // kalau sebelumnya sudah maxLevel
+			{
+				levelUp = false;
+				text.clear();
+				text = karakter.getName();
+				text += " already on MAX LEVEL!";
+				log.push_back(text);
+				printLog(log);
+			}
+			else if (karakter.getExperience() >= karakter.getExpRequirement(Human::MAX_LEVEL)) // kalau saat naik level menjadi MAX level
+			{
+				// maka level up
+				expGained = karakter.getExpRequirement(Human::MAX_LEVEL) - expBefore;
+				levelUp = true;
+				levelToMax = true;
+				text.clear();
+				text = karakter.getName();
+				text += " level UP to MAX!";
+				log.push_back(text);
+				printLog(log);
+			}
+			else if (karakter.getExperience() >= karakter.getExpRequirement(karakter.getLevel()+1))
 			{
 				// maka level up
 				levelUp = true;
@@ -1736,103 +1760,110 @@ public:
 			system("cls");
 
 			// print XP bar and increment
-			Console::setCursorPos(4, 9);
-			printf("You get %d EXP!", expGained);
-			Console::delay(1000);
-
-			printXPBox();
-			Console::setCursorPos(3, 2); printf("Experience");
-
-			//current XP
-			Console::setCursorPos(14, 2); printf("%5d/%-5d", expBefore-karakter.getExpRequirement(levelBefore), karakter.getExpRequirement(levelBefore + 1)-karakter.getExpRequirement(levelBefore));
-			
-			// total ada 25 bar
-			int levelCounter = 0;
+			if (!maxLevel)
 			{
-				int x = 0;
+				Console::setCursorPos(4, 9);
+				printf("You get %d EXP!", expGained);
+				Console::delay(1000);
 
-				int add = 0; // kalau level up berkali"
-				int gain = 0;
-				bool levelUp = false;
-				while (1)
+				printXPBox();
+				Console::setCursorPos(3, 2); printf("Experience");
+
+				//current XP
+				Console::setCursorPos(14, 2); printf("%6d/%-6d", expBefore - karakter.getExpRequirement(levelBefore), karakter.getExpRequirement(levelBefore + 1) - karakter.getExpRequirement(levelBefore));
+				// total ada 25 bar
+				int levelCounter = 0;
 				{
-					levelUp = false;
-					if (gain == expGained) // kalau sudah sama
-					{
-						Console::setCursorPos(4, 10 + add - 1);
-						printf("Your EXP is now %d", karakter.getExperience());
-						Console::delay(1000);
-						break; // kalau sudah dapat semua xp-nya
-					}
-					int expRequired = karakter.getExpRequirement(levelBefore + 1 + add) - karakter.getExpRequirement(levelBefore + add); // xp setelah - sebelum
-					int box = expRequired / 25; // satu box berapa xp;
-					int counter = expBefore - karakter.getExpRequirement(levelBefore + add);
-					float sec = 0.0f;
-					float secondDelay = 1000 / expRequired;
+					int x = 0;
 
-					//Console::setCursorPos(15, 15); printf("gain=%d,add=%d,levelBefore=%d,counter=%d,box=%d,expRequired=%d", gain, add, levelBefore, counter, box, expRequired);
-					if (add == 0)
+					int add = 0; // kalau level up berkali"
+					int gain = 0;
+					bool levelUp = false;
+					while (1)
 					{
-						while (x < 25)
+						levelUp = false;
+						if (gain == expGained) // kalau sudah sama
 						{
-							Console::setCursorPos(2 + (x++), 4);
-							printf("%c", ASCII_BOX_EMPTY);
+							Console::setCursorPos(14, 2);
+							if (!levelToMax) printf("%6d/%-6d", karakter.getExperience() - karakter.getExpRequirement(levelBefore + levelCounter), karakter.getExpRequirement(levelBefore + 1 + levelCounter) - karakter.getExpRequirement(levelBefore + levelCounter)); // update terus
+							else printf("MAX LEVEL!!!");
+							Console::setCursorPos(4, 10 + add);
+							printf("Your EXP is now %d", karakter.getExperience());
+							Console::delay(1000);
+							break; // kalau sudah dapat semua xp-nya
 						}
-						x = 0;
-						int counterPrint = 0;
-						while (counterPrint < counter)
+						int expRequired = karakter.getExpRequirement(levelBefore + 1 + add) - karakter.getExpRequirement(levelBefore + add); // xp setelah - sebelum
+						int box = expRequired / 25; // satu box berapa xp;
+						int counter = expBefore - karakter.getExpRequirement(levelBefore + add);
+						int sec = 0;
+						int secondDelay = expRequired / 1000;
+						//Console::setCursorPos(15, 15); printf("gain=%d,add=%d,levelBefore=%d,counter=%d,box=%d,expRequired=%d", gain, add, levelBefore, counter, box, expRequired);
+						if (add == 0) // maka print BOX_FULL untuk xp sebelumnya
 						{
-							if (counterPrint%box == 0)
+							while (x < 25)
+							{
+								Console::setCursorPos(2 + (x++), 4);
+								printf("%c", ASCII_BOX_EMPTY);
+							}
+							x = 0;
+							int counterPrint = 0;
+							while (counterPrint < counter)
+							{
+								if (counterPrint%box == 0)
+								{
+									Console::setCursorPos(2 + (x++), 4);
+									printf("%c", ASCII_BOX_FULL);
+								}
+								counterPrint++;
+							}
+							Console::delay(500);
+						}
+						while ((x < 25 || counter < expRequired) && gain < expGained)
+						{
+							sec++;
+							counter++;
+							gain++;
+							if (sec%secondDelay == 0)
+							{
+								Console::setCursorPos(14, 2); printf("%6d/%-6d", counter, karakter.getExpRequirement(levelBefore + 1 + add) - karakter.getExpRequirement(levelBefore + add)); // update terus
+							}
+							if (counter%box == 0 && x < 25)
 							{
 								Console::setCursorPos(2 + (x++), 4);
 								printf("%c", ASCII_BOX_FULL);
 							}
-							counterPrint++;
 						}
-					}
-					while ((x<25 || counter<expRequired) && gain<expGained)
-					{
-						sec++;
-						if (fmod(sec,secondDelay) == 0)Console::delay(1);
-						counter++;
-						gain++;
-						Console::setCursorPos(15, 2); printf("%5d/%-5d", counter, karakter.getExpRequirement(levelBefore + 1 + add)-karakter.getExpRequirement(levelBefore+add)); // update terus
-						if (counter%box == 0 && x<25)
+						if (counter == karakter.getExpRequirement(levelBefore + 1 + add) - karakter.getExpRequirement(levelBefore + add)) // kalau level up
 						{
-							Console::setCursorPos(2 + (x++), 4);
-							printf("%c", ASCII_BOX_FULL);
+							Console::setCursorPos(4, 10 + add);
+							levelCounter++;
+							printf("LEVEL UP!", levelCounter, add, counter);
+							Console::delay(500);
+							levelUp = true;
+						}
+						// reset box kalau levelUp
+						if (levelUp)
+						{
+							for (int i = 0; i < 25; i++)
+							{
+								Console::setCursorPos(2 + i, 4);
+								printf("%c", ASCII_BOX_EMPTY);
+							}
 						}
 
+						expBefore = karakter.getExpRequirement(levelBefore + 1 + add); // set xp before ke setelah lvl up
+						add++;
+						x = 0;
 					}
-					if (counter == karakter.getExpRequirement(levelBefore + 1 + add) - karakter.getExpRequirement(levelBefore + add)) // kalau level up
-					{
-						Console::setCursorPos(4, 10+add);
-						printf("LEVEL UP!");
-						Console::delay(500);
-						levelUp = true;
-					}
-					// reset box kalau levelUp
-					if (levelUp)
-					{
-						for (int i = 0; i < 25; i++)
-						{
-							Console::setCursorPos(2 + i, 4);
-							printf("%c", ASCII_BOX_EMPTY);
-						}
-					}
-
-					expBefore = karakter.getExpRequirement(levelBefore + 1 + add); // set xp before ke setelah lvl up
-					add++;
-					x = 0;
+					///levelCounter = add - 1;
 				}
-				levelCounter = add-1;
+				Console::setColor(GREY);
+				Console::setCursorPos(4, 11 + levelCounter + 1); printf("Press enter to continue...");
+				Interface::pressEnterPlease();
+				Console::resetColor();
+				if (levelCounter > 0) levelUpMenu(levelCounter, karakter);
 			}
-			Console::setColor(GREY);
-			Console::setCursorPos(4, 11+levelCounter+1); printf("Press enter to continue...");
-			Interface::pressEnterPlease();
-			Console::resetColor();
 
-			if (levelCounter > 0) levelUpMenu(levelCounter, karakter);
 			system("cls");
 			Console::setCursorPos(3, 3);
 			Console::resetColor();
