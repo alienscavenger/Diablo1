@@ -197,6 +197,9 @@ private:
 	}
 
 public:
+	static enum SLOT { Head = 1, LeftArm, RightArm, Hands, Torso, Legs };
+	static enum EQUIPTYPE { WeaponAndShield=-1,Helmet = 1, Gloves, Armor, Boots, Weapon, Shield };
+	static enum JOB {Assassin=1,Paladin,Barbarian};
 	static const int MAX_LEVEL;
 
 	//constructor buat new Game

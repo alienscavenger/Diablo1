@@ -886,7 +886,7 @@ public:
 					sort(temporary.begin(), temporary.end(), CompareName());
 					break;
 				case 3:
-					if (filterType == 5) // kalau weapon, sort berdasarkan damage
+					if (filterType == Human::Weapon) // kalau weapon, sort berdasarkan damage
 					{
 						sort(temporary.begin(), temporary.end(), CompareDamage());
 						break;
@@ -918,12 +918,12 @@ public:
 					string type = "<";
 					switch (filterType)
 					{
-					case 1: type += "HELMET"; color = Console::COLOR_BLUE; break;
-					case 2: type += "GLOVES"; color = Console::COLOR_CYAN; break;
-					case 3: type += "ARMOR"; color = Console::COLOR_GREEN; break;
-					case 4: type += "BOOTS"; color = Console::COLOR_MAGENTA; break;
-					case 5: type += "WEAPON"; color = Console::COLOR_RED; break;
-					case 6: type += "SHIELD"; color = Console::COLOR_YELLOW; break;
+					case Human::Helmet: type += "HELMET"; color = Console::COLOR_BLUE; break;
+					case Human::Gloves: type += "GLOVES"; color = Console::COLOR_CYAN; break;
+					case Human::Armor: type += "ARMOR"; color = Console::COLOR_GREEN; break;
+					case Human::Boots: type += "BOOTS"; color = Console::COLOR_MAGENTA; break;
+					case Human::Weapon: type += "WEAPON"; color = Console::COLOR_RED; break;
+					case Human::Shield: type += "SHIELD"; color = Console::COLOR_YELLOW; break;
 					}
 					type += ">";
 					Console::setColor(color);
@@ -939,9 +939,9 @@ public:
 				int res = (*iter)->getRestriction();
 				string restriction;
 				if (res == 0) restriction = "-";
-				else if (res == 1) restriction = "Assassin";
-				else if (res == 2) restriction = "Paladin";
-				else if (res == 3) restriction = "Barbarian";
+				else if (res == Human::Assassin) restriction = "Assassin";
+				else if (res == Human::Paladin) restriction = "Paladin";
+				else if (res == Human::Barbarian) restriction = "Barbarian";
 				
 				
 				/*
@@ -957,12 +957,12 @@ public:
 				int tmp = (*iter)->getType();
 				switch (tmp)
 				{
-				case 1: type = "Helmet"; break;
-				case 2: type = "Gloves"; break;
-				case 3: type = "Armor"; break;
-				case 4: type = "Boots"; break;
-				case 5: type = "Weapon"; break;
-				case 6: type = "Shield"; break;
+				case Human::Helmet: type = "Helmet"; break;
+				case Human::Gloves: type = "Gloves"; break;
+				case Human::Armor: type = "Armor"; break;
+				case Human::Boots: type = "Boots"; break;
+				case Human::Weapon: type = "Weapon"; break;
+				case Human::Shield: type = "Shield"; break;
 				}
 
 				printf(" %2d.   %18s  %6d   %-28s   %11s   %6s\n", i, (*iter)->getName().c_str(), (*iter)->getPrice(), (*iter)->getEffect().c_str(), restriction.c_str(), type.c_str());
@@ -974,29 +974,29 @@ public:
 			cout << "\n";
 			cout << " Filter by : <";
 			int color[7]{ Console::COLOR_WHITE,Console::COLOR_WHITE, Console::COLOR_WHITE, Console::COLOR_WHITE, Console::COLOR_WHITE,
-				Console::COLOR_WHITE, Console::COLOR_WHITE };
+							Console::COLOR_WHITE, Console::COLOR_WHITE };
 			char* filterText[7] = { "NONE","HELMET","GLOVE","ARMOR","BOOTS","WEAPON","SHIELD" };
 			switch (filterType)
 			{
 			case 0:
 				color[0] = Console::COLOR_GRAY;
 				break;
-			case 1:
+			case Human::Helmet:
 				color[1] = Console::COLOR_BLUE;
 				break;
-			case 2:
+			case Human::Gloves:
 				color[2] = Console::COLOR_CYAN;
 				break;
-			case 3:
+			case Human::Armor:
 				color[3] = Console::COLOR_GREEN;
 				break;
-			case 4:
+			case Human::Boots:
 				color[4] = Console::COLOR_MAGENTA;
 				break;
-			case 5:
+			case Human::Weapon:
 				color[5] = Console::COLOR_RED;
 				break;
-			case 6:
+			case Human::WeaponAndShield:
 				color[6] = Console::COLOR_YELLOW;
 				break;
 			}
@@ -1094,13 +1094,13 @@ public:
 						if (sortType == 3)
 						{
 							Console::setColor(color2);
-							if (filterType == 5) cout << " <DAMAGE>";
+							if (filterType == Human::Weapon) cout << " <DAMAGE>";
 							else cout << " <ARMOR>";
 						}
 						else
 						{
 							Console::setColor(color1);
-							if (filterType == 5) cout << " DAMAGE";
+							if (filterType == Human::Weapon) cout << " DAMAGE";
 							else cout << " ARMOR";
 						}
 					}
@@ -1117,9 +1117,9 @@ public:
 					string job;
 					switch (karakter->getJob())
 					{
-					case 1: job = "ASSASSIN"; break;
-					case 2: job = "PALADIN"; break;
-					case 3: job = "BARBARIAN"; break;
+					case Human::Assassin: job = "ASSASSIN"; break;
+					case Human::Paladin: job = "PALADIN"; break;
+					case Human::Barbarian: job = "BARBARIAN"; break;
 					}
 					cout << job << " COMPATIBLE ONLY: ";
 					Console::setColor(Console::COLOR_YELLOW);
@@ -1223,22 +1223,22 @@ public:
 
 					switch (temporary[index - 1]->getType())
 					{
-					case 1:
+					case Human::Helmet:
 						printf("Helmet");
 						break;
-					case 2:
+					case Human::Gloves:
 						printf("Gloves");
 						break;
-					case 3:
+					case Human::Armor:
 						printf("Armor");
 						break;
-					case 4:
+					case Human::Boots:
 						printf("Boots");
 						break;
-					case 5:
+					case Human::Weapon:
 						printf("Weapon");
 						break;
-					case 6:
+					case Human::Shield:
 						printf("Shield");
 						break;
 					}
@@ -1251,13 +1251,13 @@ public:
 					case 0:
 						cout << "-";
 						break;
-					case 1:
+					case Human::Assassin:
 						cout << "Assassin";
 						break;
-					case 2:
+					case Human::Paladin:
 						cout << "Paladin";
 						break;
-					case 3:
+					case Human::Barbarian:
 						cout << "Barbarian";
 						break;
 					}
@@ -1287,15 +1287,15 @@ public:
 							printf(" WARNING: THE ITEM HAS RESTRICTION <");
 							switch (temporary[index - 1]->getRestriction())
 							{
-							case 1:
+							case Human::Assassin:
 								Console::setColor(Console::COLOR_RED);
 								printf("ASSASSIN");
 								break;
-							case 2:
+							case Human::Paladin:
 								Console::setColor(Console::COLOR_GREEN);
 								printf("PALADIN");
 								break;
-							case 3:
+							case Human::Barbarian:
 								Console::setColor(Console::COLOR_YELLOW);
 								printf("BARBARIAN");
 								break;
@@ -1939,12 +1939,12 @@ public:
 					string type = "<";
 					switch (filterType)
 					{
-					case 1: type += "HELMET"; color = Console::COLOR_BLUE; break;
-					case 2: type += "GLOVES"; color = Console::COLOR_CYAN; break;
-					case 3: type += "ARMOR"; color = Console::COLOR_GREEN; break;
-					case 4: type += "BOOTS"; color = Console::COLOR_MAGENTA; break;
-					case 5: type += "WEAPON"; color = Console::COLOR_RED; break;
-					case -1: type += "WEAPON/SHIELD"; color = Console::COLOR_YELLOW; break;
+					case Human::Helmet: type += "HELMET"; color = Console::COLOR_BLUE; break;
+					case Human::Gloves: type += "GLOVES"; color = Console::COLOR_CYAN; break;
+					case Human::Armor: type += "ARMOR"; color = Console::COLOR_GREEN; break;
+					case Human::Boots: type += "BOOTS"; color = Console::COLOR_MAGENTA; break;
+					case Human::Weapon: type += "WEAPON"; color = Console::COLOR_RED; break;
+					case Human::WeaponAndShield: type += "WEAPON/SHIELD"; color = Console::COLOR_YELLOW; break;
 					}
 					type += ">";
 					Console::setColor(color);
@@ -2048,23 +2048,23 @@ public:
 								bool balik = false;
 								switch (pickMenu)
 								{
-								case 0:
-									filterType = 1;
+								case 0: // Human::Head - 1
+									filterType = Human::Helmet;
 									break;
-								case 1:
+								case 1: // Human::LeftArm - 1
 									filterType = -1; // weapon dan shield (5 dan 6)
 									break;
-								case 2:
-									filterType = 5;
+								case 2: // Human::RightArm - 1
+									filterType = Human::Weapon;
 									break;
-								case 3:
-									filterType = 2;
+								case 3: // Human::Hands - 1
+									filterType = Human::Gloves;
 									break;
-								case 4:
-									filterType = 3;
+								case 4: // Human::Torso - 1
+									filterType = Human::Armor;
 									break;
-								case 5:
-									filterType = 4;
+								case 5: // Human::Legs - 1
+									filterType = Human::Boots;
 									break;
 								case 6:
 									balik = true;
@@ -2099,7 +2099,7 @@ public:
 		else printf("<COMPARE CURRENTLY EQUIPPED WITH THE SELECTED ITEM>");
 
 		Console::setCursorPos(28, 18);
-		if (currFilterType == 5 || currFilterType == -1 && type != 1) Console::setCursorPos(16, 18); // kalau lagi filter weapon
+		if (currFilterType == Human::Weapon|| currFilterType == Human::WeaponAndShield && type != 1) Console::setCursorPos(16, 18); // kalau lagi filter weapon
 		Console::setColor(Console::COLOR_GREEN);
 		printf("<tab> ");
 
@@ -2112,7 +2112,7 @@ public:
 		Console::resetColor();
 		printf(">  ");
 
-		if (currFilterType == 5 || currFilterType == -1 && type != 1) // kalau lagi filter weapon
+		if (currFilterType == Human::Weapon || currFilterType == Human::WeaponAndShield && type != 1) // kalau lagi filter weapon
 		{
 			Console::resetColor();
 			printf("<Compare with");
@@ -2138,8 +2138,8 @@ public:
 		int i = 0;
 		if (type == 1)
 		{
-			if (currFilterType == 5) leftHand = 0;
-			else if (currFilterType == -1) leftHand = 1;
+			if (currFilterType == Human::Weapon) leftHand = 0;
+			else if (currFilterType == Human::WeaponAndShield) leftHand = 1;
 			i = curr;
 			// reset warna sebelumnya ke putih/highlight merah dulu
 			{
@@ -2158,12 +2158,12 @@ public:
 				int tmp = temporary[i]->getType();
 				switch (tmp)
 				{
-				case 1: type = "Helmet"; break;
-				case 2: type = "Gloves"; break;
-				case 3: type = "Armor"; break;
-				case 4: type = "Boots"; break;
-				case 5: type = "Weapon"; break;
-				case 6: type = "Shield"; break;
+				case Human::Helmet: type = "Helmet"; break;
+				case Human::Gloves: type = "Gloves"; break;
+				case Human::Armor: type = "Armor"; break;
+				case Human::Boots: type = "Boots"; break;
+				case Human::Weapon: type = "Weapon"; break;
+				case Human::Shield: type = "Shield"; break;
 				}
 				printf(" %2d.   %18s  %6d   %-28s   %11s   %6s\n", i + 1, temporary[i]->getName().c_str(), temporary[i]->getPrice(),
 					temporary[i]->getEffect().c_str(), restriction.c_str(), type.c_str());
@@ -2187,12 +2187,12 @@ public:
 				int tmp = temporary[i]->getType();
 				switch (tmp)
 				{
-				case 1: type_ = "Helmet"; break;
-				case 2: type_ = "Gloves"; break;
-				case 3: type_ = "Armor"; break;
-				case 4: type_ = "Boots"; break;
-				case 5: type_ = "Weapon"; break;
-				case 6: type_ = "Shield"; break;
+				case Human::Helmet: type_ = "Helmet"; break;
+				case Human::Gloves: type_ = "Gloves"; break;
+				case Human::Armor: type_ = "Armor"; break;
+				case Human::Boots: type_ = "Boots"; break;
+				case Human::Weapon: type_ = "Weapon"; break;
+				case Human::Shield: type_ = "Shield"; break;
 				}
 
 				if (temporary[i]->getEquipped())Console::setColor(94);
@@ -2204,19 +2204,19 @@ public:
 				int index;
 				switch(temporary[i]->getType())
 				{
-				case 1:
-					index = 1;
+				case Human::Helmet:
+					index = Human::Head;
 					break;
-				case 2:
-					index = 4;
+				case Human::Gloves:
+					index = Human::Hands;
 					break;
-				case 3:
-					index = 5;
+				case Human::Armor:
+					index = Human::Torso;
 					break;
-				case 4:
-					index = 6;
+				case Human::Boots:
+					index = Human::Legs;
 					break;
-				case 5:
+				case Human::Weapon:
 				{
 					//// kalau tangan kiri kosong atau tangan kiri ada shield, cek tangan kanan
 
@@ -2227,13 +2227,13 @@ public:
 					//	if (leftHand)index = 2;
 					//	else index = 3;
 					//}
-					if (leftHand) index = 2;
-					else index = 3;
+					if (leftHand) index = Human::LeftArm;
+					else index = Human::RightArm;
 					break;
 				}
 				break;
-				case 6:
-					index = 2;
+				case Human::Shield:
+					index = Human::LeftArm;
 					break;
 				}
 				printDiff(0, karakter, temporary, 0, 0);
@@ -2258,20 +2258,20 @@ public:
 							int res = temporary[i]->getRestriction();
 							string restriction;
 							if (res == 0) restriction = "-";
-							else if (res == 1) restriction = "Assassin";
-							else if (res == 2) restriction = "Paladin";
-							else if (res == 3) restriction = "Barbarian";
+							else if (res == Human::Assassin) restriction = "Assassin";
+							else if (res == Human::Paladin) restriction = "Paladin";
+							else if (res == Human::Barbarian) restriction = "Barbarian";
 
 							string type;
 							int tmp = temporary[i]->getType();
 							switch (tmp)
 							{
-							case 1: type = "Helmet"; break;
-							case 2: type = "Gloves"; break;
-							case 3: type = "Armor"; break;
-							case 4: type = "Boots"; break;
-							case 5: type = "Weapon"; break;
-							case 6: type = "Shield"; break;
+							case Human::Helmet: type = "Helmet"; break;
+							case Human::Gloves: type = "Gloves"; break;
+							case Human::Armor: type = "Armor"; break;
+							case Human::Boots: type = "Boots"; break;
+							case Human::Weapon: type = "Weapon"; break;
+							case Human::Shield: type = "Shield"; break;
 							}
 							printf(" %2d.   %18s  %6d   %-28s   %11s   %6s\n", i + 1, temporary[i]->getName().c_str(), temporary[i]->getPrice(),
 								temporary[i]->getEffect().c_str(), restriction.c_str(), type.c_str());
@@ -2298,12 +2298,12 @@ public:
 							int tmp = temporary[i]->getType();
 							switch (tmp)
 							{
-							case 1: type = "Helmet"; break;
-							case 2: type = "Gloves"; break;
-							case 3: type = "Armor"; break;
-							case 4: type = "Boots"; break;
-							case 5: type = "Weapon"; break;
-							case 6: type = "Shield"; break;
+							case Human::Helmet: type = "Helmet"; break;
+							case Human::Gloves: type = "Gloves"; break;
+							case Human::Armor: type = "Armor"; break;
+							case Human::Boots: type = "Boots"; break;
+							case Human::Weapon: type = "Weapon"; break;
+							case Human::Shield: type = "Shield"; break;
 							}
 							printf(" %2d.   %18s  %6d   %-28s   %11s   %6s\n", i + 1, temporary[i]->getName().c_str(), temporary[i]->getPrice(),
 								temporary[i]->getEffect().c_str(), restriction.c_str(), type.c_str());
@@ -2318,7 +2318,7 @@ public:
 						else Console::setCursorPos(0, 23 + i);
 						{
 							Console::setCursorPos(28, 18);
-							if (currFilterType == 5 || currFilterType == -1 && type != 1) Console::setCursorPos(16, 18); // kalau lagi filter weapon
+							if (currFilterType == Human::Weapon || currFilterType == Human::WeaponAndShield && type != 1) Console::setCursorPos(16, 18); // kalau lagi filter weapon
 							Console::setColor(Console::COLOR_GREEN);
 							printf("<tab> ");
 							Console::resetColor();
@@ -2339,7 +2339,7 @@ public:
 							Console::resetColor();
 							printf(">  ");
 
-							if (currFilterType == 5 || currFilterType == -1 && type != 1) // kalau lagi filter weapon
+							if (currFilterType == Human::Weapon || currFilterType == Human::WeaponAndShield && type != 1) // kalau lagi filter weapon
 							{
 								if (leftHand)
 								{
@@ -2370,12 +2370,12 @@ public:
 							}
 						}
 					}
-					else if (buff == VK_SPACE && ( currFilterType == 5 || currFilterType == -1 && type != 1))
+					else if (buff == VK_SPACE && ( currFilterType == Human::Weapon || currFilterType == Human::WeaponAndShield && type != 1))
 					{
 						leftHand = (leftHand + 1) % 2;
 						{
 							Console::setCursorPos(28, 18);
-							if (currFilterType == 5 || currFilterType == -1 && type != 1) Console::setCursorPos(16, 18); // kalau lagi filter weapon
+							if (currFilterType == Human::Weapon || currFilterType == Human::WeaponAndShield && type != 1) Console::setCursorPos(16, 18); // kalau lagi filter weapon
 							Console::setColor(Console::COLOR_GREEN);
 							printf("<tab> ");
 							Console::resetColor();
@@ -2396,7 +2396,7 @@ public:
 							Console::resetColor();
 							printf(">  ");
 
-							if (currFilterType == 5 || currFilterType == -1 && type != 1) // kalau lagi filter weapon
+							if (currFilterType == Human::Weapon || currFilterType == Human::WeaponAndShield && type != 1) // kalau lagi filter weapon
 							{
 								if (leftHand)
 								{
@@ -2464,15 +2464,15 @@ public:
 		printf(" Class : ");
 		switch (karakter->getJob())
 		{
-		case 1:
+		case Human::Assassin:
 			Console::setColor(Console::COLOR_RED);
 			cout << "Assassin";
 			break;
-		case 2:
+		case Human::Paladin:
 			Console::setColor(Console::COLOR_GREEN);
 			cout << "Paladin";
 			break;
-		case 3:
+		case Human::Barbarian:
 			Console::setColor(Console::COLOR_YELLOW);
 			cout << "Barbarian";
 			break;
@@ -2541,7 +2541,7 @@ public:
 			temporary.clear(); // clear dulu
 
 			// -------------- masukin data item ke temporary vector ---------------------
-			if (filterType == -1) // kalau filternya <Weapon and Shield>
+			if (filterType == Human::WeaponAndShield) // kalau filternya <Weapon and Shield>
 			{
 				for (int i = 0; i < inventSize; i++)
 				{
@@ -2576,7 +2576,7 @@ public:
 					sort(temporary.begin(), temporary.end(), CompareName());
 					break;
 				case 3:
-					if (filterType == 5) // kalau weapon, sort berdasarkan damage
+					if (filterType == Human::Weapon) // kalau weapon, sort berdasarkan damage
 					{
 						sort(temporary.begin(), temporary.end(), CompareDamage());
 						break;
@@ -2606,13 +2606,13 @@ public:
 					string type = "<";
 					switch (filterType)
 					{
-					case 1: type += "HELMET"; color = Console::COLOR_BLUE; break;
-					case 2: type += "GLOVES"; color = Console::COLOR_CYAN; break;
-					case 3: type += "ARMOR"; color = Console::COLOR_GREEN; break;
-					case 4: type += "BOOTS"; color = Console::COLOR_MAGENTA; break;
-					case 5: type += "WEAPON"; color = Console::COLOR_RED; break;
-					case 6: type += "SHIELD"; color = Console::COLOR_YELLOW; break;
-					case -1: type += "WEAPON OR SHIELD"; color = Console::COLOR_YELLOW; break;
+					case Human::Helmet: type += "HELMET"; color = Console::COLOR_BLUE; break;
+					case Human::Gloves: type += "GLOVES"; color = Console::COLOR_CYAN; break;
+					case Human::Armor: type += "ARMOR"; color = Console::COLOR_GREEN; break;
+					case Human::Boots: type += "BOOTS"; color = Console::COLOR_MAGENTA; break;
+					case Human::Weapon: type += "WEAPON"; color = Console::COLOR_RED; break;
+					case Human::Shield: type += "SHIELD"; color = Console::COLOR_YELLOW; break;
+					case Human::WeaponAndShield: type += "WEAPON OR SHIELD"; color = Console::COLOR_YELLOW; break;
 					}
 					type += ">";
 					Console::setColor(color);
@@ -2628,9 +2628,9 @@ public:
 				int res = (*iter)->getRestriction();
 				string restriction;
 				if (res == 0) restriction = "-";
-				else if (res == 1) restriction = "Assassin";
-				else if (res == 2) restriction = "Paladin";
-				else if (res == 3) restriction = "Barbarian";
+				else if (res == Human::Assassin) restriction = "Assassin";
+				else if (res == Human::Paladin) restriction = "Paladin";
+				else if (res == Human::Barbarian) restriction = "Barbarian";
 				/*
 				type 0 = GAADA
 				type 1 = helmet
@@ -2644,12 +2644,12 @@ public:
 				int tmp = (*iter)->getType();
 				switch (tmp)
 				{
-				case 1: type = "Helmet"; break;
-				case 2: type = "Gloves"; break;
-				case 3: type = "Armor"; break;
-				case 4: type = "Boots"; break;
-				case 5: type = "Weapon"; break;
-				case 6: type = "Shield"; break;
+				case Human::Helmet: type = "Helmet"; break;
+				case Human::Gloves: type = "Gloves"; break;
+				case Human::Armor: type = "Armor"; break;
+				case Human::Boots: type = "Boots"; break;
+				case Human::Weapon: type = "Weapon"; break;
+				case Human::Shield: type = "Shield"; break;
 				}
 
 				if ((*iter)->getEquipped())Console::setColor(79); // kalau sudah di-equip, maka ganti warnanya
@@ -2669,29 +2669,29 @@ public:
 			char* filterText[7] = { "NONE","HELMET","GLOVE","ARMOR","BOOTS","WEAPON","SHIELD" };
 			switch (filterType)
 			{
-			case -1:
+			case Human::WeaponAndShield:
 				color[5] = Console::COLOR_RED;
 				color[6] = Console::COLOR_YELLOW;
 				break;
-			case 0:
+			case 0: // NONE
 				color[0] = Console::COLOR_GRAY;
 				break;
-			case 1:
+			case Human::Helmet:
 				color[1] = Console::COLOR_BLUE;
 				break;
-			case 2:
+			case Human::Gloves:
 				color[2] = Console::COLOR_CYAN;
 				break;
-			case 3:
+			case Human::Armor:
 				color[3] = Console::COLOR_GREEN;
 				break;
-			case 4:
+			case Human::Boots:
 				color[4] = Console::COLOR_MAGENTA;
 				break;
-			case 5:
+			case Human::Weapon:
 				color[5] = Console::COLOR_RED;
 				break;
-			case 6:
+			case Human::Shield:
 				color[6] = Console::COLOR_YELLOW;
 				break;
 			}
@@ -2794,13 +2794,13 @@ public:
 						if (sortType == 3)
 						{
 							Console::setColor(color2);
-							if (filterType == 5) cout << " <DAMAGE>";
+							if (filterType == Human::Weapon) cout << " <DAMAGE>";
 							else cout << " <ARMOR>";
 						}
 						else
 						{
 							Console::setColor(color1);
-							if (filterType == 5) cout << " DAMAGE";
+							if (filterType == Human::Weapon) cout << " DAMAGE";
 							else cout << " ARMOR";
 						}
 					}
@@ -2956,22 +2956,22 @@ public:
 
 				switch (temporary[index - 1]->getType())
 				{
-				case 1:
+				case Human::Helmet:
 					printf("Helmet");
 					break;
-				case 2:
+				case Human::Gloves:
 					printf("Gloves");
 					break;
-				case 3:
+				case Human::Armor:
 					printf("Armor");
 					break;
-				case 4:
+				case Human::Boots:
 					printf("Boots");
 					break;
-				case 5:
+				case Human::Weapon:
 					printf("Weapon");
 					break;
-				case 6:
+				case Human::Shield:
 					printf("Shield");
 					break;
 				}
@@ -2984,13 +2984,13 @@ public:
 				case 0:
 					cout << "-";
 					break;
-				case 1:
+				case Human::Assassin:
 					cout << "Assassin";
 					break;
-				case 2:
+				case Human::Paladin:
 					cout << "Paladin";
 					break;
-				case 3:
+				case Human::Barbarian:
 					cout << "Barbarian";
 					break;
 				}
