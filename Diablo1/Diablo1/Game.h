@@ -24,6 +24,7 @@
 #include "common.h"
 #include "Interface.h"
 #include "Battle.h"
+#include "Music.h"
 
 #define MAX_ITEM 110
 #define MAX_MONSTER 60
@@ -235,7 +236,7 @@ public:
 		karakter = NULL; // state karakter pertama
 		vShop.reserve(MAX_ITEM);
 		vMonster.reserve(MAX_MONSTER);
-
+		Music::playBackgroundMusic(2);
 		while (1)
 		{
 			system("cls");
@@ -296,6 +297,8 @@ public:
 					Console::setColor(Console::COLOR_WHITE);
 				}
 			}
+			Music::stopBackgroundMusic();
+			Music::playBackgroundMusic(1);
 			while (1)
 			{
 				Console::setCursorVisibility(true);
@@ -311,13 +314,18 @@ public:
 					// INI HOME YANG BERISI INVENTORY dan PLAYER STATUS
 					Interface::homeMenu(vShop, vMonster, karakter, karakter->getInventoryRef());
 				}
-				else if (milih == 2)
+				else if (milih == 2){
 					// INI SHOP
 					Interface::shopMenu(vShop, karakter);
+				}
 				else if (milih == 5)
 				{
+					Music::stopBackgroundMusic();
+					Music::playBackgroundMusic(3);
 					Battle::startBattle(*karakter, vMonster[0]);
 					system("cls");
+					Music::stopBackgroundMusic();
+					Music::playBackgroundMusic(1);
 					if (Battle::getWin())
 					{
 						continue;
@@ -332,7 +340,6 @@ public:
 					break;
 				}
 				else continue;
-
 			}
 			saveGame();
 			cout << "game saved!";
