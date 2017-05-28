@@ -1524,7 +1524,7 @@ public:
 								Console::setCursorPos(22, 19);
 								printf(" You don't have enough STAMINA!");
 								Console::setCursorPos(22, 20);
-								printf("Please go REST!");
+								printf(" Please go REST!");
 								BattleDelay(1000);
 								continue;
 							}
