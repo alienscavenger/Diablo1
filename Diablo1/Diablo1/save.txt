@@ -1,6 +1,6 @@
 mae
-2,1,300,1358,7,7,18,13
-3.0,106.0,41.0,229.0,105.0,117.0,3,1
+2,1,50,1358,7,7,16,12
+21.0,104.0,32.0,216.0,105.0,115.0,0,1
 #Quilted Armor,400,AMR+1 EVA+10,3,0,0,0
 #Leather Armor,800,AMR+2 EVA+8,3,0,0,0
 #Hard Leather Armor,1200,AMR+3 EVA+6,3,0,0,0
@@ -45,9 +45,9 @@ mae
 #Ogre Gauntlets,8200,AMR+11 CTH+10 DMG+4,2,0,0,0
 #Crusader Gauntlets,18000,AMR+12 MHP+60 MST+60,2,2,0,0
 #Cap,300,AMR+1 EVA+4,1,0,0,0
-#Skullcap,600,AMR+2 EVA+3,1,0,0,0
+#Skullcap,600,AMR+2 EVA+3,1,0,0,1
 #Basinet,1200,AMR+3 EVA+2,1,0,0,0
-#Shako,1500,AMR+3 EVA+5 AGI+2 DEX+1,1,1,1,1
+#Shako,1500,AMR+3 EVA+5 AGI+2 DEX+1,1,1,0,0
 #Full Helm,2000,AMR+6,1,0,0,0
 #Hydraskull,1900,AMR+4 STR+3 END+3 DMG+2,1,3,0,0
 #Mask,2500,AMR+8 END+1,1,0,0,0
@@ -72,13 +72,13 @@ mae
 #Barbed Shield,900,AMR+2 END+2 STR+2 DMG+1,6,3,0,0
 #Pavise,5000,AMR+10 MHP+100 MST+100,6,2,0,0
 #Ancient Shield,18000,AMR+22 STR+4 END+4,6,2,0,0
-#Hand Axe,500,DMG+4,5,0,0,1
+#Hand Axe,500,DMG+4,5,0,1,1
 #Double Axe,1000,DMG+8,5,0,0,0
 #Military Pick,2000,DMG+12,5,0,0,0
 #Great Axe,4000,DMG+18,5,3,0,0
 #Berseker Axe,8000,DMG+24,5,3,0,0
 #Glorious Axe,18000,DMG+36 STR+4 END+2 DEX+4,5,3,0,0
-#Dagger,400,DMG+2 EVA+4 DEX+1,5,0,0,0
+#Dagger,400,DMG+2 EVA+4 DEX+1,5,0,0,1
 #Dirk,1200,DMG+5 EVA+4 DEX+2,5,0,0,0
 #Kris,2500,DMG+8 EVA+4 DEX+4,5,0,0,0
 #Blade,3200,DMG+10 EVA+4 DEX+5,5,0,0,0
@@ -88,7 +88,7 @@ mae
 #Short Sword,400,DMG+5,5,0,0,0
 #Scimitar,1000,DMG+8,5,0,0,0
 #Sabre,1500,DMG+11,5,0,0,0
-#Falchion,3000,DMG+14,5,0,0,1
+#Falchion,3000,DMG+14,5,0,1,1
 #Broad Sword,5000,DMG+17,5,0,0,0
 #Long Sword,7000,DMG+20,5,0,0,0
 #Gladius,10000,DMG+24 END+4 DEX+2,5,2,0,0

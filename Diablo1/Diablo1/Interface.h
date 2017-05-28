@@ -1728,7 +1728,7 @@ public:
 		// int which -> CUMAN BUAT DEBUG
 		Console::resetColor();
 		Console::setCursorPos(50, 2);
-		printf("============== Character Equipment ============%d=",which);
+		printf("============== Character Equipment ==============");
 
 		if (print) // kalau print doang
 		{
@@ -2099,7 +2099,7 @@ public:
 		else printf("<COMPARE CURRENTLY EQUIPPED WITH THE SELECTED ITEM>");
 
 		Console::setCursorPos(28, 18);
-		if (currFilterType == Human::Weapon|| currFilterType == Human::WeaponAndShield && type != 1) Console::setCursorPos(16, 18); // kalau lagi filter weapon
+		if ((currFilterType == Human::Weapon|| currFilterType == 0) && type == 0) Console::setCursorPos(16, 18); // kalau lagi filter weapon
 		Console::setColor(Console::COLOR_GREEN);
 		printf("<tab> ");
 
@@ -2112,7 +2112,7 @@ public:
 		Console::resetColor();
 		printf(">  ");
 
-		if (currFilterType == Human::Weapon || currFilterType == Human::WeaponAndShield && type != 1) // kalau lagi filter weapon
+		if ((currFilterType == Human::Weapon || currFilterType == 0) && type == 0) // kalau lagi filter weapon
 		{
 			Console::resetColor();
 			printf("<Compare with");
@@ -2150,9 +2150,9 @@ public:
 				int res = temporary[i]->getRestriction();
 				string restriction;
 				if (res == 0) restriction = "-";
-				else if (res == 1) restriction = "Assassin";
-				else if (res == 2) restriction = "Paladin";
-				else if (res == 3) restriction = "Barbarian";
+				else if (res == Human::Assassin) restriction = "Assassin";
+				else if (res == Human::Paladin) restriction = "Paladin";
+				else if (res == Human::Barbarian) restriction = "Barbarian";
 
 				string type;
 				int tmp = temporary[i]->getType();
@@ -2237,7 +2237,9 @@ public:
 					break;
 				}
 				printDiff(0, karakter, temporary, 0, 0);
-				if (!(temporary[i]->getEquipped()) || (type!=1))printDiff(1, karakter, temporary, index, i); // kalau gk lagi di-equip atau type!=1, print difference nya
+				if ((type==0 && (currFilterType==Human::Weapon || currFilterType==0 || (temporary[i]->getType()!=Human::Weapon && !temporary[i]->getEquipped()) ) )
+					||
+					(type==1)) printDiff(1, karakter, temporary, index, i);
 				if(fixedCamera)Console::setCursorPos(0, 0); // supaya gk loncat" cameranya
 				else Console::setCursorPos(0, 25 + i);
 				printFlag = false;
@@ -2318,7 +2320,7 @@ public:
 						else Console::setCursorPos(0, 23 + i);
 						{
 							Console::setCursorPos(28, 18);
-							if (currFilterType == Human::Weapon || currFilterType == Human::WeaponAndShield && type != 1) Console::setCursorPos(16, 18); // kalau lagi filter weapon
+							if ((currFilterType == Human::Weapon || currFilterType == 0 ) && type != 1) Console::setCursorPos(16, 18); // kalau lagi filter weapon
 							Console::setColor(Console::COLOR_GREEN);
 							printf("<tab> ");
 							Console::resetColor();
@@ -2339,7 +2341,7 @@ public:
 							Console::resetColor();
 							printf(">  ");
 
-							if (currFilterType == Human::Weapon || currFilterType == Human::WeaponAndShield && type != 1) // kalau lagi filter weapon
+							if ((currFilterType == Human::Weapon || currFilterType == 0 ) && type != 1) // kalau lagi filter weapon
 							{
 								if (leftHand)
 								{
@@ -2370,12 +2372,12 @@ public:
 							}
 						}
 					}
-					else if (buff == VK_SPACE && ( currFilterType == Human::Weapon || currFilterType == Human::WeaponAndShield && type != 1))
+					else if (buff == VK_SPACE && ( (currFilterType == Human::Weapon || currFilterType == 0 ) && type != 1))
 					{
 						leftHand = (leftHand + 1) % 2;
 						{
 							Console::setCursorPos(28, 18);
-							if (currFilterType == Human::Weapon || currFilterType == Human::WeaponAndShield && type != 1) Console::setCursorPos(16, 18); // kalau lagi filter weapon
+							if ((currFilterType == Human::Weapon || currFilterType == 0 ) && type != 1) Console::setCursorPos(16, 18); // kalau lagi filter weapon
 							Console::setColor(Console::COLOR_GREEN);
 							printf("<tab> ");
 							Console::resetColor();
@@ -2396,7 +2398,7 @@ public:
 							Console::resetColor();
 							printf(">  ");
 
-							if (currFilterType == Human::Weapon || currFilterType == Human::WeaponAndShield && type != 1) // kalau lagi filter weapon
+							if ((currFilterType == Human::Weapon || currFilterType == 0 ) && type != 1) // kalau lagi filter weapon
 							{
 								if (leftHand)
 								{

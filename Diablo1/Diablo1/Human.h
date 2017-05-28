@@ -167,27 +167,27 @@ private:
 				int index;
 				switch ((*iter)->getType())
 				{
-				case 1:
-					index = 1;
+				case Helmet:
+					index = Head;
 					break;
-				case 2:
-					index = 4;
+				case Gloves:
+					index = Hands;
 					break;
-				case 3:
-					index = 5;
+				case Armor:
+					index = Torso;
 					break;
-				case 4:
-					index = 6;
+				case Boots:
+					index = Legs;
 					break;
-				case 5:
+				case Weapon:
 				{
-					if (weaponEquipped) { index = 2; } // kalau sudah ada weapon yang di-equipped, maka pindahin ke tangan kiri
-					else { index = 3; weaponEquipped = true; } // tangan kanan di-prioritas
+					if (weaponEquipped) { index = LeftArm; } // kalau sudah ada weapon yang di-equipped, maka pindahin ke tangan kiri
+					else { index = RightArm; weaponEquipped = true; } // tangan kanan di-prioritas
 					break;
 				}
 					break;
-				case 6:
-					index = 2;
+				case Shield:
+					index = LeftArm;
 					break;
 				}
 				equipment[index] = *iter; // valuenya adalah pointer dari iter, yakni value dari vInventory, yakni pointer to objek Item
