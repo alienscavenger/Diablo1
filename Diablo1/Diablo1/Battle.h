@@ -288,7 +288,7 @@ private:
 
 		for (int i = 0; i < 27; i++)
 		{
-			printf("%c", ASCII_BOX_EMPTY);
+			printf(" ");
 		}
 	}
 	static void colorSpeed(int turn)
@@ -712,7 +712,7 @@ private:
 				while (x<22)
 				{
 					Console::setCursorPos(40 + (x++), 4);
-					printf("%c", ASCII_BOX_EMPTY);
+					printf(" ");
 				}
 				Console::resetColor();
 			}
@@ -750,7 +750,7 @@ private:
 				{
 					Console::setColor(color);
 					Console::setCursorPos(40 + (x++), 4);
-					printf("%c", ASCII_BOX_EMPTY);
+					printf(" ");
 				}
 			}
 
@@ -786,7 +786,7 @@ private:
 				while (x<22)
 				{
 					Console::setCursorPos(7 + (x++), 4);
-					printf("%c", ASCII_BOX_EMPTY);
+					printf(" ");
 				}
 				Console::resetColor();
 			}
@@ -824,7 +824,7 @@ private:
 				{
 					Console::setColor(color);
 					Console::setCursorPos(7 + (x++), 4);
-					printf("%c", ASCII_BOX_EMPTY);
+					printf(" ");
 				}
 			}
 
@@ -854,7 +854,7 @@ private:
 			while (x < 22)
 			{
 				Console::setCursorPos(7 + (x++), 5);
-				printf("%c", ASCII_BOX_EMPTY);
+				printf(" ");
 			}
 		}
 		else
@@ -875,7 +875,7 @@ private:
 			while (x < 22)
 			{
 				Console::setCursorPos(40 + (x++), 5);
-				printf("%c", ASCII_BOX_EMPTY);
+				printf(" ");
 			}
 		}
 
@@ -1400,9 +1400,11 @@ public:
 			for (int i = 0; i < 27; i++)
 			{
 				Console::setCursorPos(2+i, 7);
-				printf("%c", ASCII_BOX_EMPTY);
+				//printf("%c", ASCII_BOX_EMPTY);
+				printf(" ");
 				Console::setCursorPos(35+i, 7);
-				printf("%c", ASCII_BOX_EMPTY);
+				//printf("%c", ASCII_BOX_EMPTY);
+				printf(" ");
 			}
 			Console::resetColor();
 		}
@@ -1803,7 +1805,7 @@ public:
 							while (x < 25)
 							{
 								Console::setCursorPos(2 + (x++), 4);
-								printf("%c", ASCII_BOX_EMPTY);
+								printf(" ");
 							}
 							x = 0;
 							int counterPrint = 0;
@@ -1847,7 +1849,7 @@ public:
 							for (int i = 0; i < 25; i++)
 							{
 								Console::setCursorPos(2 + i, 4);
-								printf("%c", ASCII_BOX_EMPTY);
+								printf(" ");
 							}
 						}
 
