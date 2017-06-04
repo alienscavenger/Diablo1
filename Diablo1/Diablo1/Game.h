@@ -219,9 +219,9 @@ public:
 	{
 		Interface::setDefaultFont(18);
 		Interface::setWindowSize(1100, 600);
-		/*Interface::titleScreen();
+		Interface::titleScreen();
 		Interface::loading();
-		Interface::intro();*/
+		Interface::intro();
 
 		// Interface::getInt(x,y) tester
 		/*while(1)

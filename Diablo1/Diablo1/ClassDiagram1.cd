@@ -1,63 +1,95 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="Base" Collapsed="true">
-    <Position X="1.75" Y="0.5" Width="1.5" />
+  <Class Name="Base">
+    <Position X="3.5" Y="0.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAACAAIAAAkgAAAAEEAABAAAAEEERABBAAEABQAAAA=</HashCode>
       <FileName>Base.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Battle" Collapsed="true">
-    <Position X="5.25" Y="0.5" Width="1.5" />
+  <Class Name="Battle">
+    <Position X="5.25" Y="0.75" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAEACIBFgQwoAAEEAIAAAgBAAIACAQIDAAQABAMg=</HashCode>
       <FileName>Battle.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Console" Collapsed="true">
-    <Position X="7" Y="0.5" Width="1.5" />
+  <Class Name="Console">
+    <Position X="9" Y="0.75" Width="2" />
     <TypeIdentifier>
       <HashCode>EkSYCKCAoAAAFAAEEBEEAg5gAAQASAAAAAAAkgEIOAA=</HashCode>
       <FileName>common.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Game" Collapsed="true">
-    <Position X="8.75" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAJCUAIAACEohAqlFQgAUogQIkFEwALSABCABEAggo=</HashCode>
-      <FileName>Game.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Human" Collapsed="true">
-    <Position X="0.5" Y="1.75" Width="1.5" />
+  <Class Name="Human">
+    <Position X="1.25" Y="0.75" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="Human::SLOT" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Human.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="Human::EQUIPTYPE" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Human.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="Human::JOB" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Human.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
     <TypeIdentifier>
       <HashCode>AkBCASAEEkAQoABEREMAAQoWAAAFYQACQAVABARAAAA=</HashCode>
       <FileName>Human.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Interface" Collapsed="true">
-    <Position X="5.25" Y="1.5" Width="1.5" />
+  <Class Name="Interface">
+    <Position X="11" Y="0.75" Width="1.75" />
+    <NestedTypes>
+      <Struct Name="Interface::ComparePrice" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Interface.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Struct Name="Interface::CompareName" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Interface.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Struct Name="Interface::CompareArmor" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Interface.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Struct Name="Interface::CompareDamage" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Interface.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
     <TypeIdentifier>
       <HashCode>AoAQABCQAAACCAAAACJAABAAAICEgEAIBQgAAwBACAA=</HashCode>
       <FileName>Interface.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Item" Collapsed="true">
-    <Position X="7" Y="1.5" Width="1.5" />
+  <Class Name="Item">
+    <Position X="12.75" Y="0.75" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AgABCAIIAAg0hEAEAFIAARgEQQIFERABRAAEABQAgAA=</HashCode>
       <FileName>Item.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Monster" Collapsed="true">
-    <Position X="2.75" Y="1.75" Width="1.5" />
+  <Class Name="Monster">
+    <Position X="3.25" Y="6.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAgAQAAACAAAAAACAAgAAAQAAAAAAAAAgAAgAIAAgI=</HashCode>
       <FileName>Monster.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Music" Collapsed="true">
-    <Position X="8.75" Y="1.5" Width="1.5" />
+  <Class Name="Music">
+    <Position X="5.25" Y="8.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
       <FileName>Music.h</FileName>

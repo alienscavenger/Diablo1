@@ -254,7 +254,7 @@ public:
 
 		if (delayFlag)Console::delay(500); // tambahin delay supaya bagus
 
-		Console::setColor(4); // BENERIN NIH 'MAGIC NUMBER' PLZZZ
+		Console::setColor(Console::COLOR_RED); // ampun shifu
 		if (delayFlag)
 		{
 			for (int x = 0; x < 7; x++) {
@@ -355,7 +355,7 @@ public:
 		Console::setColor(Console::COLOR_GREEN);
 		Console::setCursorPos(0, 10);
 		//if(!flag)Console::printf("\n\n\t\t\t\tLOAD SUCCESSFULL!");
-		Console::printf("\n\n\t\t\t\t\tLOAD SUCCESSFULL!");
+		Console::printf("\n\n\t\t\t\t\t   GAME LOADED!   ");
 		//if (input == VK_RETURN) { return; }
 		enter(37, 20, 2);
 		pressEnterPlease();
@@ -391,9 +391,9 @@ public:
 								"you follow the Dark Wanderer to Tristam Town.",
 								"This is where your journey starts. ",
 								"The demons are roaming the outskirt of this city",
-								"and soon everything will be devoured...",
+								"and soon everything will be devoured...\n",
 								"Help liberate Tristam Town from hand of Diablo once and for all!" };
-		enter(27, 20, 1);
+		enter(27, 21, 1);
 		Console::setCursorPos(0, 0);
 		printf("\n\n");
 		displaySword();
@@ -473,26 +473,26 @@ public:
 			{
 				//Interface::setWindowSize(1000, 550);
 				Console::setColor(7);
-				Console::setCursorPos(0, 24);
+				Console::setCursorPos(20, 24);
 				Console::printf("Press up/down or WSAD to select, and enter to choose");
 
-				Console::setCursorPos(43, 10);
+				Console::setCursorPos(42, 10);
 				if(pickMenu ==0 )Console::setColor(79);
 				else Console::setColor(Console::COLOR_WHITE);
-				Console::printf("NEW GAME");
+				Console::printf("  NEW GAME  ");
 
 				if (saveGameAvailable)
 				{
-					Console::setCursorPos(43, 11);
+					Console::setCursorPos(42, 11);
 					if (pickMenu == 1)Console::setColor(79);
 					else Console::setColor(Console::COLOR_WHITE);
-					Console::printf("LOAD GAME");
+					Console::printf(" LOAD  GAME ");
 				}
 				int yExit = saveGameAvailable ? 12 : 11;
-				Console::setCursorPos(45, yExit);
+				Console::setCursorPos(42, yExit);
 				if (pickMenu == (maxMenu-1))Console::setColor(79);
 				else Console::setColor(Console::COLOR_WHITE);
-				Console::printf("EXIT");
+				Console::printf("    EXIT    ");
 
 				printFlag = false;
 			}
