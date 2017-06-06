@@ -1552,6 +1552,7 @@ public:
 						}
 						else // special ability
 						{
+							Music::playSoundEffect(3);
 							string text;
 							switch (karakter.getJob())
 							{

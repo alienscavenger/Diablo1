@@ -70,10 +70,13 @@ public:
 		mciSendString("close efek", NULL, 0, 0);
 		switch (action) {
 		case 1:	//normal hit in battle
-			mciSendString("open \"audio\\hit2.wav\" type mpegvideo alias efek", NULL, 0, NULL);
+			mciSendString("open \"audio\\hit2.wav\" type mpegvideo alias efek", NULL, 0, NULL);	//NOTICE : gw samain akhirnya karena suaranya kecil
 			break;
 		case 2:	//critical hit in battle
 			mciSendString("open \"audio\\hit2.wav\" type mpegvideo alias efek", NULL, 0, NULL); // SAMA AJA, LUL
+			break;
+		case 3:	//skill
+			mciSendString("open \"audio\\skill.wav\" type mpegvideo alias efek", NULL, 0, NULL);
 			break;
 		}
 
