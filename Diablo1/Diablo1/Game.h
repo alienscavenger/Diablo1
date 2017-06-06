@@ -22,12 +22,17 @@
 #include "Monster.h"
 #include "Item.h"
 #include "common.h"
-#include "Interface.h"
 #include "Battle.h"
 #include "Music.h"
 
-#define MAX_ITEM 110
-#define MAX_MONSTER 60
+//
+#include "Interface.h"
+//
+#include "Shop.h"
+#include "NewGame.h"
+#include "Introduction.h"
+#include "Home.h"
+//
 
 class Game
 {
@@ -219,9 +224,9 @@ public:
 	{
 		Interface::setDefaultFont(18);
 		Interface::setWindowSize(1100, 600);
-		Interface::titleScreen();
-		Interface::loading();
-		Interface::intro();
+		Interface::introduction.titleScreen();
+		Interface::introduction.loading();
+		Interface::introduction.intro();
 
 		// Interface::getInt(x,y) tester
 		/*while(1)
@@ -234,23 +239,22 @@ public:
 		}*/
 
 		karakter = NULL; // state karakter pertama
-		vShop.reserve(MAX_ITEM);
-		vMonster.reserve(MAX_MONSTER);
+		vShop.reserve(Item::MAX_ITEM);
+		vMonster.reserve(Monster::MAX_MONSTER);
 		Music::playBackgroundMusic(2);
 		while (1)
 		{
 			system("cls");
 			checkSave();
 			resetDefaultSave();
-			int menu = Interface::startGame(saveGameAvailable);
-
+			int menu = Interface::newGame.startGame(saveGameAvailable);
 			if (menu == -1) return; // kalau user pilih exit game
 
 			if (menu == 1) // new game
 			{
-				hName = Interface::newGameName();
+				hName = Interface::newGame.newGameName();
 				if (hName == "3s0xla 81a;LKDJn(**A;") continue;
-				job = Interface::newGameJob(hName);
+				job = Interface::newGame.newGameJob(hName);
 				if (job == -1) continue; // kalau user teken esc (exit) saat milih new game
 
 				system("cls");
@@ -312,11 +316,11 @@ public:
 				if (milih == 1)
 				{
 					// INI HOME YANG BERISI INVENTORY dan PLAYER STATUS
-					Interface::homeMenu(vShop, vMonster, karakter, karakter->getInventoryRef());
+					Interface::home.homeMenu(vShop, vMonster, karakter, karakter->getInventoryRef());
 				}
 				else if (milih == 2){
 					// INI SHOP
-					Interface::shopMenu(vShop, karakter);
+					Interface::shop.shopMenu(vShop, karakter);
 				}
 				else if (milih == 5)
 				{

@@ -477,7 +477,7 @@ private:
 	}
 	static void attack(int who, Human& karakter, Monster& enemy, deque<string>& log)
 	{
-		srand(time(NULL));
+		srand((unsigned int)time(NULL));
 		string text;
 		if (who == 0) // turn karakter
 		{
@@ -510,7 +510,7 @@ private:
 				text += to_string((int)(chance - 100));
 				text += "% CRIT chance.";
 
-				int calculate = fmod(rand(),chance) + 1;
+				int calculate = (int)fmod(rand(),chance) + 1;
 				if (calculate < 100.0f) crit = false;
 				else crit = true;
 			}
@@ -540,7 +540,7 @@ private:
 				{
 					float MinDamage = max(0, karakter.getDamage() - enemy.getArmor());
 					float MaxDamage = max(0, (karakter.getDamage()*(1.0f + (float)karakter.getStrength()*0.05f)) - enemy.getArmor());
-					int diff = ceil(MaxDamage - MinDamage);
+					int diff = (int)ceil(MaxDamage - MinDamage);
 					float damage = MinDamage + (rand() % diff);
 					if (riposte) damage *= 1.5; // PALADIN
 
@@ -602,7 +602,7 @@ private:
 				text += to_string((int)(chance - 100));
 				text += "% CRIT chance.";
 
-				int calculate = fmod(rand(), chance) + 1;
+				int calculate = (int)fmod(rand(), chance) + 1;
 				if (calculate < 100.0f) crit = false;
 				else crit = true;
 			}
@@ -630,7 +630,7 @@ private:
 				{
 					float MinDamage = max(0, enemy.getDamage() - karakter.getArmor());
 					float MaxDamage = max(0, (enemy.getDamage()*(1.0f + (float)enemy.getLevel()*0.05f)) - karakter.getArmor());
-					int diff = ceil(MaxDamage - MinDamage);
+					int diff = (int)ceil(MaxDamage - MinDamage);
 					float damage = MinDamage + (rand() % diff);
 
 					text += enemy.getName();
@@ -908,7 +908,7 @@ private:
 		}
 		else
 		{
-			int size = log.size();
+			size_t size = log.size();
 			deque<string>::iterator iter = log.begin();
 			for (int i = 0; i < size; i++,iter++)
 			{
@@ -1259,7 +1259,7 @@ private:
 		int delayFlag = 0;
 		char buff;
 		int x = 0;
-		float multiplier[3] = { 1,0.8,0.5 };
+		float multiplier[3] = { 1.0f,0.8f,0.5f };
 		float tempDelay = delay*multiplier[index];
 		while (x<=tempDelay)
 		{
@@ -1303,8 +1303,9 @@ public:
 	{
 		system("cls");
 		Console::setCursorPos(29, 0);
-		Console::resetColor();
+		Console::setColor(79);
 		printf("BATTLE\n");
+		Console::resetColor();
 		autoAttack = 1;
 		index = 0;
 		printAnimationSpeed();
@@ -1369,10 +1370,10 @@ public:
 		}
 		//print HP dan STA
 		{
-			Console::setCursorPos(2, 4); printf("HP");
-			Console::setCursorPos(2, 5); printf("STA");
-			Console::setCursorPos(35, 4); printf("HP");
-			Console::setCursorPos(35, 5); printf("STA");
+			Console::setCursorPos(2, 4); printf(" HP");
+			Console::setCursorPos(2, 5); printf(" STA");
+			Console::setCursorPos(35, 4); printf(" HP");
+			Console::setCursorPos(35, 5); printf(" STA");
 			for (int i = 0; i < 22; i++)
 			{
 				Console::setColor(GREEN);
@@ -1710,7 +1711,7 @@ public:
 			text += " Gold!";
 			log.push_back(text);
 
-			karakter.setExperience(expGained); // tambahin exp
+			karakter.setExperience((float)expGained); // tambahin exp
 			karakter.setGold(goldGained); // tambahin gold
 			if (maxLevel) // kalau sebelumnya sudah maxLevel
 			{
@@ -1827,6 +1828,7 @@ public:
 							gain++;
 							if (sec%secondDelay == 0)
 							{
+								Console::delay(1);
 								Console::setCursorPos(14, 2); printf("%6d/%-6d", counter, karakter.getExpRequirement(levelBefore + 1 + add) - karakter.getExpRequirement(levelBefore + add)); // update terus
 							}
 							if (counter%box == 0 && x < 25)
@@ -1839,7 +1841,7 @@ public:
 						{
 							Console::setCursorPos(4, 10 + add);
 							levelCounter++;
-							printf("LEVEL UP!", levelCounter, add, counter);
+							printf("LEVEL UP!");
 							Console::delay(500);
 							levelUp = true;
 						}

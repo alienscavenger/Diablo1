@@ -51,6 +51,7 @@ private:
 		}
 	}
 public:
+	static int const MAX_ITEM = 110;
 	// empty constructor
 	Item()
 	{

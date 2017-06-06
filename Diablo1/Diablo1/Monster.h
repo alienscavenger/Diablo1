@@ -22,6 +22,8 @@ private:
 	float exp; // float supaya bisa nambah berdasarkan persentase
 
 public:
+	static int const MAX_MONSTER = 60;
+
 	// constructor untuk Monster
 	Monster(string name, int lvl, int gold, float dmg, float cth, float eva, float spd, float mhp, float mst, int amr,float exp, int off, int def, int kill)
 	{

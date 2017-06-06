@@ -212,7 +212,7 @@ public:
 		vsprintf_s(buff,BUFFER_SIZE,format,v);
 		va_end(v);
 
-		int len = strlen(buff);
+		size_t len = strlen(buff);
 		DWORD out;
 		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 		WriteConsole(hConsole,buff,len,&out,NULL);
@@ -225,7 +225,7 @@ public:
 		strcpy_s(buff,BUFFER_SIZE,str);
 		strcat_s(buff,BUFFER_SIZE,"\n\r\0");
 
-		int len = strlen(buff);
+		size_t len = strlen(buff);
 		DWORD out;
 		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 		WriteConsole(hConsole,buff,len,&out,NULL);
@@ -345,7 +345,7 @@ public:
 	@param buffSize besar char buffer dari penampung result
 	@return panjang char yang didapat, max buffSize-1 char */
 	static int nextString(FILE *fp, char *result, int buffSize) {
-		int len;
+		size_t len;
 		// pastikan result tidak NULL
 		if (result == NULL) return 0;
 
