@@ -29,12 +29,20 @@ class Music {
 	//mp3 will be used mainly as background ambient music
 	//there is a chance we will use wav files as sound effect
 
+	//============================================================================================================
+
+	//karena gw pakai alias nya sama buat semua place BGM jadi kalau play lagi, programnya akan nunggu lagu yang pertama selesai dulu. Solusinya adalah kita stop sendiri
+	static void stopBackgroundMusic() {
+		mciSendString("close musik", NULL, 0, 0);
+	}
+
 public:
 
-	static void playBackgroundMusic(int place) {
+	static void playBackgroundMusic(int bgm) {
+		stopBackgroundMusic();
 		//open file according to the place
 		//untuk sementara alias BGM = "musik"
-		switch (place) {
+		switch (bgm) {
 		case 1:	//town
 			mciSendString("open \"audio\\town1.mp3\" type mpegvideo alias musik", NULL, 0, NULL);
 			break;
@@ -44,21 +52,32 @@ public:
 		case 3:	//battle
 			mciSendString("open \"audio\\battle1.mp3\" type mpegvideo alias musik", NULL, 0, NULL);
 			break;
-		case 4:
+		case 4:	//victory
+			mciSendString("open \"audio\\victory.mp3\" type mpegvideo alias musik", NULL, 0, NULL);
 			break;
 		case 5:
 			break;
 		}
 		//Play
-		mciSendString("play musik", NULL, 0, NULL);
+		mciSendString("play musik repeat", NULL, 0, NULL);
 	}
 
+	static void playSoundEffect(int action) {
+		mciSendString("close efek", NULL, 0, 0);
+		switch (action) {
+		case 1:	//normal hit in battle
+			mciSendString("open \"audio\\hit2.wav\" type mpegvideo alias efek", NULL, 0, NULL);
+			break;
+		case 2:	//critical hit in battle
+			mciSendString("open \"audio\\hit2.wav\" type mpegvideo alias efek", NULL, 0, NULL);
+			break;
+		}
 
-	//karena gw pakai alias nya sama buat semua place BGM jadi kalau play lagi, programnya akan nunggu lagu yang pertama selesai dulu. Solusinya adalah kita stop sendiri
-	static void stopBackgroundMusic() {	
-		mciSendString("close musik", NULL, 0, 0);
+
+
+		//play
+		mciSendString("play efek", NULL, 0, NULL);
 	}
-
 };
 
 

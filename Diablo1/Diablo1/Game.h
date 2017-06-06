@@ -297,7 +297,7 @@ public:
 					Console::setColor(Console::COLOR_WHITE);
 				}
 			}
-			Music::stopBackgroundMusic();
+			 
 			Music::playBackgroundMusic(1);
 			while (1)
 			{
@@ -320,11 +320,11 @@ public:
 				}
 				else if (milih == 5)
 				{
-					Music::stopBackgroundMusic();
+					 
 					Music::playBackgroundMusic(3);
 					Battle::startBattle(*karakter, vMonster[0]);
 					system("cls");
-					Music::stopBackgroundMusic();
+					 
 					Music::playBackgroundMusic(1);
 					if (Battle::getWin())
 					{
@@ -344,6 +344,7 @@ public:
 			saveGame();
 			cout << "game saved!";
 			Interface::flush();
+			Music::playBackgroundMusic(2);
 		}
 	} // END constructor
 };
