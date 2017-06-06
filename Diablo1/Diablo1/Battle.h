@@ -1695,6 +1695,7 @@ public:
 			}
 			clearSpeed(turn);
 		}
+
 		if (win)
 		{
 			karakter.kill(); // nambahin jumlah monster yang dikill karakter sebesar 1
@@ -1907,6 +1908,7 @@ public:
 		}
 		else
 		{
+			Music::playBackgroundMusic(5);
 			Console::setCursorPos(1, 23);
 			Console::setColor(GREY);
 			printf("Press enter to see LOG...");

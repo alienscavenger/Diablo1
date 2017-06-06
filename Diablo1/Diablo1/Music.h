@@ -55,7 +55,11 @@ public:
 		case 4:	//victory
 			mciSendString("open \"audio\\victory.mp3\" type mpegvideo alias musik", NULL, 0, NULL);
 			break;
-		case 5:
+		case 5:	//lose
+			mciSendString("open \"audio\\gameover.mp3\" type mpegvideo alias musik", NULL, 0, NULL);
+			break;
+		case 6:	//title screen sampai story
+			mciSendString("open \"audio\\intro.mp3\" type mpegvideo alias musik", NULL, 0, NULL);
 			break;
 		}
 		//Play
