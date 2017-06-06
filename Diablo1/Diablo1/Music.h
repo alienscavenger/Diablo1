@@ -69,7 +69,7 @@ public:
 			mciSendString("open \"audio\\hit2.wav\" type mpegvideo alias efek", NULL, 0, NULL);
 			break;
 		case 2:	//critical hit in battle
-			mciSendString("open \"audio\\hit2.wav\" type mpegvideo alias efek", NULL, 0, NULL);
+			mciSendString("open \"audio\\hit2.wav\" type mpegvideo alias efek", NULL, 0, NULL); // SAMA AJA, LUL
 			break;
 		}
 

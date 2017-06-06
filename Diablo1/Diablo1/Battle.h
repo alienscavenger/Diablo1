@@ -524,7 +524,6 @@ private:
 			{
 				if (crit)
 				{
-					Music::playSoundEffect(2);
 					float damage = karakter.getDamage()*(1.0f + karakter.getStrength()*0.05f);
 					if (riposte) damage *= 1.5; // PALADIN
 
@@ -537,11 +536,11 @@ private:
 					log.push_back(text);
 					printLog(log);
 
-					HPchange(0, damage, karakter, enemy);
+					Music::playSoundEffect(2);
+					HPchange(0, damage, karakter, enemy,crit);
 				}
 				else
 				{
-					Music::playSoundEffect(1);
 					float MinDamage = max(0, karakter.getDamage() - enemy.getArmor());
 					float MaxDamage = max(0, (karakter.getDamage()*(1.0f + (float)karakter.getStrength()*0.05f)) - enemy.getArmor());
 					int diff = (int)ceil(MaxDamage - MinDamage);
@@ -556,7 +555,8 @@ private:
 					log.push_back(text);
 					printLog(log);
 
-					HPchange(0, damage, karakter, enemy); // UBAH INI KALAU MAU NGECHEAT
+					Music::playSoundEffect(1);
+					HPchange(0, damage, karakter, enemy,crit); // UBAH INI KALAU MAU NGECHEAT
 				}
 				if (riposte) // PALADIN
 				{
@@ -616,7 +616,6 @@ private:
 			text.clear();
 			if (hit)
 			{
-				Music::playSoundEffect(2);
 				if (crit)
 				{
 					float damage = enemy.getDamage()*(1.0f + enemy.getLevel()*0.05f);
@@ -629,7 +628,8 @@ private:
 					log.push_back(text);
 					printLog(log);
 
-					HPchange(1, damage, karakter, enemy);
+					Music::playSoundEffect(2);
+					HPchange(1, damage, karakter, enemy,crit);
 				}
 				else
 				{
@@ -646,7 +646,8 @@ private:
 					log.push_back(text);
 					printLog(log);
 
-					HPchange(1, damage, karakter, enemy); // UBAH INI KALAU MAU NGECHEAT
+					Music::playSoundEffect(1);
+					HPchange(1, damage, karakter, enemy,crit); // UBAH INI KALAU MAU NGECHEAT
 				}
 			}
 			else
@@ -688,13 +689,13 @@ private:
 	}
 	// HP dan STA change animation
 	// 22 box total
-	static void HPchange(int who, float change, Human& karakter, Monster& enemy)
+	static void HPchange(int who, float change, Human& karakter, Monster& enemy, bool crit)
 	{
 		if (who == 0) // HP MONSTER yang berkurang
 		{
 			Console::setCursorPos(47, 9);
 			Console::setColor(RED);
-			if(!riposte)printf("BAMMMMM!");
+			if (!riposte)if (crit) printf("CRITTTT!"); else printf("BAMMMMM!");
 			else printf("STUNNED!");
 			if (mHP <= change)
 			{
@@ -768,7 +769,7 @@ private:
 		{
 			Console::setCursorPos(10, 9);
 			Console::setColor(RED);
-			printf("BAMMMMM!");
+			if (crit) printf("CRITTTT!");else printf("BAMMMMM!");
 
 			if (hHP <= change)
 			{
