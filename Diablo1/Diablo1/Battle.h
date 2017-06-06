@@ -11,12 +11,14 @@
 #include <queue>
 #include <iostream>
 #include <sstream>
+#include <cmath>
 #include "common.h"
 #include "Game.h"
 #include "Human.h"
 #include "Monster.h"
 #include "Interface.h"
-#include <cmath>
+#include "Music.h"
+
 
 using namespace std;
 
@@ -522,6 +524,7 @@ private:
 			{
 				if (crit)
 				{
+					Music::playSoundEffect(2);
 					float damage = karakter.getDamage()*(1.0f + karakter.getStrength()*0.05f);
 					if (riposte) damage *= 1.5; // PALADIN
 
@@ -538,6 +541,7 @@ private:
 				}
 				else
 				{
+					Music::playSoundEffect(1);
 					float MinDamage = max(0, karakter.getDamage() - enemy.getArmor());
 					float MaxDamage = max(0, (karakter.getDamage()*(1.0f + (float)karakter.getStrength()*0.05f)) - enemy.getArmor());
 					int diff = (int)ceil(MaxDamage - MinDamage);
@@ -612,6 +616,7 @@ private:
 			text.clear();
 			if (hit)
 			{
+				Music::playSoundEffect(2);
 				if (crit)
 				{
 					float damage = enemy.getDamage()*(1.0f + enemy.getLevel()*0.05f);
@@ -927,6 +932,7 @@ private:
 		{
 			// YOU WIN
 			win = true;
+			Music::playBackgroundMusic(4);
 			text = enemy.getName();
 			text += " died!";
 			log.push_back(text);
