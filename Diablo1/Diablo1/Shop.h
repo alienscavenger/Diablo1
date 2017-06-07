@@ -223,7 +223,7 @@ public:
 			case Human::Weapon:
 				color[5] = Console::COLOR_RED;
 				break;
-			case Human::WeaponAndShield:
+			case Human::Shield:
 				color[6] = Console::COLOR_YELLOW;
 				break;
 			}
