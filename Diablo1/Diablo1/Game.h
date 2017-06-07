@@ -278,28 +278,54 @@ private:
 		Console::printf(" S K Y R I M ");
 		Console::resetColor();
 
-
-		for (int height = 0; height < 23; height++) {
-			Console::setCursorPos(15, 4 + height);
-			for (int width = 0; width < strlen(map[height]); width++) {
-				if (map[height][width] == 'S') printf(" ");
-				else if (map[height][width] == '0') printf("%c", 219);
-				else if (map[height][width] == '1') printf("%c", 178);
-				else printf("%c", map[height][width]);
-			}
-		}
-
 		Console::setCursorPos(20, 28);
 		if (place == 0) {
 			Console::printf("Home : view your inventory and equipment");
-		
+			for (int height = 0; height < 23; height++) {
+				Console::setCursorPos(15, 4 + height);
+				for (int width = 0; width < strlen(map[height]); width++) {
+					if (height >= 3 && height <= 7) {
+						if (width >= 19 && width <= 27) {
+							Console::setColor(Console::COLOR_RED);
+						}
+						else {
+							Console::resetColor();
+						}
+					}
+					else {
+						Console::resetColor();
+					}
+					if (map[height][width] == 'S') printf(" ");
+					else if (map[height][width] == '0') printf("%c", 219);
+					else if (map[height][width] == '1') printf("%c", 178);
+					else printf("%c", map[height][width]);
+				}
+			}
 		}
 		else if (place == 1) {
 			Console::printf("Town : Visit Tristam's Shop                      ");
-		
+			for (int height = 0; height < 23; height++) {
+				Console::setCursorPos(15, 4 + height);
+				for (int width = 0; width < strlen(map[height]); width++) {
+					if (map[height][width] == 'S') printf(" ");
+					else if (map[height][width] == '0') printf("%c", 219);
+					else if (map[height][width] == '1') printf("%c", 178);
+					else printf("%c", map[height][width]);
+				}
+			}
 		}
 		else if (place == 2) {
 			Console::printf("Cave : Fight Monster                             ");
+			for (int height = 0; height < 23; height++) {
+				Console::setCursorPos(15, 4 + height);
+				for (int width = 0; width < strlen(map[height]); width++) {
+					
+					if (map[height][width] == 'S') printf(" ");
+					else if (map[height][width] == '0') printf("%c", 219);
+					else if (map[height][width] == '1') printf("%c", 178);
+					else printf("%c", map[height][width]);
+				}
+			}
 		}
 		
 	}
@@ -437,7 +463,7 @@ public:
 				
 				// 0 = home
 				// 1 = town
-				// 3 = cave
+				// 2 = cave	//sorry mate
 
 				mapMenu = _getch();
 				mapMenu = tolower(mapMenu);
@@ -489,9 +515,10 @@ public:
 							}
 						}
 					}
+					printMap(currentPlace);
 				}
 				else continue;
-				printMap(currentPlace);
+				
 			
 			}
 
