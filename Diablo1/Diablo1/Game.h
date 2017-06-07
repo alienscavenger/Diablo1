@@ -248,6 +248,9 @@ private:
 public:
 	Game() // constructor
 	{
+
+		Music::playBackgroundMusic(6);
+		Console::delay(1000);
 		Interface::setDefaultFont(18);
 		Interface::setWindowSize(1100, 600);
 		Interface::introduction.titleScreen();
@@ -267,7 +270,6 @@ public:
 		karakter = NULL; // state karakter pertama
 		vShop.reserve(Item::MAX_ITEM);
 		vMonster.reserve(Monster::MAX_MONSTER);
-		Music::playBackgroundMusic(2);
 		while (1)
 		{
 			system("cls");
@@ -350,9 +352,65 @@ public:
 				}
 				else if (milih == 5)
 				{
-					 
+					Music::playBackgroundMusic(2);
+					system("cls");
+					Console::setCursorPos(27, 1);
+					Console::setColor(79);
+					Console::printf("M O N S T E R");
+					Console::setColor(Console::COLOR_WHITE);
+
+					Console::setCursorPos(1, 3);
+					cout << "No";
+					Console::setCursorPos(1 + 5, 3);
+					cout << "Name";
+					Console::setCursorPos(1 + 25, 3);
+					cout << "Level";
+					Console::setCursorPos(1 + 32, 3);
+					cout << "Offense";
+					Console::setCursorPos(1 + 42, 3);
+					cout << "Defense";
+					Console::setCursorPos(1 + 52, 3);
+					cout << "Exp";
+					Console::setCursorPos(1 + 65, 3);
+					cout << "Gold";
+
+					Console::setCursorPos(0, 4);
+					cout << "=====================================================================";
+					{
+						int x = 1;
+						int y = 5;
+						int counter = 0;
+						for (vector<Monster>::iterator iter = vMonster.begin(); iter < vMonster.end(); iter++) {
+							Console::setCursorPos(1, y);
+							cout << counter + 1;
+							Console::setCursorPos(x + 5, y);
+							cout << vMonster[counter].getName();
+							Console::setCursorPos(x + 25, y);
+							cout << vMonster[counter].getLevel();
+							Console::setCursorPos(x + 32, y);
+							cout << vMonster[counter].getOffense();
+							Console::setCursorPos(x + 42, y);
+							cout << vMonster[counter].getDefense();
+							Console::setCursorPos(x + 52, y);
+							cout << vMonster[counter].getExp() << " EXP";
+							Console::setCursorPos(x + 65, y);
+							cout << vMonster[counter].getGold() << " G";
+
+							y++; counter++;
+						}
+						Console::setCursorPos(1, y + 2);
+					}
+					Console::setCursorVisibility(true);
+					int monsterSelect;
+					do {
+						Console::setCursorPos(1, Console::getCursorY());
+						cout << "Select Monster >> ";
+						cin >> monsterSelect; cin.sync(); Interface::flush();
+					} while (monsterSelect < 1 || monsterSelect > 30);
+					//
+					Console::setCursorVisibility(false);
 					Music::playBackgroundMusic(3);
-					Battle::startBattle(*karakter, vMonster[1]);
+					Battle::startBattle(*karakter, vMonster[monsterSelect-1]);
 					system("cls");
 					 
 					Music::playBackgroundMusic(1);
@@ -374,7 +432,7 @@ public:
 			saveGame();
 			cout << "game saved!";
 			Interface::flush();
-			Music::playBackgroundMusic(2);
+			Music::playBackgroundMusic(6);
 		}
 	} // END constructor
 };
