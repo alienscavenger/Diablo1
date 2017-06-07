@@ -289,9 +289,9 @@ private:
 			}
 		}
 
-		Console::setCursorPos(25, 27);
+		Console::setCursorPos(20, 28);
 		if (place == 0) {
-			Console::printf("Home :	You can view your inventory and equip here");
+			Console::printf("Home : view your inventory and equipment");
 		
 		}
 		else if (place == 1) {
@@ -440,13 +440,14 @@ public:
 				// 3 = cave
 
 				mapMenu = _getch();
-				if (mapMenu == VK_UP || mapMenu == VK_DOWN || mapMenu == VK_LEFT || mapMenu == VK_RIGHT || mapMenu == VK_RETURN) {
+				mapMenu = tolower(mapMenu);
+				if (mapMenu == 'w' || mapMenu == 's' || mapMenu == 'a' || mapMenu == 'd' || mapMenu == VK_RETURN) {
 					if (currentPlace == 0) {
-						if (mapMenu == VK_DOWN) {
+						if (mapMenu == 's') {
 							printMap(2);
 							currentPlace = 2;
 						}
-						else if (mapMenu == VK_RIGHT) {
+						else if (mapMenu == 'd') {
 							printMap(1);
 							currentPlace = 1;
 						}
@@ -455,11 +456,11 @@ public:
 						}
 					}
 					else if (currentPlace == 1) {
-						if (mapMenu == VK_DOWN) {
+						if (mapMenu == 's') {
 							printMap(2);
 							currentPlace = 2;
 						}
-						else if (mapMenu == VK_LEFT) {
+						else if (mapMenu == 'a') {
 							printMap(0);
 							currentPlace = 0;
 						}
@@ -468,7 +469,7 @@ public:
 						}
 					}
 					else {
-						if (mapMenu == VK_UP || mapMenu == VK_RIGHT) {
+						if (mapMenu == 'w' || mapMenu == 'd') {
 							printMap(0);
 							currentPlace = 0;
 						}
