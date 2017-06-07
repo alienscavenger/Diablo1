@@ -272,6 +272,8 @@ private:
 	} // END saveGame()
 	void printMap(int place) {
 
+
+
 		system("cls");
 		Console::setCursorPos(37, 1);
 		Console::setColor(79);
@@ -302,6 +304,92 @@ private:
 			Console::printf("Cave : Fight Monster                             ");
 		}
 		
+	}
+
+	bool exitPrompt()
+	{
+		system("cls");
+		Console::setCursorPos(0, 2);
+		Console::setColor(Console::COLOR_RED);
+		char* wallpaper[20] = {
+			"                          )       \\   /      (",
+			"                         /|\\      )\\_/(     /|\\",
+			"*                       / | \\    (/\\|/\\)   / | \\                      *",
+			"|`.____________________/__|__o____\\`|'/___o__|__\\___________________.'|",
+			"|                           '^`    \\|/   '^`                          |",
+			"|                                   V                                 |",
+			"|                                                                     |",
+			"|                                                                     |",
+			"|                                                                     |",
+			"|                                                                     |",
+			"|                                                                     |",
+			"|                                                                     |",
+			"|                                                                     |",
+			"|                                                                     |",
+			"|                                                                     |",
+			"| ._________________________________________________________________. |",
+			"|'               l    /\\ /     \\\\            \\ /\\   l                `|",
+			"*                l  /   V       ))            V   \\ l                 *",
+			"                 l/            //                  \\I",
+			"                               V"
+		};
+
+		for (int i = 0; i < 20; i++)
+		{
+			printf("           %s\n", wallpaper[i]);
+		}
+
+		int buffer;
+		int sampahFlag = 0;
+		int pickMenu = 1;
+		bool printFlag = true;
+		while (1)
+		{
+			if (printFlag)
+			{
+				Console::setCursorPos(33, 11);
+				Console::resetColor();
+				printf("Are you sure you want to exit?");
+
+				Console::setCursorPos(40, 13);
+				if (pickMenu == 0)Console::setColor(79);
+				else Console::resetColor();
+				printf(" YES ");
+
+				Console::setCursorPos(50, 13);
+				if (pickMenu == 1)Console::setColor(79);
+				else Console::resetColor();
+				printf(" NO ");
+
+				printFlag = false;
+			}
+			buffer = Console::getKeyPressed();
+			if (buffer != -1)
+			{
+				if (sampahFlag)
+				{
+					if (buffer == VK_LEFT || buffer == 0x41) // 0x41 == 'a'
+					{
+						pickMenu = (pickMenu - 1 + 2) % 2;
+						printFlag = true;
+					}
+					else if (buffer == VK_RIGHT || buffer == 0x44) // 0x44 == 'd'
+					{
+						pickMenu = (pickMenu + 1) % 2;
+						printFlag = true;
+					}
+					else if (buffer == VK_RETURN)
+					{
+						break;
+					}
+					sampahFlag = 0;
+				}
+				else sampahFlag++;
+			}
+		}
+
+		if (pickMenu == 1) return false; // tidak exit
+		else return true; // exit
 	}
 	// ----------------------------------------------------------------------------------------------------
 
@@ -433,36 +521,42 @@ public:
 				//}
 				//else continue;
 				
-
-				
 				// 0 = home
 				// 1 = town
-				// 3 = cave
+				// 2 = cave
+				enum LOCATION{ HOME = 0,TOWN,CAVE };
 
 				mapMenu = _getch();
 				mapMenu = tolower(mapMenu);
-				if (mapMenu == 'w' || mapMenu == 's' || mapMenu == 'a' || mapMenu == 'd' || mapMenu == VK_RETURN) {
-					if (currentPlace == 0) {
+				if (mapMenu == 'w' || mapMenu == 's' || mapMenu == 'a' || mapMenu == 'd' || mapMenu == VK_RETURN || mapMenu == VK_ESCAPE) {
+					if (currentPlace == HOME) {
 						if (mapMenu == 's') {
-							printMap(2);
-							currentPlace = 2;
+							printMap(CAVE);
+							currentPlace = CAVE;
 						}
 						else if (mapMenu == 'd') {
-							printMap(1);
-							currentPlace = 1;
+							printMap(TOWN);
+							currentPlace = TOWN;
 						}
 						else if (mapMenu == VK_RETURN) {
 							Interface::home.homeMenu(vShop, vMonster, karakter, karakter->getInventoryRef());
 						}
+						else if (mapMenu == VK_ESCAPE)
+						{
+							if (exitPrompt()) break;
+							system("cls");
+							printMap(HOME);
+							currentPlace = HOME;
+						}
 					}
-					else if (currentPlace == 1) {
+					else if (currentPlace == TOWN) {
 						if (mapMenu == 's') {
-							printMap(2);
-							currentPlace = 2;
+							printMap(CAVE);
+							currentPlace = CAVE;
 						}
 						else if (mapMenu == 'a') {
-							printMap(0);
-							currentPlace = 0;
+							printMap(HOME);
+							currentPlace = HOME;
 						}
 						else if (mapMenu == VK_RETURN) {
 							Interface::shop.shopMenu(vShop, karakter);
@@ -470,14 +564,14 @@ public:
 					}
 					else {
 						if (mapMenu == 'w' || mapMenu == 'd') {
-							printMap(0);
-							currentPlace = 0;
+							printMap(HOME);
+							currentPlace = HOME;
 						}
 						else if (mapMenu == VK_RETURN) {
 							{
 								Battle::selectMonster(karakter, vMonster);
 
-								Music::playBackgroundMusic(1);
+								Music::playBackgroundMusic(TOWN);
 								if (Battle::getWin())
 								{
 									continue;
@@ -497,7 +591,10 @@ public:
 
 			// save game, terus exit
 			saveGame();
-			cout << "game saved!";
+			Console::setCursorPos(42, 15);
+			Console::setColor(Console::COLOR_YELLOW);
+			cout << "GAME SAVED!";
+			Console::resetColor();
 			Interface::flush(); // untuk tahan screen
 		}
 	} // END constructor
