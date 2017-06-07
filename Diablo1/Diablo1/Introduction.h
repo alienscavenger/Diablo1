@@ -47,6 +47,15 @@ public:
 		Console::setCursorPos(26, 5);
 		for (int x = 0; x < strlen(production); x++) {
 			input = Console::getKeyPressed();
+			if (input == 'M' || input == 'm')
+			{
+				if (inputFlag)
+				{
+					Music::playBackgroundMusic(-1);
+					inputFlag = 0;
+				}
+				else inputFlag++;
+			}
 			if (input == VK_RETURN)
 			{
 				if (inputFlag)
@@ -54,6 +63,7 @@ public:
 					flag = 1;
 					delayFlag = 0;
 					delayScreen = 0;
+					inputFlag = 0;
 				}
 				else inputFlag++;
 			}
@@ -64,11 +74,21 @@ public:
 
 		if (delayFlag)Console::delay(500); // tambahin delay supaya bagus
 
-		Console::setColor(Console::COLOR_RED); // ampun shifu
+		Console::setColor(Console::COLOR_RED); // ampun shifu >> HUEHUEHUEHUE
 		if (delayFlag)
 		{
+			int inputFlag = 1;
 			for (int x = 0; x < 7; x++) {
 				input = Console::getKeyPressed();
+				if (input == 'M' || input == 'm')
+				{
+					if (inputFlag)
+					{
+						inputFlag = 0;
+						Music::playBackgroundMusic(-1);
+					}
+					else inputFlag++;
+				}
 				if (input == VK_RETURN) { delayFlag = 0; delayScreen = 0; };
 				Console::setCursorPos(8, x + 10);
 				Console::printf("%s", title[x]);
@@ -116,8 +136,18 @@ public:
 
 		int flag = 0;
 		srand(time(NULL));
+		int inputFlag = 0;
 		while (no >= 0) {
 			input = Console::getKeyPressed();
+			if (input == 'M' || input == 'm')
+			{
+				if (inputFlag)
+				{
+					Music::playBackgroundMusic(-1);
+					inputFlag = 0;
+				}
+				else inputFlag++;
+			}
 			if (input == VK_RETURN) {
 				//flag = 1;
 				delayFlag = 0;
@@ -220,6 +250,11 @@ public:
 			else printf("\t");
 			for (int x = 0; x<strlen(introText[y]); x++) {
 				input = Console::getKeyPressed();
+				if (input == 'M' || input == 'm')
+				{
+					Music::playBackgroundMusic(-1);
+					delayFlag = 0;
+				}
 				if (input == VK_RETURN) {
 					delayFlag = 0;
 					delayScreen = 0;

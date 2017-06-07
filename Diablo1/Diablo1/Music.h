@@ -35,13 +35,33 @@ class Music {
 	static void stopBackgroundMusic() {
 		mciSendString("close musik", NULL, 0, 0);
 	}
-
+	static bool mute;
+	static int save;
 public:
 
 	static void playBackgroundMusic(int bgm) {
 		stopBackgroundMusic();
 		//open file according to the place
 		//untuk sementara alias BGM = "musik"
+
+		if (bgm == -1) // toggle mute dan unmute
+		{
+			if (!mute) // kalau sebelumnya tidak di-mute
+			{
+				// maka mute
+				mute = true;
+				playSoundEffect(-1);
+				return;
+			}
+			else if (mute)
+			{
+				mute = false;
+				playSoundEffect(-2);
+				bgm = save;
+			}
+		}
+		save = bgm;
+		if (mute) return;
 		switch (bgm) {
 		case 1:	//town
 			mciSendString("open \"audio\\town1.mp3\" type mpegvideo alias musik", NULL, 0, NULL);
@@ -69,6 +89,12 @@ public:
 	static void playSoundEffect(int action) {
 		mciSendString("close efek", NULL, 0, 0);
 		switch (action) {
+		case -2: // unmute
+			mciSendString("open \"audio\\unmute.mp3\" type mpegvideo alias efek", NULL, 0, NULL);
+			break;
+		case -1: // mute
+			mciSendString("open \"audio\\mute.mp3\" type mpegvideo alias efek", NULL, 0, NULL);
+			break;
 		case 1:	//normal hit in battle
 			mciSendString("open \"audio\\hit2.wav\" type mpegvideo alias efek", NULL, 0, NULL);	//NOTICE : gw samain akhirnya karena suaranya kecil
 			break;
@@ -88,8 +114,8 @@ public:
 };
 
 
-
-
+bool Music::mute = false;
+int Music::save = 6;
 
 
 #endif // !MUSIC.H
