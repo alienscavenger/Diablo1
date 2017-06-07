@@ -55,7 +55,9 @@ public:
 		level += 1;
 		// exp nambah 25%
 		exp = ceil(exp*1.25f);
-		// cth tambah 4 persen setial level up
+		// gold nambah 20%
+		gold = (int)ceil(gold*1.2);
+		// cth tambah 4 persen flat setial level up
 		chanceToHit = chanceToHit + 4; 
 		// sisanya nambah 10 persen setiap level up
 		damage = ceil(damage*1.1f);

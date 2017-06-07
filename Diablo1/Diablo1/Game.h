@@ -118,9 +118,12 @@ private:
 		vMonster.clear();
 		save = fopen("save.txt", "r");
 		// baca ATTRIBUTE dari save
-		if (fscanf(save, "%[^\n]\n", tempName) != 1) cout << "\nERROR IN READING 1ST LINE";
-		if (fscanf(save, "%d,%d,%d,%d,%d,%d,%d,%d\n", &hLevel, &job, &hGold, &experience, &strength, &endurance, &agility, &dexterity) != 8) cout << "\nERROR IN READING 2ND LINE!";
-		if (fscanf(save, "%f,%f,%f,%f,%f,%f,%d,%d\n", &hDamage, &hChanceToHit, &hEvade, &hSpeed, &hMaxHealth, &hMaxStamina, &hArmor, &monsterKilled) != 8) cout << "\nERROR IN READING 3RD LINE";
+		if (fscanf(save, "%[^\n]\n", tempName) != 1)
+			Interface::ErrorMsg("GAME.H", __LINE__, -1);//cout << "\nERROR IN READING 1ST LINE";
+		if (fscanf(save, "%d,%d,%d,%d,%d,%d,%d,%d\n", &hLevel, &job, &hGold, &experience, &strength, &endurance, &agility, &dexterity) != 8)
+			Interface::ErrorMsg("GAME.H", __LINE__, -1);//cout << "\nERROR IN READING 2ND LINE!";
+		if (fscanf(save, "%f,%f,%f,%f,%f,%f,%d,%d\n", &hDamage, &hChanceToHit, &hEvade, &hSpeed, &hMaxHealth, &hMaxStamina, &hArmor, &monsterKilled) != 8)
+			Interface::ErrorMsg("GAME.H", __LINE__, -1);//cout << "\nERROR IN READING 3RD LINE";
 		hName = tempName;
 		size_t ERRORCOUNT = 0;
 		while (!feof(save))
@@ -161,6 +164,7 @@ private:
 	{
 		// baca dari default (DIJAMIN DEFAULT.TXT ADA)
 		default = fopen("default.txt", "r");
+		if (default == NULL) Interface::ErrorMsg("GAME.H", __LINE__, -1);
 		vShop.clear();
 		vMonster.clear();
 		size_t ERRORCOUNT = 0;
@@ -270,7 +274,8 @@ public:
 		karakter = NULL; // state karakter pertama
 		vShop.reserve(Item::MAX_ITEM);
 		vMonster.reserve(Monster::MAX_MONSTER);
-		while (1)
+
+		while (1) // GAME JALAN TERUS SELAMA BELUM PILIH EXIT
 		{
 			system("cls");
 			checkSave();
@@ -305,9 +310,9 @@ public:
 				// CARA BIKIN HUMAN DENGAN LOAD GAME
 				if (karakter != NULL) delete karakter;
 				checkSave();
-				if (!saveGameAvailable)
+				if (!saveGameAvailable) // ERROR
 				{
-					cout << "\nSAVE GAME CORRUPTED WHILE READING\n(Press enter to go back..)";
+					cout << "\nSAVE GAME DELETED WHILE READING\n(Press enter to exit game..)";
 					Interface::pressEnterPlease();
 					return; // INI LANGSUNG EXIT
 				}
@@ -370,10 +375,11 @@ public:
 				}
 				else continue;
 			}
+
+			// save game, terus exit
 			saveGame();
 			cout << "game saved!";
-			Interface::flush();
-			Music::playBackgroundMusic(6);
+			Interface::flush(); // untuk tahan screen
 		}
 	} // END constructor
 };
