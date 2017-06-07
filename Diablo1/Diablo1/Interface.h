@@ -30,6 +30,21 @@ public:
 	static Introduction& introduction;
 	static NewGame& newGame;
 	static Home& home;
+	
+	static void ErrorMsg(string headerName,int line, int SaveErrorCount)
+	{
+		system("cls");
+		Console::setCursorPos(0, 0);
+		printf("ERROR ERROR ERROR ERROR ERROR\n");
+		printf("Header: %s\n", headerName.c_str());
+		printf("Line: %d\n", line);
+		if (SaveErrorCount != -1)
+		{
+			printf("SAVE ERROR: READ ITERATION NUMBER %d\n", SaveErrorCount);
+		}
+		pressEnterPlease();
+		return;
+	}
 
 	static int getInt(int min, int max)
 	{
