@@ -270,33 +270,52 @@ private:
 		saveGameAvailable = true;
 		fclose(save);
 	} // END saveGame()
-	void printMap(int place) {
 
 
-
-		system("cls");
+	void printMap(int place, bool reset) {
+		if (reset)
+		{
+			// print map pertama kali
+			system("cls");
+			for (int height = 0; height < 23; height++) {
+				Console::setCursorPos(15, 4 + height);
+				for (int width = 0; width < strlen(map[height]); width++) {
+					if (map[height][width] == 'S') printf(" ");
+					else if (map[height][width] == '0') printf("%c", 219);
+					else if (map[height][width] == '1') printf("%c", 178);
+					else printf("%c", map[height][width]);
+				}
+			}
+		}
 		Console::setCursorPos(37, 1);
 		Console::setColor(79);
 		Console::printf(" S K Y R I M ");
 		Console::resetColor();
 
+		// reset hightlight
+		for (int height = 3; height <= 7; height++)
+		{
+			for (int width = 19; width <= 27; width++)
+			{
+				Console::setCursorPos(15+width, 4 + height);
+				if (map[height][width] == 'S') printf(" ");
+				else if (map[height][width] == '0') printf("%c", 219);
+				else if (map[height][width] == '1') printf("%c", 178);
+				else printf("%c", map[height][width]);
+			}
+		}
+
 		Console::setCursorPos(20, 28);
 		if (place == 0) {
 			Console::printf("Home : view your inventory and equipment");
-			for (int height = 0; height < 23; height++) {
-				Console::setCursorPos(15, 4 + height);
-				for (int width = 0; width < strlen(map[height]); width++) {
-					if (height >= 3 && height <= 7) {
-						if (width >= 19 && width <= 27) {
-							Console::setColor(Console::COLOR_RED);
-						}
-						else {
-							Console::resetColor();
-						}
-					}
-					else {
-						Console::resetColor();
-					}
+			// gw coba"
+			Console::setColor(Console::COLOR_RED);
+			for (int height = 3; height<= 7; height++)
+			{
+				for (int width = 19; width<= 27; width++)
+				{
+					Console::setCursorPos(15+width, 4 + height);
+
 					if (map[height][width] == 'S') printf(" ");
 					else if (map[height][width] == '0') printf("%c", 219);
 					else if (map[height][width] == '1') printf("%c", 178);
@@ -305,29 +324,10 @@ private:
 			}
 		}
 		else if (place == 1) {
-			Console::printf("Town : Visit Tristam's Shop                      ");
-			for (int height = 0; height < 23; height++) {
-				Console::setCursorPos(15, 4 + height);
-				for (int width = 0; width < strlen(map[height]); width++) {
-					if (map[height][width] == 'S') printf(" ");
-					else if (map[height][width] == '0') printf("%c", 219);
-					else if (map[height][width] == '1') printf("%c", 178);
-					else printf("%c", map[height][width]);
-				}
-			}
+			Console::printf("Town : Visit Tristam's Shop                      ");	
 		}
 		else if (place == 2) {
 			Console::printf("Cave : Fight Monster                             ");
-			for (int height = 0; height < 23; height++) {
-				Console::setCursorPos(15, 4 + height);
-				for (int width = 0; width < strlen(map[height]); width++) {
-					
-					if (map[height][width] == 'S') printf(" ");
-					else if (map[height][width] == '0') printf("%c", 219);
-					else if (map[height][width] == '1') printf("%c", 178);
-					else printf("%c", map[height][width]);
-				}
-			}
 		}
 		
 	}
@@ -371,6 +371,8 @@ private:
 		bool printFlag = true;
 		while (1)
 		{
+			Console::resetColor(); // LUMAYAN PENTING KALO GK MAU ADA ERROR (coba gk dipake, trus masuk ke game over. Warnanya berubah)
+			Console::setCursorVisibility(false); // MINOR
 			if (printFlag)
 			{
 				Console::setCursorPos(33, 11);
@@ -413,7 +415,7 @@ private:
 				else sampahFlag++;
 			}
 		}
-
+		Console::resetColor();
 		if (pickMenu == 1) return false; // tidak exit
 		else return true; // exit
 	}
@@ -505,9 +507,10 @@ public:
 				}
 			}
 			Music::playBackgroundMusic(1);
-			printMap(0);
+			printMap(0,true);
 			char mapMenu;
 			int currentPlace = 0;
+			bool print = false;
 			while (1)
 			{
 				//Console::setCursorVisibility(true);
@@ -546,51 +549,55 @@ public:
 				//	break;
 				//}
 				//else continue;
-				
+				if (print)
+				{
+					printMap(currentPlace, true);
+					print = false;
+				}
 				// 0 = home
 				// 1 = town
 				// 2 = cave
 				enum LOCATION{ HOME = 0,TOWN,CAVE };
-
 				mapMenu = _getch();
 				mapMenu = tolower(mapMenu);
 				if (mapMenu == 'w' || mapMenu == 's' || mapMenu == 'a' || mapMenu == 'd' || mapMenu == VK_RETURN || mapMenu == VK_ESCAPE) {
 					if (currentPlace == HOME) {
 						if (mapMenu == 's') {
-							printMap(CAVE);
+							printMap(CAVE,false);
 							currentPlace = CAVE;
 						}
 						else if (mapMenu == 'd') {
-							printMap(TOWN);
+							printMap(TOWN,false);
 							currentPlace = TOWN;
 						}
 						else if (mapMenu == VK_RETURN) {
 							Interface::home.homeMenu(vShop, vMonster, karakter, karakter->getInventoryRef());
+							print = true; // PENTING
 						}
 						else if (mapMenu == VK_ESCAPE)
 						{
 							if (exitPrompt()) break;
-							system("cls");
-							printMap(HOME);
+							print = true; // PENTING
 							currentPlace = HOME;
 						}
 					}
 					else if (currentPlace == TOWN) {
 						if (mapMenu == 's') {
-							printMap(CAVE);
+							printMap(CAVE,false);
 							currentPlace = CAVE;
 						}
 						else if (mapMenu == 'a') {
-							printMap(HOME);
+							printMap(HOME,false);
 							currentPlace = HOME;
 						}
 						else if (mapMenu == VK_RETURN) {
 							Interface::shop.shopMenu(vShop, karakter);
+							print = true; // PENTING
 						}
 					}
 					else {
 						if (mapMenu == 'w' || mapMenu == 'd') {
-							printMap(HOME);
+							printMap(HOME,false);
 							currentPlace = HOME;
 						}
 						else if (mapMenu == VK_RETURN) {
@@ -598,6 +605,7 @@ public:
 								Battle::selectMonster(karakter, vMonster);
 
 								Music::playBackgroundMusic(TOWN);
+								print = true; // PENTING
 								if (Battle::getWin())
 								{
 									continue;
@@ -609,7 +617,6 @@ public:
 							}
 						}
 					}
-					printMap(currentPlace);
 				}
 				else continue;
 				
