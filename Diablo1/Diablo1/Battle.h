@@ -211,6 +211,13 @@ private:
 			char buff = Console::getKeyPressed();
 			if(buff!=-1)
 			{
+				if (buff == 'M' || buff == 'm')
+				{
+					if (inputDelay)
+						Music::playBackgroundMusic(-1);
+					else
+						inputDelay++;
+				}
 				if (buff == VK_TAB)
 				{
 					if (inputDelay)
@@ -432,6 +439,10 @@ private:
 			{
 				if (delayFlag)
 				{
+					if (buff == 'M' || buff == 'm')
+					{
+						Music::playBackgroundMusic(-1);
+					}
 					if (buff == VK_UP || buff == 0x57) // 0x57 == 'w'
 					{
 						pickMenu = (pickMenu - 1 + 3) % 3;
@@ -1045,6 +1056,10 @@ private:
 						{
 							if (pickDelay)
 							{
+								if (buff == 'M' || buff == 'm')
+								{
+									Music::playBackgroundMusic(-1);
+								}
 								if (buff == VK_LEFT || buff == 0x41) // 41 == 'a'
 								{
 									pick = (pick - 1 + 2) % 2;
@@ -1151,6 +1166,10 @@ private:
 			{
 				if (sampahFlag) // supaya key release tidak kebaca
 				{
+					if (charMenu == 'M' || charMenu == 'm')
+					{
+						Music::playBackgroundMusic(-1);
+					}
 					if (charMenu == VK_UP || charMenu == 0x57) // 0x57 == 'w'
 					{
 						pickMenu = (pickMenu - 1 + 4) % 4;
@@ -1277,6 +1296,10 @@ private:
 			{
 				if (delayFlag)
 				{
+					if (buff == 'M' || buff == 'm')
+					{
+						Music::playBackgroundMusic(-1);
+					}
 					if (buff == VK_TAB)
 					{
 						index = (index + 1) % 3;
@@ -1316,30 +1339,39 @@ public:
 		Console::setColor(Console::COLOR_WHITE);
 
 		Console::setCursorPos(1, 3);
+		cout << "===========================================================================";
+		Console::setCursorPos(1, 4);
 		printf("%-3s| %-18s| %-5s | %-8s| %-8s| %-11s | %-8s", "No.", "Name", "Level", "Offense", "Defense", "Experience", "Golds");
 
 
-		Console::setCursorPos(1, 4);
+		int counter = 1;
+		Console::setCursorPos(1, 5);
 		cout << "===========================================================================";
 		{
 			int x = 1;
-			int y = 5;
-			int counter = 1;
+			int y = 6;
 			for (vector<Monster>::iterator iter = vMonster.begin(); iter != vMonster.end(); iter++) {
 				Console::setCursorPos(1, y);
 				printf("%-3d| %-18s| %-5d | %-8d| %-8d| %-7.0f EXP | %-6d G", counter,
 					iter->getName().c_str(), iter->getLevel(), iter->getOffense(), iter->getDefense(), iter->getExp(), iter->getGold());
 				y++; counter++;
 			}
+			Console::setCursorPos(1, y);
+			cout << "===========================================================================";
 			Console::setCursorPos(1, y + 2);
 		}
+		counter--;
 		Console::setCursorVisibility(true);
 		int monsterSelect;
-		do {
+		/*do {
 			Console::setCursorPos(1, Console::getCursorY());
 			cout << "Select Monster >> ";
 			cin >> monsterSelect; cin.sync(); Interface::flush();
-		} while (monsterSelect < 1 || monsterSelect > 30);
+		} while (monsterSelect < 1 || monsterSelect > 30);*/
+		Console::setCursorPos(1, Console::getCursorY());
+		cout << "Select Monster ( 0 = cancel ) [ 0 to " << counter << " ] : ";
+		monsterSelect = Interface::getInt(0,counter);
+		if (monsterSelect == 0) return;
 		//
 		Console::setCursorVisibility(false);
 		Music::playBackgroundMusic(3);
@@ -1474,6 +1506,10 @@ public:
 					Console::resetColor();
 					Console::setCursorPos(0, 9);
 					char x = _getch(); // tidak ngebaca key release (hanya key press), tapi getKeyPressed iya
+					if (x == 'M' || x == 'm')
+					{
+						Music::playBackgroundMusic(-1);
+					}
 					if (x == VK_RETURN)
 					{
 						int sampah;

@@ -82,6 +82,10 @@ public:
 			{
 				if (sampahFlag) // supaya key release tidak kebaca
 				{
+					if (charMenu =='M' || charMenu == 'm')
+					{
+						Music::playBackgroundMusic(-1);
+					}
 					if (charMenu == VK_UP || charMenu == 0x57) // 0x57 == 'w'
 					{
 						pickMenu = (pickMenu - 1 + maxMenu) % maxMenu;
@@ -250,6 +254,10 @@ public:
 				{
 					if (delayInput)
 					{
+						if (buffer == 'M' || buffer == 'm')
+						{
+							Music::playBackgroundMusic(-1);
+						}
 						if (buffer == VK_LEFT || buffer == 0x41) // 41 == 'a'
 						{
 							job = (job - 1 + 3) % 3;
@@ -367,6 +375,10 @@ public:
 				{
 					if (tempCounter)
 					{
+						if (buf == 'M' || buf == 'm')
+						{
+							Music::playBackgroundMusic(-1);
+						}
 						if (buf == VK_ESCAPE)
 						{
 							what = -1;

@@ -10,6 +10,7 @@
 #include <iostream>
 #include <sstream>
 #include "common.h"
+#include "Music.h"
 
 // forward declaration to fix circular dependency
 class Shop;
@@ -148,6 +149,10 @@ public:
 		while (1)
 		{
 			char x = _getch(); // tidak ngebaca key release (hanya key press), tapi getKeyPressed iya
+			if (x == 'M' || x == 'm')
+			{
+				Music::playBackgroundMusic(-1);
+			}
 			if (x == VK_RETURN)
 			{
 				int sampah;

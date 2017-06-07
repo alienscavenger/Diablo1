@@ -510,6 +510,10 @@ public:
 								{
 									if (bufferDelay)
 									{
+										if (buff == 'M' || buff == 'm')
+										{
+											Music::playBackgroundMusic(-1);
+										}
 										if (buff == VK_LEFT || buff == 0x41) // 41 == 'a'
 										{
 											pickWhat = (pickWhat - 1 + 2) % 2;
@@ -666,6 +670,10 @@ public:
 					{
 						if (delayFlag) // supaya key release tidak kebaca
 						{
+							if (buff == 'M' || buff == 'm')
+							{
+								Music::playBackgroundMusic(-1);
+							}
 							if (buff == VK_UP || buff == 0x57) // 0x57 == 'w'
 							{
 								pickMenu = (pickMenu - 1 + 7) % 7;
@@ -897,6 +905,10 @@ public:
 			{
 				if (printDelay)
 				{
+					if (buff == 'M' || buff == 'm')
+					{
+						Music::playBackgroundMusic(-1);
+					}
 					if (buff == VK_UP || buff == 0x57) // 0x57 == 'w'
 					{
 						// reset warna sebelumnya ke putih/highlight merah dulu
@@ -1494,6 +1506,10 @@ public:
 					if (equipMenuActive || stillUnequiping <= 5)break; // menjaga tidak tombol yang tak sengaja ditekan
 					if (delayFlag)
 					{
+						if (buff == 'M' || buff == 'm')
+						{
+							Music::playBackgroundMusic(-1);
+						}
 						if (buff == VK_UP || buff == 0x57) // 0x57 == 'w'
 						{
 							pickMenu = (pickMenu - 1 + 5) % 5;
@@ -1686,6 +1702,10 @@ public:
 					{
 						if (bufferDelay)
 						{
+							if (buff == 'M' || buff == 'm')
+							{
+								Music::playBackgroundMusic(-1);
+							}
 							if (buff == VK_LEFT || buff == 0x41) // 41 == 'a'
 							{
 								pickWhat = (pickWhat - 1 + 2) % 2;
