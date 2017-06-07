@@ -94,7 +94,7 @@ private:
 		"0SSS___,-SSSSSSSSS~~~~~~SS0SSS0SSSSSSS~~~~~~~~~~~~~~~~~SS0\n",
 		"0SS/\'SS\\``-SSSSSSSS~~~~~~~01110SSS~~~~~~~~~~~~~SSSSSSSSSS0\n",
 		"0S/SSSS\'\\```SSSSSSSSS~~~~~01110~~~~~~~~~~~~SSSSSSSSSSSSSS0\n",
-		"0/S/111\\SS\\``,SSSSSSSSS~~~01110~~~~~~~~SSTheSGreatSRiverS0\n",
+		"0/S/111\\SS\\``,SSSSSSSSS~~~01110~~~~~~~~SSSSSSSSSSSSSSSSSS0\n",
 		"0S/11111\\_S\\`/SSSSSSSSSSSS01110~~~~~SSSSSSSSSSSSSSSSSSSSS0\n",
 		"0/11111111\\S\\`\'\"SSSSSSSSSS0SSS0SSSSSSSSSSSSSSSSSSSSSSSSSS0\n",
 		"01111111111\\_S\\``SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS0\n",
@@ -273,6 +273,7 @@ private:
 
 
 	void printMap(int place, bool reset) {
+		Console::setCursorVisibility(false);
 		if (reset)
 		{
 			// print map pertama kali
@@ -304,12 +305,45 @@ private:
 				else printf("%c", map[height][width]);
 			}
 		}
+		for (int height = 1; height <= 7; height++)
+		{
+			for (int width = 37; width <= 51; width++)
+			{
+				Console::setCursorPos(15 + width, 4 + height);
 
+				if (map[height][width] == 'S') printf(" ");
+				else if (map[height][width] == '0') printf("%c", 219);
+				else if (map[height][width] == '1') printf("%c", 178);
+				else printf("%c", map[height][width]);
+			}
+		}
+		for (int height = 20; height <= 20; height++)
+		{
+			for (int width = 1; width <= 17; width++)
+			{
+				Console::setCursorPos(15 + width, 4 + height);
+
+				if (map[height][width] == 'S') printf(" ");
+				else if (map[height][width] == '0') printf("%c", 219);
+				else if (map[height][width] == '1') printf("%c", 178);
+				else printf("%c", map[height][width]);
+			}
+		}
+
+		//RESET BUG in The Great River and Border (OPTIONAL, di laptop gw sih error)
+		/*Console::setCursorPos(62,18);
+		Console::printf("The Great River");
+		for (int height = 18; height <= 23; height++) {
+			Console::setCursorPos(64, height);
+			Console::printf("%c",219);
+		}*/
+
+		//BUAT HIGHLIGHT
 		Console::setCursorPos(20, 28);
 		if (place == 0) {
 			Console::printf("Home : view your inventory and equipment");
 			// gw coba"
-			Console::setColor(Console::COLOR_RED);
+			Console::setColor(Console::COLOR_BLUE);
 			for (int height = 3; height<= 7; height++)
 			{
 				for (int width = 19; width<= 27; width++)
@@ -324,10 +358,37 @@ private:
 			}
 		}
 		else if (place == 1) {
-			Console::printf("Town : Visit Tristam's Shop                      ");	
+			Console::printf("Town : Visit Tristam's Shop                      ");
+			Console::setColor(Console::COLOR_MAGENTA);
+			for (int height = 1; height <= 7; height++)
+			{
+				for (int width = 37; width <= 51; width++)
+				{
+					Console::setCursorPos(15 + width, 4 + height);
+
+					if (map[height][width] == 'S') printf(" ");
+					else if (map[height][width] == '0') printf("%c", 219);
+					else if (map[height][width] == '1') printf("%c", 178);
+					else printf("%c", map[height][width]);
+				}
+			}
 		}
 		else if (place == 2) {
 			Console::printf("Cave : Fight Monster                             ");
+			Console::setColor(79);
+			for (int height = 20; height <= 20; height++)
+			{
+				for (int width = 1; width <= 17; width++)
+				{
+					Console::setCursorPos(15 + width, 4 + height);
+
+					if (map[height][width] == 'S') printf(" ");
+					else if (map[height][width] == '0') printf("%c", 219);
+					else if (map[height][width] == '1') printf("%c", 178);
+					else printf("%c", map[height][width]);
+				}
+			}
+			Console::resetColor(); //somehow the color gets into the list of monsters
 		}
 		
 	}
@@ -513,42 +574,6 @@ public:
 			bool print = false;
 			while (1)
 			{
-				//Console::setCursorVisibility(true);
-				//Console::resetColor();
-				//system("cls");
-				//cout << "1 = Home\n2 = Shop\n5 = Battle\n123 = Save and Quit\n>>";
-				//int milih;
-				//cin >> milih;
-				//Interface::flush();
-				//Console::setCursorVisibility(false);
-				//if (milih == 1)
-				//{
-				//	// INI HOME YANG BERISI INVENTORY dan PLAYER STATUS
-				//	Interface::home.homeMenu(vShop, vMonster, karakter, karakter->getInventoryRef());
-				//}
-				//else if (milih == 2){
-				//	// INI SHOP
-				//	Interface::shop.shopMenu(vShop, karakter);
-				//}
-				//else if (milih == 5)
-				//{
-				//	Battle::selectMonster(karakter,vMonster);
-				//	 
-				//	Music::playBackgroundMusic(1);
-				//	if (Battle::getWin())
-				//	{
-				//		continue;
-				//	}
-				//	else
-				//	{
-				//		continue;
-				//	}
-				//}
-				//else if (milih == 123)
-				//{
-				//	break;
-				//}
-				//else continue;
 				if (print)
 				{
 					printMap(currentPlace, true);
