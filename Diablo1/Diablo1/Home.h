@@ -813,7 +813,7 @@ public:
 				case Human::Weapon: type = "Weapon"; break;
 				case Human::Shield: type = "Shield"; break;
 				}
-				printf(" %2d.   %18s  %6d   %-28s   %11s   %6s\n", i + 1, temporary[i]->getName().c_str(), temporary[i]->getPrice(),
+				printf(" %2d. | %18s | %6d | %-28s | %11s |  %6s\n", i + 1, temporary[i]->getName().c_str(), temporary[i]->getPrice(),
 					temporary[i]->getEffect().c_str(), restriction.c_str(), type.c_str());
 			}
 		}
@@ -846,7 +846,7 @@ public:
 				if (temporary[i]->getEquipped())Console::setColor(94);
 				else Console::setColor(78);
 
-				printf(" %2d.   %18s  %6d   %-28s   %11s   %6s\n", i + 1, temporary[i]->getName().c_str(), temporary[i]->getPrice(),
+				printf(" %2d. | %18s | %6d | %-28s | %11s | %6s\n", i + 1, temporary[i]->getName().c_str(), temporary[i]->getPrice(),
 					temporary[i]->getEffect().c_str(), restriction.c_str(), type_.c_str());
 
 				int index;
@@ -923,7 +923,7 @@ public:
 							case Human::Weapon: type = "Weapon"; break;
 							case Human::Shield: type = "Shield"; break;
 							}
-							printf(" %2d.   %18s  %6d   %-28s   %11s   %6s\n", i + 1, temporary[i]->getName().c_str(), temporary[i]->getPrice(),
+							printf(" %2d. | %18s | %6d | %-28s | %11s | %6s\n", i + 1, temporary[i]->getName().c_str(), temporary[i]->getPrice(),
 								temporary[i]->getEffect().c_str(), restriction.c_str(), type.c_str());
 						}
 						i = (i - 1 + (int)size) % (int)size;
@@ -955,7 +955,7 @@ public:
 							case Human::Weapon: type = "Weapon"; break;
 							case Human::Shield: type = "Shield"; break;
 							}
-							printf(" %2d.   %18s  %6d   %-28s   %11s   %6s\n", i + 1, temporary[i]->getName().c_str(), temporary[i]->getPrice(),
+							printf(" %2d. | %18s | %6d | %-28s | %11s | %6s\n", i + 1, temporary[i]->getName().c_str(), temporary[i]->getPrice(),
 								temporary[i]->getEffect().c_str(), restriction.c_str(), type.c_str());
 						}
 						i = (i + 1) % size;
@@ -1175,9 +1175,9 @@ public:
 		while (1) // print/update terus selama belum beli/exit dan masih filter/sort
 		{
 			system("cls");
-			Console::setColor(Console::COLOR_RED);
+			Console::setColor(206); // BRIGHT RED BACKGROUND, WITH YELLOW TEXT
 			Console::setCursorPos(40, 0);
-			printf("- %s's House -", karakter->getName().c_str());
+			printf(" - %s's House - ", karakter->getName().c_str());
 			Console::resetColor();
 
 			playerStatus(karakter, vMonster);
@@ -1242,9 +1242,9 @@ public:
 			int i = 1; // variable buat print index vector (tapi ini mulai dari 1, sedangkan vector mulai dari 0)
 			printf("\n");
 			printf("                                 - My Inventory -\n");
-			printf(" ======================================================================================\n");
-			printf(" %3s | %18s | %5s | %-28s | %10s | %6s\n", "No.", "ITEM NAME", "PRICE", "ITEM EFFECTS", "RESTRICTION", "TYPE");
-			printf(" ======================================================================================\n");
+			printf(" =======================================================================================\n");
+			printf(" %3s | %18s | %5s  | %-28s | %10s | %6s\n", "No.", "ITEM NAME", "PRICE", "ITEM EFFECTS", "RESTRICTION", "TYPE");
+			printf(" =======================================================================================\n");
 
 			if (temporary.size() == 0)
 			{
@@ -1304,10 +1304,10 @@ public:
 				if ((*iter)->getEquipped())Console::setColor(79); // kalau sudah di-equip, maka ganti warnanya
 				else Console::resetColor();
 
-				printf(" %2d.   %18s  %6d   %-28s   %11s   %6s\n", i, (*iter)->getName().c_str(), (*iter)->getPrice(), (*iter)->getEffect().c_str(), restriction.c_str(), type.c_str());
+				printf(" %2d. | %18s | %6d | %-28s | %11s | %6s\n", i, (*iter)->getName().c_str(), (*iter)->getPrice(), (*iter)->getEffect().c_str(), restriction.c_str(), type.c_str());
 				Console::resetColor();
 			}
-			printf(" ======================================================================================\n");
+			printf(" =======================================================================================\n");
 
 			//-----------------------------------------------------------------------------------------------------------------------------------------------------------
 

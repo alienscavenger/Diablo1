@@ -352,66 +352,7 @@ public:
 				}
 				else if (milih == 5)
 				{
-					Music::playBackgroundMusic(2);
-					system("cls");
-					Console::setCursorPos(27, 1);
-					Console::setColor(79);
-					Console::printf("M O N S T E R");
-					Console::setColor(Console::COLOR_WHITE);
-
-					Console::setCursorPos(1, 3);
-					cout << "No";
-					Console::setCursorPos(1 + 5, 3);
-					cout << "Name";
-					Console::setCursorPos(1 + 25, 3);
-					cout << "Level";
-					Console::setCursorPos(1 + 32, 3);
-					cout << "Offense";
-					Console::setCursorPos(1 + 42, 3);
-					cout << "Defense";
-					Console::setCursorPos(1 + 52, 3);
-					cout << "Exp";
-					Console::setCursorPos(1 + 65, 3);
-					cout << "Gold";
-
-					Console::setCursorPos(0, 4);
-					cout << "=====================================================================";
-					{
-						int x = 1;
-						int y = 5;
-						int counter = 0;
-						for (vector<Monster>::iterator iter = vMonster.begin(); iter < vMonster.end(); iter++) {
-							Console::setCursorPos(1, y);
-							cout << counter + 1;
-							Console::setCursorPos(x + 5, y);
-							cout << vMonster[counter].getName();
-							Console::setCursorPos(x + 25, y);
-							cout << vMonster[counter].getLevel();
-							Console::setCursorPos(x + 32, y);
-							cout << vMonster[counter].getOffense();
-							Console::setCursorPos(x + 42, y);
-							cout << vMonster[counter].getDefense();
-							Console::setCursorPos(x + 52, y);
-							cout << vMonster[counter].getExp() << " EXP";
-							Console::setCursorPos(x + 65, y);
-							cout << vMonster[counter].getGold() << " G";
-
-							y++; counter++;
-						}
-						Console::setCursorPos(1, y + 2);
-					}
-					Console::setCursorVisibility(true);
-					int monsterSelect;
-					do {
-						Console::setCursorPos(1, Console::getCursorY());
-						cout << "Select Monster >> ";
-						cin >> monsterSelect; cin.sync(); Interface::flush();
-					} while (monsterSelect < 1 || monsterSelect > 30);
-					//
-					Console::setCursorVisibility(false);
-					Music::playBackgroundMusic(3);
-					Battle::startBattle(*karakter, vMonster[monsterSelect-1]);
-					system("cls");
+					Battle::selectMonster(karakter,vMonster);
 					 
 					Music::playBackgroundMusic(1);
 					if (Battle::getWin())
@@ -566,35 +507,35 @@ void Game::createDefaultSave()
 
 	vector<char*> monsterSave =
 	{
-		"@Ghoul,1,300,20,86,3,66,120,90,2,1358,6,12,0,0\n",
-		"@Giant Spider,2,600,7,114,18,210,120,90,0,2683,8,16,0,0\n",
-		"@Vampire,4,800,30,109,8,112,142,100,1,4477,21,15,0,0\n",
-		"@Gargoyle Trap,4,920,20,98,0,89,300,150,5,4682,14,41,0,0\n",
-		"@Tainted One,4,900,12,116,9,152,198,120,3,4427,20,23,0,0\n",
-		"@Goatman,3,650,12,104,12,154,135,120,1,3426,14,16,0,0\n",
-		"@Mummy,5,1050,13,116,9,138,265,160,1,5424,20,29,0,0\n",
-		"@Sand Raider,6,1280,13,122,14,180,278,120,3,6275,26,35,0,0\n",
-		"@Claw Viper,7,1490,11,140,25,210,188,170,2,7867,39,32,0,0\n",
-		"@Slinger,8,1510,28,149,26,180,130,120,1,8756,70,22,0,0\n",
-		"@Sabre Cat,9,1620,18,110,42,200,195,150,4,9047,46,60,0,0\n",
-		"@Vulture Demon,10,2200,15,156,44,242,180,180,2,10558,48,55,0,0\n",
-		"@Sand Maggot,9,1640,26,118,23,182,228,130,6,9108,38,43,0,0\n",
-		"@Fire Eye,10,2200,28,135,39,200,180,120,4,10332,50,50,0,0\n",
-		"@Frog Demon,11,2550,22,130,35,226,312,180,2,11020,60,72,0,0\n",
-		"@Thorned Hulk,10,2070,39,90,9,166,455,220,8,10122,47,70,0,0\n",
-		"@Zakarum Zealot,12,3750,40,128,34,265,308,160,5,12646,112,78,0,0\n",
-		"@Tentacle Beast,11,2630,30,116,20,226,380,280,3,11162,71,58,0,0\n",
-		"@Willowisp,12,3400,9,162,68,390,128,380,0,12267,69,80,0,0\n",
-		"@Temple Guard,13,4300,49,122,32,250,294,320,5,13285,124,71,0,0\n",
-		"@Strangler,15,3600,55,98,33,220,459,200,2,15018,103,99,0,0\n",
-		"@Megademon,16,4500,55,112,35,213,397,240,6,16115,142,110,0,0\n",
-		"@Regurgitator,14,3430,52,102,24,180,589,220,4,14769,92,103,0,0\n",
-		"@Oblivion Knight,17,4830,42,132,40,223,376,380,8,17700,178,142,0,0\n",
-		"@Izuel,23,8800,66,140,41,240,448,520,10,23152,339,204,0,0\n",
-		"@Grand Vizier,24,10000,42,150,55,290,395,380,12,24400,289,313,0,0\n",
-		"@Baal,22,7400,185,118,52,120,490,300,6,22470,393,227,0,0\n",
-		"@Mephisto,26,14500,65,138,40,288,725,600,15,26235,492,469,0,0\n",
-		"@Diablo,30,0,90,148,35,300,1020,540,12,0,501,441,0,0\n"
+		"@Ghoul,1,300,20,86,3,66,120,90,2,1358,6,12,0\n",
+		"@Giant Spider,2,600,7,114,18,210,120,90,0,2683,8,16,0\n",
+		"@Vampire,4,800,30,109,8,112,142,100,1,4477,21,15,0\n",
+		"@Gargoyle Trap,4,920,20,98,0,89,300,150,5,4682,14,41,0\n",
+		"@Tainted One,4,900,12,116,9,152,198,120,3,4427,20,23,0\n",
+		"@Goatman,3,650,12,104,12,154,135,120,1,3426,14,16,0\n",
+		"@Mummy,5,1050,13,116,9,138,265,160,1,5424,20,29,0\n",
+		"@Sand Raider,6,1280,13,122,14,180,278,120,3,6275,26,35,0\n",
+		"@Claw Viper,7,1490,11,140,25,210,188,170,2,7867,39,32,0\n",
+		"@Slinger,8,1510,28,149,26,180,130,120,1,8756,70,22,0\n",
+		"@Sabre Cat,9,1620,18,110,42,200,195,150,4,9047,46,60,0\n",
+		"@Vulture Demon,10,2200,15,156,44,242,180,180,2,10558,48,55,0\n",
+		"@Sand Maggot,9,1640,26,118,23,182,228,130,6,9108,38,43,0\n",
+		"@Fire Eye,10,2200,28,135,39,200,180,120,4,10332,50,50,0\n",
+		"@Frog Demon,11,2550,22,130,35,226,312,180,2,11020,60,72,0\n",
+		"@Thorned Hulk,10,2070,39,90,9,166,455,220,8,10122,47,70,0\n",
+		"@Zakarum Zealot,12,3750,40,128,34,265,308,160,5,12646,112,78,0\n",
+		"@Tentacle Beast,11,2630,30,116,20,226,380,280,3,11162,71,58,0\n",
+		"@Willowisp,12,3400,9,162,68,390,128,380,0,12267,69,80,0\n",
+		"@Temple Guard,13,4300,49,122,32,250,294,320,5,13285,124,71,0\n",
+		"@Strangler,15,3600,55,98,33,220,459,200,2,15018,103,99,0\n",
+		"@Megademon,16,4500,55,112,35,213,397,240,6,16115,142,110,0\n",
+		"@Regurgitator,14,3430,52,102,24,180,589,220,4,14769,92,103,0\n",
+		"@Oblivion Knight,17,4830,42,132,40,223,376,380,8,17700,178,142,0\n",
+		"@Izuel,23,8800,66,140,41,240,448,520,10,23152,339,204,0\n",
+		"@Grand Vizier,24,10000,42,150,55,290,395,380,12,24400,289,313,0\n",
+		"@Baal,22,7400,185,118,52,120,490,300,6,22470,393,227,0\n",
+		"@Mephisto,26,14500,65,138,40,288,725,600,15,26235,492,469,0\n",
+		"@Diablo,30,0,90,148,35,300,1020,540,12,0,501,441,0\n"
 	};
 
 	default = fopen("default.txt", "w");

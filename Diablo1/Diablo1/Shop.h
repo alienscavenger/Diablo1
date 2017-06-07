@@ -128,12 +128,13 @@ public:
 			vector<Item*>::iterator iter; // iterator untuk vector temporary (Item*)
 			int i = 1; // variable buat print index vector (tapi ini mulai dari 1, sedangkan vector mulai dari 0)
 			printf("\n");
-			Console::setColor(Console::COLOR_YELLOW);
-			printf("                                 - Tristam Shop -\n");
+			Console::setColor(206); // BRIGHT RED BACKGROUND, WITH YELLOW TEXT
+			Console::setCursorPos(35, 0);
+			printf(" - TRISTAM SHOP - \n");
 			Console::resetColor();
-			printf(" ======================================================================================\n");
-			printf(" %3s | %18s | %5s | %-28s | %10s | %6s\n", "No.", "ITEM NAME", "PRICE", "ITEM EFFECTS", "RESTRICTION", "TYPE");
-			printf(" ======================================================================================\n");
+			printf(" =======================================================================================\n");
+			printf(" %3s | %18s | %5s  | %-28s | %10s | %6s\n", "No.", "ITEM NAME", "PRICE", "ITEM EFFECTS", "RESTRICTION", "TYPE");
+			printf(" =======================================================================================\n");
 
 			if (temporary.size() == 0)
 			{
@@ -191,9 +192,9 @@ public:
 				case Human::Shield: type = "Shield"; break;
 				}
 
-				printf(" %2d.   %18s  %6d   %-28s   %11s   %6s\n", i, (*iter)->getName().c_str(), (*iter)->getPrice(), (*iter)->getEffect().c_str(), restriction.c_str(), type.c_str());
+				printf(" %2d. | %18s | %6d | %-28s | %11s | %6s\n", i, (*iter)->getName().c_str(), (*iter)->getPrice(), (*iter)->getEffect().c_str(), restriction.c_str(), type.c_str());
 			}
-			printf(" ======================================================================================\n");
+			printf(" =======================================================================================\n");
 
 			//-----------------------------------------------------------------------------------------------------------------------------------------------------------
 

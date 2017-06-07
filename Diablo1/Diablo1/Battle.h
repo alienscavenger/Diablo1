@@ -1306,12 +1306,53 @@ public:
 	static bool getWin() { return win; }
 
 	// MAIN FUNCTION
+	static void selectMonster(Human* karakter,vector<Monster>& vMonster)
+	{
+		Music::playBackgroundMusic(2);
+		system("cls");
+		Console::setCursorPos(27, 1);
+		Console::setColor(79);
+		Console::printf(" M O N S T E R ");
+		Console::setColor(Console::COLOR_WHITE);
+
+		Console::setCursorPos(1, 3);
+		printf("%-3s| %-18s| %-5s | %-8s| %-8s| %-11s | %-8s", "No.", "Name", "Level", "Offense", "Defense", "Experience", "Golds");
+
+
+		Console::setCursorPos(1, 4);
+		cout << "===========================================================================";
+		{
+			int x = 1;
+			int y = 5;
+			int counter = 1;
+			for (vector<Monster>::iterator iter = vMonster.begin(); iter != vMonster.end(); iter++) {
+				Console::setCursorPos(1, y);
+				printf("%-3d| %-18s| %-5d | %-8d| %-8d| %-7.0f EXP | %-6d G", counter,
+					iter->getName().c_str(), iter->getLevel(), iter->getOffense(), iter->getDefense(), iter->getExp(), iter->getGold());
+				y++; counter++;
+			}
+			Console::setCursorPos(1, y + 2);
+		}
+		Console::setCursorVisibility(true);
+		int monsterSelect;
+		do {
+			Console::setCursorPos(1, Console::getCursorY());
+			cout << "Select Monster >> ";
+			cin >> monsterSelect; cin.sync(); Interface::flush();
+		} while (monsterSelect < 1 || monsterSelect > 30);
+		//
+		Console::setCursorVisibility(false);
+		Music::playBackgroundMusic(3);
+		startBattle(*karakter, vMonster[monsterSelect - 1]);
+		system("cls");
+	}
+
 	static void startBattle(Human& karakter, Monster& enemy)
 	{
 		system("cls");
-		Console::setCursorPos(29, 0);
+		Console::setCursorPos(25, 0);
 		Console::setColor(79);
-		printf("BATTLE\n");
+		printf(" B A T T L E ");
 		Console::resetColor();
 		autoAttack = 1;
 		index = 0;
