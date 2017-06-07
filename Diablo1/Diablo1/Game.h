@@ -78,8 +78,32 @@ private:
 	Human* karakter; // karakternya
 	vector<Item> vShop; // item yang ada di game
 	vector<Monster> vMonster; // monster yang ada di game
-	// ---------------------------------------------------------------------------------------------------
-
+	// ----------------------------------- M A P ----------------------------------------------------------
+	char map[23][64] = {
+		"0000000000000000000000000000000000000000000000000000000000\n",
+		"0SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS___SSSSS___SSSSSSS0\n",
+		"0SSSS~~~~~~SSSSSSSSSSSSSSSSSSSSSSSSSSSS|S|SS_SS|S|SSSSSSS0\n",
+		"0S~~~~~~~~~~~SSSSSSSS[]___SSSSSSSSSSSSS|-|_/_\\_|-|SSSSSSS0\n",
+		"0~~~~~~~~~~~~~~SSSSS/SSSS/\\SSSSSSSSSSS_|S|store|S|_SSSSSS0\n",
+		"0~~~~~~~~~~~~~~~SSS/____/__\\SSSSSSSSS|S|-|[·-·]|-|S|SSSSS0\n",
+		"0~~~~SSSSS~~~~~~~~S|[][]||||SSSSSSSSS|S|_|-----|_|S|SSSSS0\n",
+		"0~SSSSSSSSSS~~~~~~~SSHomeSSSSSSSSSSSSSSSSSTownSSSSSSSSSSS0\n",
+		"0SSSSSSSSSSSSS~~~~~~SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS~~~~0\n",
+		"0SSSSSSSSSSSSSS~~~~~~~SSSSSSSSSSSSSSSSSSSSSSSSSSS~~~~~~~~0\n",
+		"0SSSSSSSSSSSSSSSS~~~~~~SSSSSSSSSSSSSSSSSS~~~~~~~~~~~~~~~~0\n",
+		"0SSS___,-SSSSSSSSS~~~~~~SS0SSS0SSSSSSS~~~~~~~~~~~~~~~~~SS0\n",
+		"0SS/\'SS\\``-SSSSSSSS~~~~~~~01110SSS~~~~~~~~~~~~~SSSSSSSSSS0\n",
+		"0S/SSSS\'\\```SSSSSSSSS~~~~~01110~~~~~~~~~~~~SSSSSSSSSSSSSS0\n",
+		"0/S/111\\SS\\``,SSSSSSSSS~~~01110~~~~~~~~SSTheSGreatSRiverS0\n",
+		"0S/11111\\_S\\`/SSSSSSSSSSSS01110~~~~~SSSSSSSSSSSSSSSSSSSSS0\n",
+		"0/11111111\\S\\`\'\"SSSSSSSSSS0SSS0SSSSSSSSSSSSSSSSSSSSSSSSSS0\n",
+		"01111111111\\_S\\``SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS0\n",
+		"0111111111111\'\'\\``SSSSSSSSBridgeSSSSSSSSSSSSSSSSSSSSSSSSS0\n",
+		"0\"\'\"\'\"\'\'\'\'\"\'\'\"\'\'\'`SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS0\n",
+		"0SSSSCaveSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS~MadeSbySMelvinS0\n",
+		"0SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSandSAditya~S0\n",
+		"0000000000000000000000000000000000000000000000000000000000\n"
+	};// 23 height
 	// -------------------------------- SAVE function -----------------------------------------------------
 	/*
 		LANGKAH-LANGKAH BUAT NEW GAME DAN LOAD GAME:
@@ -246,7 +270,39 @@ private:
 		saveGameAvailable = true;
 		fclose(save);
 	} // END saveGame()
+	void printMap(int place) {
 
+		system("cls");
+		Console::setCursorPos(37, 1);
+		Console::setColor(79);
+		Console::printf(" S K Y R I M ");
+		Console::resetColor();
+
+
+		for (int height = 0; height < 23; height++) {
+			Console::setCursorPos(15, 4 + height);
+			for (int width = 0; width < strlen(map[height]); width++) {
+				if (map[height][width] == 'S') printf(" ");
+				else if (map[height][width] == '0') printf("%c", 219);
+				else if (map[height][width] == '1') printf("%c", 178);
+				else printf("%c", map[height][width]);
+			}
+		}
+
+		Console::setCursorPos(25, 27);
+		if (place == 0) {
+			Console::printf("Home :	You can view your inventory and equip here");
+		
+		}
+		else if (place == 1) {
+			Console::printf("Town : Visit Tristam's Shop                      ");
+		
+		}
+		else if (place == 2) {
+			Console::printf("Cave : Fight Monster                             ");
+		}
+		
+	}
 	// ----------------------------------------------------------------------------------------------------
 
 public:
@@ -331,49 +387,111 @@ public:
 					Console::setCursorPos(34, 12);
 					printf("(Press enter to continue..)");
 					Interface::pressEnterPlease();
-					Console::setColor(Console::COLOR_WHITE);
+					Console::setColor(Console::COLOR_WHITE); 
 				}
 			}
-			 
 			Music::playBackgroundMusic(1);
+			printMap(0);
+			char mapMenu;
+			int currentPlace = 0;
 			while (1)
 			{
-				Console::setCursorVisibility(true);
-				Console::resetColor();
-				system("cls");
-				cout << "1 = Home\n2 = Shop\n5 = Battle\n123 = Save and Quit\n>>";
-				int milih;
-				cin >> milih;
-				Interface::flush();
-				Console::setCursorVisibility(false);
-				if (milih == 1)
-				{
-					// INI HOME YANG BERISI INVENTORY dan PLAYER STATUS
-					Interface::home.homeMenu(vShop, vMonster, karakter, karakter->getInventoryRef());
-				}
-				else if (milih == 2){
-					// INI SHOP
-					Interface::shop.shopMenu(vShop, karakter);
-				}
-				else if (milih == 5)
-				{
-					Battle::selectMonster(karakter,vMonster);
-					 
-					Music::playBackgroundMusic(1);
-					if (Battle::getWin())
-					{
-						continue;
+				//Console::setCursorVisibility(true);
+				//Console::resetColor();
+				//system("cls");
+				//cout << "1 = Home\n2 = Shop\n5 = Battle\n123 = Save and Quit\n>>";
+				//int milih;
+				//cin >> milih;
+				//Interface::flush();
+				//Console::setCursorVisibility(false);
+				//if (milih == 1)
+				//{
+				//	// INI HOME YANG BERISI INVENTORY dan PLAYER STATUS
+				//	Interface::home.homeMenu(vShop, vMonster, karakter, karakter->getInventoryRef());
+				//}
+				//else if (milih == 2){
+				//	// INI SHOP
+				//	Interface::shop.shopMenu(vShop, karakter);
+				//}
+				//else if (milih == 5)
+				//{
+				//	Battle::selectMonster(karakter,vMonster);
+				//	 
+				//	Music::playBackgroundMusic(1);
+				//	if (Battle::getWin())
+				//	{
+				//		continue;
+				//	}
+				//	else
+				//	{
+				//		continue;
+				//	}
+				//}
+				//else if (milih == 123)
+				//{
+				//	break;
+				//}
+				//else continue;
+				
+
+				
+				// 0 = home
+				// 1 = town
+				// 3 = cave
+
+				mapMenu = _getch();
+				if (mapMenu == VK_UP || mapMenu == VK_DOWN || mapMenu == VK_LEFT || mapMenu == VK_RIGHT || mapMenu == VK_RETURN) {
+					if (currentPlace == 0) {
+						if (mapMenu == VK_DOWN) {
+							printMap(2);
+							currentPlace = 2;
+						}
+						else if (mapMenu == VK_RIGHT) {
+							printMap(1);
+							currentPlace = 1;
+						}
+						else if (mapMenu == VK_RETURN) {
+							Interface::home.homeMenu(vShop, vMonster, karakter, karakter->getInventoryRef());
+						}
 					}
-					else
-					{
-						continue;
+					else if (currentPlace == 1) {
+						if (mapMenu == VK_DOWN) {
+							printMap(2);
+							currentPlace = 2;
+						}
+						else if (mapMenu == VK_LEFT) {
+							printMap(0);
+							currentPlace = 0;
+						}
+						else if (mapMenu == VK_RETURN) {
+							Interface::shop.shopMenu(vShop, karakter);
+						}
 					}
-				}
-				else if (milih == 123)
-				{
-					break;
+					else {
+						if (mapMenu == VK_UP || mapMenu == VK_RIGHT) {
+							printMap(0);
+							currentPlace = 0;
+						}
+						else if (mapMenu == VK_RETURN) {
+							{
+								Battle::selectMonster(karakter, vMonster);
+
+								Music::playBackgroundMusic(1);
+								if (Battle::getWin())
+								{
+									continue;
+								}
+								else
+								{
+									continue;
+								}
+							}
+						}
+					}
 				}
 				else continue;
+				printMap(currentPlace);
+			
 			}
 
 			// save game, terus exit
