@@ -1324,7 +1324,39 @@ private:
 		return;
 	}
 	//////////////////////////////////////////////////////////////////////////
+
+	static void printMap()
+	{
+		system("cls");
+	}
 public:
+	// enter Cave
+	static void enterCave(int level, Human* karakter, vector<Monster>& vMonster)
+	{
+		int index;
+		char map[20][20];
+		char player[3][3]
+		{
+
+		};
+
+		printMap();
+		while (1)
+		{
+			// ketemu monster
+			if (true)
+			{
+				startBattle(*karakter, vMonster[index]);
+				if (win)
+				{
+					printMap();
+					continue;
+				}
+				else return;
+			}
+		}
+	}
+
 	// post-battle getter
 	static bool getWin() { return win; }
 
@@ -1352,8 +1384,8 @@ public:
 			int y = 6;
 			for (vector<Monster>::iterator iter = vMonster.begin(); iter != vMonster.end(); iter++) {
 				Console::setCursorPos(1, y);
-				printf("%-3d| %-18s| %-5d | %-8d| %-8d| %-7.0f EXP | %-6d G", counter,
-					iter->getName().c_str(), iter->getLevel(), iter->getOffense(), iter->getDefense(), iter->getExp(), iter->getGold());
+				printf("%-3d| %-18s| %-5d | %-8d| %-8d| %-7.0f EXP | %-6d G - - - %d", counter,
+					iter->getName().c_str(), iter->getLevel(), iter->getOffense(), iter->getDefense(), iter->getExp(), iter->getGold(),iter->getOffense()+iter->getDefense());
 				y++; counter++;
 			}
 			Console::setCursorPos(1, y);
