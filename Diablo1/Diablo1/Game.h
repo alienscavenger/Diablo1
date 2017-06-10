@@ -162,7 +162,7 @@ private:
 					tempName, &price, tempEffect, &type, &restriction, &equipped, &bought)
 					!= 7)
 				{
-					Interface::ErrorMsg("GAME.H",__LINE__,ERRORCOUNT);
+					Interface::ErrorMsg("GAME.H", __LINE__, ERRORCOUNT);
 				}
 				name = tempName;
 				effect = tempEffect;
@@ -175,10 +175,10 @@ private:
 					tempName, &level, &gold, &damage, &chanceToHit, &evade, &speed, &maxHealth, &maxStamina, &armor, &exp, &offense, &defense, &killed)
 					!= 14)
 				{
-					Interface::ErrorMsg("GAME.H",__LINE__,ERRORCOUNT);
+					Interface::ErrorMsg("GAME.H", __LINE__, ERRORCOUNT);
 				}
 				name = tempName;
-				vMonster.push_back(Monster(name, level, gold, damage, chanceToHit, evade, speed, maxHealth, maxStamina, armor, exp, offense, defense,killed));
+				vMonster.push_back(Monster(name, level, gold, damage, chanceToHit, evade, speed, maxHealth, maxStamina, armor, exp, offense, defense, killed));
 			}
 		}
 		fclose(save);
@@ -204,7 +204,7 @@ private:
 					tempName, &price, tempEffect, &type, &restriction, &equipped, &bought)
 					!= 7)
 				{
-					Interface::ErrorMsg("GAME.H",__LINE__,ERRORCOUNT);
+					Interface::ErrorMsg("GAME.H", __LINE__, ERRORCOUNT);
 				}
 				name = tempName;
 				effect = tempEffect;
@@ -217,10 +217,10 @@ private:
 					tempName, &level, &gold, &damage, &chanceToHit, &evade, &speed, &maxHealth, &maxStamina, &armor, &exp, &offense, &defense, &killed)
 					!= 14)
 				{
-					Interface::ErrorMsg("GAME.H",__LINE__,ERRORCOUNT);
+					Interface::ErrorMsg("GAME.H", __LINE__, ERRORCOUNT);
 				}
 				name = tempName;
-				vMonster.push_back(Monster(name, level, gold, damage, chanceToHit, evade, speed, maxHealth, maxStamina, armor, exp, offense, defense,killed));
+				vMonster.push_back(Monster(name, level, gold, damage, chanceToHit, evade, speed, maxHealth, maxStamina, armor, exp, offense, defense, killed));
 			}
 		}
 		fclose(default);
@@ -248,7 +248,7 @@ private:
 		fprintf(save, "%d,%d,%d,%d,%d,%d,%d,%d\n", karakter->getLevel(), karakter->getJob(), karakter->getGold(), karakter->getExperience(),
 			karakter->getStrength(), karakter->getEndurance(), karakter->getAgility(), karakter->getDexterity());
 		fprintf(save, "%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,%d,%d\n", karakter->getDamage(), karakter->getChanceToHit(), karakter->getEvade(), karakter->getSpeed(), karakter->getMaxHealth(),
-			karakter->getMaxStamina(), karakter->getArmor(),karakter->getMonsterKilled());
+			karakter->getMaxStamina(), karakter->getArmor(), karakter->getMonsterKilled());
 
 		// print data Item
 		for (vector<Item>::iterator iterItem = vShop.begin(); iterItem != vShop.end(); iterItem++)
@@ -264,7 +264,7 @@ private:
 				iter->getName().c_str(), iter->getLevel(), iter->getGold(), iter->getDamage(),
 				iter->getChanceToHit(), iter->getEvade(), iter->getSpeed(), iter->getMaxHealth(),
 				iter->getMaxStamina(), iter->getArmor(), iter->getExp(),
-				iter->getOffense(), iter->getDefense(),iter->getKilled());
+				iter->getOffense(), iter->getDefense(), iter->getKilled());
 		}
 
 		saveGameAvailable = true;
@@ -273,7 +273,6 @@ private:
 
 
 	void printMap(int place, bool reset) {
-		Console::setCursorVisibility(false);
 		if (reset)
 		{
 			// print map pertama kali
@@ -298,7 +297,7 @@ private:
 		{
 			for (int width = 19; width <= 27; width++)
 			{
-				Console::setCursorPos(15+width, 4 + height);
+				Console::setCursorPos(15 + width, 4 + height);
 				if (map[height][width] == 'S') printf(" ");
 				else if (map[height][width] == '0') printf("%c", 219);
 				else if (map[height][width] == '1') printf("%c", 178);
@@ -317,7 +316,7 @@ private:
 				else printf("%c", map[height][width]);
 			}
 		}
-		for (int height = 20; height <= 20; height++)
+		for (int height = 11; height <= 20; height++)
 		{
 			for (int width = 1; width <= 17; width++)
 			{
@@ -344,11 +343,11 @@ private:
 			Console::printf("Home : view your inventory and equipment");
 			// gw coba"
 			Console::setColor(Console::COLOR_BLUE);
-			for (int height = 3; height<= 7; height++)
+			for (int height = 3; height <= 7; height++)
 			{
-				for (int width = 19; width<= 27; width++)
+				for (int width = 19; width <= 27; width++)
 				{
-					Console::setCursorPos(15+width, 4 + height);
+					Console::setCursorPos(15 + width, 4 + height);
 
 					if (map[height][width] == 'S') printf(" ");
 					else if (map[height][width] == '0') printf("%c", 219);
@@ -375,8 +374,8 @@ private:
 		}
 		else if (place == 2) {
 			Console::printf("Cave : Fight Monster                             ");
-			Console::setColor(79);
-			for (int height = 20; height <= 20; height++)
+			Console::setColor(Console::COLOR_RED);
+			for (int height = 11; height <= 20; height++)
 			{
 				for (int width = 1; width <= 17; width++)
 				{
@@ -390,7 +389,7 @@ private:
 			}
 			Console::resetColor(); //somehow the color gets into the list of monsters
 		}
-		
+
 	}
 
 	bool exitPrompt()
@@ -564,16 +563,26 @@ public:
 					Console::setCursorPos(34, 12);
 					printf("(Press enter to continue..)");
 					Interface::pressEnterPlease();
-					Console::setColor(Console::COLOR_WHITE); 
+					Console::setColor(Console::COLOR_WHITE);
 				}
 			}
 			Music::playBackgroundMusic(1);
-			printMap(0,true);
+			printMap(0, true);
 			char mapMenu;
 			int currentPlace = 0;
 			bool print = false;
+			int inputDelay = 0;
+//virtual key codes
+#define W_KEY 0x57
+#define S_KEY 0x53
+#define A_KEY 0x41
+#define D_KEY 0x44
+#define M_KEY 0x4D
 			while (1)
 			{
+				
+				Console::setCursorVisibility(false);
+				Console::resetColor();
 				if (print)
 				{
 					printMap(currentPlace, true);
@@ -582,70 +591,83 @@ public:
 				// 0 = home
 				// 1 = town
 				// 2 = cave
-				enum LOCATION{ HOME = 0,TOWN,CAVE };
-				mapMenu = _getch();
-				mapMenu = tolower(mapMenu);
-				if (mapMenu == 'w' || mapMenu == 's' || mapMenu == 'a' || mapMenu == 'd' || mapMenu == VK_RETURN || mapMenu == VK_ESCAPE) {
-					if (currentPlace == HOME) {
-						if (mapMenu == 's') {
-							printMap(CAVE,false);
-							currentPlace = CAVE;
-						}
-						else if (mapMenu == 'd') {
-							printMap(TOWN,false);
-							currentPlace = TOWN;
-						}
-						else if (mapMenu == VK_RETURN) {
-							Interface::home.homeMenu(vShop, vMonster, karakter, karakter->getInventoryRef());
-							print = true; // PENTING
-						}
-						else if (mapMenu == VK_ESCAPE)
-						{
-							if (exitPrompt()) break;
-							print = true; // PENTING
-							currentPlace = HOME;
-						}
-					}
-					else if (currentPlace == TOWN) {
-						if (mapMenu == 's') {
-							printMap(CAVE,false);
-							currentPlace = CAVE;
-						}
-						else if (mapMenu == 'a') {
-							printMap(HOME,false);
-							currentPlace = HOME;
-						}
-						else if (mapMenu == VK_RETURN) {
-							Interface::shop.shopMenu(vShop, karakter);
-							print = true; // PENTING
-						}
-					}
-					else {
-						if (mapMenu == 'w' || mapMenu == 'd') {
-							printMap(HOME,false);
-							currentPlace = HOME;
-						}
-						else if (mapMenu == VK_RETURN) {
-							{
-								Battle::selectMonster(karakter, vMonster);
+				enum LOCATION { HOME = 0, TOWN, CAVE };
+				//mapMenu = _getch();
+				mapMenu = Console::getKeyPressed();
+				if (mapMenu == -1)continue;
+				if (inputDelay == 0)
+				{
+					inputDelay++;
+					continue;
+				}
+				inputDelay = 0;
 
-								Music::playBackgroundMusic(TOWN);
-								print = true; // PENTING
-								if (Battle::getWin())
-								{
-									continue;
-								}
-								else
-								{
-									continue;
-								}
-							}
+				if (mapMenu == VK_ESCAPE)
+				{
+					if (exitPrompt()) break;
+					print = true; // PENTING
+					continue;
+				}
+				else if (mapMenu == M_KEY)
+				{
+					Music::playBackgroundMusic(-1);
+					continue;
+				}
+				else if (currentPlace == HOME) {
+					if (mapMenu == S_KEY || mapMenu == VK_DOWN || mapMenu == A_KEY || mapMenu == VK_LEFT) {
+						printMap(CAVE, false);
+						currentPlace = CAVE;
+					}
+					else if (mapMenu == D_KEY || mapMenu == VK_RIGHT) {
+						printMap(TOWN, false);
+						currentPlace = TOWN;
+					}
+					else if (mapMenu == VK_RETURN) {
+						Interface::home.homeMenu(vShop, vMonster, karakter, karakter->getInventoryRef());
+						print = true; // PENTING
+					}
+				}
+				else if (currentPlace == TOWN) {
+					if (mapMenu == S_KEY || mapMenu == VK_DOWN) {
+						printMap(CAVE, false);
+						currentPlace = CAVE;
+					}
+					else if (mapMenu == A_KEY || mapMenu == VK_LEFT) {
+						printMap(HOME, false);
+						currentPlace = HOME;
+					}
+					else if (mapMenu == VK_RETURN) {
+						Interface::shop.shopMenu(vShop, karakter);
+						print = true; // PENTING
+					}
+				}
+				else {
+					if (mapMenu == W_KEY || mapMenu == VK_UP) {
+						printMap(HOME, false);
+						currentPlace = HOME;
+					}
+					else if (mapMenu == D_KEY || mapMenu == VK_RIGHT) {
+						printMap(TOWN, false);
+						currentPlace = TOWN;
+					}
+					else if (mapMenu == VK_RETURN) {
+						{
+							Battle::selectMonster(karakter, vMonster);
+
+							Music::playBackgroundMusic(TOWN);
+							print = true; // PENTING
+							//if (Battle::getWin())
+							//{
+							//	continue;
+							//}
+							//else
+							//{
+							//	continue;
+							//}
 						}
 					}
 				}
-				else continue;
-				
-			
+
 			}
 
 			// save game, terus exit

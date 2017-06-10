@@ -536,6 +536,7 @@ public:
 							} // end while
 							if (equip)
 							{
+								stillUnequiping = state-1;
 								if (state == 2 && temporary[equipThis - 1]->getType() == 5 && !(karakter->getEquipStatus(3))) // kalau sedang equip weapon di left hand, tapi tangan kanan masih kosong
 								{
 									// prioritaskan tangan kanan
@@ -821,7 +822,7 @@ public:
 				case Human::Weapon: type = "Weapon"; break;
 				case Human::Shield: type = "Shield"; break;
 				}
-				printf(" %2d. | %18s | %6d | %-28s | %11s |  %6s\n", i + 1, temporary[i]->getName().c_str(), temporary[i]->getPrice(),
+				printf(" %2d. | %18s | %6d | %-28s | %11s | %6s\n", i + 1, temporary[i]->getName().c_str(), temporary[i]->getPrice(),
 					temporary[i]->getEffect().c_str(), restriction.c_str(), type.c_str());
 			}
 		}
@@ -1148,8 +1149,13 @@ public:
 		printf(" %-9s: %3d%7s %-13s: %3.0f%%\n", "Agility", karakter->getAgility(), " ", "Evade", karakter->getEvade());
 		printf(" %-9s: %3d%7s %-13s: %3.0f\n", "Dexterity", karakter->getDexterity(), " ", "Speed", karakter->getSpeed());
 		printf(" %21s %-13s: %3.0f\n", " ", "Max Health", karakter->getMaxHealth());
-		printf(" %-5s: %7d G%6s%-13s: %3.0f\n", "Gold", karakter->getGold(), " ", "Max Stamina", karakter->getMaxStamina());
 		stringstream temp;
+		temp << karakter->getGold() << " G";
+		string gold_string;
+		getline(temp, gold_string);
+		printf(" %-5s: %-14s %-13s: %3.0f\n", "Gold", gold_string.c_str(), "Max Stamina", karakter->getMaxStamina());
+		temp.clear();
+
 		if (karakter->getLevel() < Human::MAX_LEVEL)
 		{
 			temp << karakter->getExperience() << '/' << karakter->getExpRequirement(karakter->getLevel() + 1);

@@ -49,6 +49,7 @@ public:
 
 	static int getInt(int min, int max)
 	{
+		Console::setCursorVisibility(true);
 		int x = Console::getCursorX()+1;
 		int y = Console::getCursorY(); 
 
@@ -60,6 +61,7 @@ public:
 		while (1)
 		{
 			buff = _getch();
+			if (buff == 'm' || buff == 'M') Music::playBackgroundMusic(-1); // mute
 			if (buff == VK_RETURN)
 			{
 				if (out.size() > 0)
@@ -141,6 +143,7 @@ public:
 			output >> output_int;
 		}
 
+		Console::setCursorVisibility(false);
 		return output_int;
 	}
 

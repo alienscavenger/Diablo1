@@ -333,9 +333,9 @@ private:
 			//      !                                     !
 			printf("Attack the enemy, uses %d stamina", 10 + karakter.getArmor());
 			Console::setCursorPos(23, 20);
-			printf("Damage: %-3.0f Chance to Hit: %-3.0f%%", karakter.getDamage(),karakter.getChanceToHit());
+			printf("Damage: %-3.0f Chance to Hit: %-3.0f%%", karakter.getDamage(),karakter.getChanceToHit()+(coupDeGrace?25:0));
 			Console::setCursorPos(23, 21);
-			printf("Critical chance: %.0f%%", max(0,karakter.getChanceToHit() - 100.0f));			
+			printf("Critical chance: %.0f%%-%.0ff", max(0,karakter.getChanceToHit()+(coupDeGrace?25:0) - 100.0f));			
 		}
 		else if (pickMenu == 1) // rest
 		{
@@ -344,7 +344,7 @@ private:
 			Console::setCursorPos(23, 20);
 			printf("Armor: %-3d   Evasion: %-3.0f", karakter.getArmor(), karakter.getEvade());
 			Console::setCursorPos(23, 21);
-			printf("Speed: %3.0f", karakter.getSpeed());
+			printf("Speed: %3.0f", karakter.getSpeed()*(momentum?3:1));
 		}
 		else if (pickMenu == 3) // coup de grace
 		{
@@ -1362,26 +1362,115 @@ public:
 		}
 		counter--;
 		Console::setCursorVisibility(true);
+		int levelBoundary = karakter->getLevel() + 5;
 		int monsterSelect;
-		/*do {
-			Console::setCursorPos(1, Console::getCursorY());
-			cout << "Select Monster >> ";
-			cin >> monsterSelect; cin.sync(); Interface::flush();
-		} while (monsterSelect < 1 || monsterSelect > 30);*/
-		Console::setCursorPos(1, Console::getCursorY());
-		cout << "Select Monster ( 0 = cancel ) [ 0 to " << counter << " ] : ";
-		monsterSelect = Interface::getInt(0,counter);
-		if (monsterSelect == 0) return;
+		int y = Console::getCursorY();
+		while (1)
+		{
+			Console::setCursorPos(1, y);
+			Console::resetColor();
+			cout << "Select Monster ( 0 = cancel ) [ 0 to " << counter << " ] : ";
+			{
+				int inputStartHere = Console::getCursorX();
+				printf("                                 "); // buat hapus input sebelumnya
+				Console::setCursorPos(inputStartHere, y);
+			}
+			monsterSelect = Interface::getInt(0, counter);
+			if (monsterSelect == 0) return;
+			int monsterLevel = vMonster[monsterSelect - 1].getLevel();
+			if (monsterLevel > levelBoundary)
+			{
+				Console::setCursorPos(1, y + 2);
+				Console::setColor(Console::COLOR_RED);
+				printf("MONSTER LEVEL IS WAY TO HIGH!!");
+				Console::setCursorVisibility(false);
+				Console::delay(1000);
+				Console::setCursorVisibility(true);
+				Console::setCursorPos(1, y + 2);
+				printf("                              ");
+				continue;
+			}
+			else if (monsterLevel > karakter->getLevel() && monsterLevel <= levelBoundary)
+			{
+				Console::setCursorPos(1, y + 2);
+				Console::setColor(Console::COLOR_YELLOW);
+				printf("Monster level his higher than yours. Continue?");
+				int x = Console::getCursorX() + 1;
+				
+				int inputDelay = 0;
+				int print = 1;
+				int pickMenu = 0;
+				char pick;
+				while (1)
+				{
+					if (print)
+					{
+						Console::setCursorPos(x, y + 2);
+						if (pickMenu == 0) Console::setColor(79);
+						else Console::resetColor();
+						printf(" NO ");
+
+						
+						Console::setCursorPos(x + 5, y + 2);
+						if (pickMenu == 1) Console::setColor(79);
+						else Console::resetColor();
+						printf(" YES ");
+
+						Console::resetColor();
+						print = 0;
+					}
+
+					pick = Console::getKeyPressed();
+					if (pick != -1)
+					{
+						if (inputDelay)
+						{
+							if (pick == 'M' || pick == 'm')
+							{
+								Music::playBackgroundMusic(-1);
+							}
+							if (pick == VK_LEFT || pick == 0x41) // 41 == 'a'
+							{
+								pickMenu = (pickMenu - 1 + 2) % 2;
+								print = 1;
+							}
+							else if (pick == VK_RIGHT || pick == 0x44) // 0x44 == 'd'
+							{
+								pickMenu = (pickMenu + 1) % 2;
+								print = 1;
+							}
+							else if (pick == VK_RETURN)
+							{
+								break;
+							}
+							inputDelay = 0;
+						}
+						else inputDelay++;
+					}
+				}
+
+				// clear " NO  YES " dan "are you sure..."
+				Console::resetColor();
+				Console::setCursorPos(1, y + 2);
+				printf("                                                           ");
+
+				if (pickMenu == 0) continue;
+				else break;
+			}
+			else break;
+		}
 		//
 		Console::setCursorVisibility(false);
 		Music::playBackgroundMusic(3);
 		startBattle(*karakter, vMonster[monsterSelect - 1]);
 		system("cls");
+		return;
 	}
 
 	static void startBattle(Human& karakter, Monster& enemy)
 	{
 		system("cls");
+		Console::setCursorVisibility(false);
 		Console::setCursorPos(25, 0);
 		Console::setColor(79);
 		printf(" B A T T L E ");
@@ -1750,6 +1839,7 @@ public:
 				printLog(log);
 				if (riposte)
 				{
+					riposte--;
 					string text = enemy.getName();
 					text += " is still stunned!";
 					log.push_back(text);
