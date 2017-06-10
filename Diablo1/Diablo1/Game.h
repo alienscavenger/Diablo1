@@ -338,10 +338,12 @@ private:
 		}*/
 
 		//BUAT HIGHLIGHT
-		Console::setCursorPos(20, 28);
+		Console::setCursorPos(27, 28);
 		if (place == 0) {
-			Console::printf("Home : view your inventory and equipment");
-			// gw coba"
+			Console::setColor(Console::COLOR_BLUE);
+			Console::printf("Home");
+			Console::resetColor();
+			Console::printf(" : view inventory and equipment     ");
 			Console::setColor(Console::COLOR_BLUE);
 			for (int height = 3; height <= 7; height++)
 			{
@@ -357,7 +359,10 @@ private:
 			}
 		}
 		else if (place == 1) {
-			Console::printf("Town : Visit Tristam's Shop                      ");
+			Console::setColor(Console::COLOR_MAGENTA);
+			Console::printf("Town");
+			Console::resetColor();
+			Console::printf(" : visit Tristam's Shop                      ");
 			Console::setColor(Console::COLOR_MAGENTA);
 			for (int height = 1; height <= 7; height++)
 			{
@@ -373,7 +378,10 @@ private:
 			}
 		}
 		else if (place == 2) {
-			Console::printf("Cave : Fight Monster                             ");
+			Console::setColor(Console::COLOR_RED);
+			Console::printf("Cave");
+			Console::resetColor();
+			Console::printf(" : fight Monster                             ");
 			Console::setColor(Console::COLOR_RED);
 			for (int height = 11; height <= 20; height++)
 			{
@@ -652,7 +660,8 @@ public:
 					}
 					else if (mapMenu == VK_RETURN) {
 						{
-							Battle::selectMonster(karakter, vMonster);
+							//Battle::selectMonster(karakter, vMonster);
+							Battle::selectCave(karakter, vMonster);
 
 							Music::playBackgroundMusic(TOWN);
 							print = true; // PENTING

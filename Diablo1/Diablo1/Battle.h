@@ -204,12 +204,12 @@ private:
 		int speed = animationSpeed[index];
 		float mySpeed = speed / speedYou;
 		float enemySpeed = speed / speedEnemy;
-		
+
 		int inputDelay = 1;
 		while (1)
 		{
 			char buff = Console::getKeyPressed();
-			if(buff!=-1)
+			if (buff != -1)
 			{
 				if (buff == 'M' || buff == 'm')
 				{
@@ -244,13 +244,13 @@ private:
 				Console::setColor(BLUE);
 			}
 			if (xYou == 29 || xEnemy == 62) break;
-			if (sec%(int)mySpeed == 0)
+			if (sec % (int)mySpeed == 0)
 			{
 				Console::setCursorPos(xYou, 7);
 				printf("%c", ASCII_BOX_FULL);
 				xYou++;
 			}
-			if (sec%(int)enemySpeed == 0)
+			if (sec % (int)enemySpeed == 0)
 			{
 				Console::setCursorPos(xEnemy, 7);
 				printf("%c", ASCII_BOX_FULL);
@@ -260,7 +260,7 @@ private:
 			sec++;
 		}
 
-		if (xYou == 29 ) return 1;
+		if (xYou == 29) return 1;
 		else if (xEnemy == 62) return 2;
 	}
 	static void printAnimationSpeed()
@@ -322,7 +322,7 @@ private:
 			{
 				for (int x = 0; x < 40; x++)
 				{
-					Console::setCursorPos(22+x, 19+i);
+					Console::setCursorPos(22 + x, 19 + i);
 					printf(" ");
 				}
 			}
@@ -333,18 +333,18 @@ private:
 			//      !                                     !
 			printf("Attack the enemy, uses %d stamina", 10 + karakter.getArmor());
 			Console::setCursorPos(23, 20);
-			printf("Damage: %-3.0f Chance to Hit: %-3.0f%%", karakter.getDamage(),karakter.getChanceToHit()+(coupDeGrace?25:0));
+			printf("Damage: %-3.0f Chance to Hit: %-3.0f%%", karakter.getDamage(), karakter.getChanceToHit() + (coupDeGrace ? 25 : 0));
 			Console::setCursorPos(23, 21);
-			printf("Critical chance: %.0f%%-%.0ff", max(0,karakter.getChanceToHit()+(coupDeGrace?25:0) - 100.0f));			
+			printf("Critical chance: %.0f%%-%.0ff", max(0, karakter.getChanceToHit() + (coupDeGrace ? 25 : 0) - 100.0f));
 		}
 		else if (pickMenu == 1) // rest
 		{
 			//      !                                     !
-			printf("Rest to gain %.0f stamina",50.0f+karakter.getLevel());
+			printf("Rest to gain %.0f stamina", 50.0f + karakter.getLevel());
 			Console::setCursorPos(23, 20);
 			printf("Armor: %-3d   Evasion: %-3.0f", karakter.getArmor(), karakter.getEvade());
 			Console::setCursorPos(23, 21);
-			printf("Speed: %3.0f", karakter.getSpeed()*(momentum?3:1));
+			printf("Speed: %3.0f", karakter.getSpeed()*(momentum ? 3 : 1));
 		}
 		else if (pickMenu == 3) // coup de grace
 		{
@@ -428,10 +428,10 @@ private:
 					printf("%s", ability.c_str());
 					printf(">");
 					Console::resetColor();
-					printDescription(pickMenu+karakter.getJob(), karakter);
+					printDescription(pickMenu + karakter.getJob(), karakter);
 				}
 				else printf(" %s ", ability.c_str());
-				
+
 				printFlag = false;
 			}
 			buff = Console::getKeyPressed();
@@ -501,8 +501,8 @@ private:
 			text += karakter.getName();
 			text += " attacks ";
 			text += enemy.getName();
-			text+=" with ";
-			
+			text += " with ";
+
 			bool crit = false;
 			bool hit = false;
 			float chance = karakter.getChanceToHit() - enemy.getEvade();
@@ -523,7 +523,7 @@ private:
 				text += to_string((int)(chance - 100));
 				text += "% CRIT chance.";
 
-				int calculate = (int)fmod(rand(),chance) + 1;
+				int calculate = (int)fmod(rand(), chance) + 1;
 				if (calculate < 100.0f) crit = false;
 				else crit = true;
 			}
@@ -543,12 +543,12 @@ private:
 					text += " CRITICAL HIT with ";
 					text += to_string((int)damage);
 					text += " damage!";
-					text += " (" + to_string((int)mHP) + "->" + to_string((int)max(0,mHP - (int)damage)) + ')';
+					text += " (" + to_string((int)mHP) + "->" + to_string((int)max(0, mHP - (int)damage)) + ')';
 					log.push_back(text);
 					printLog(log);
 
 					Music::playSoundEffect(2);
-					HPchange(0, damage, karakter, enemy,crit);
+					HPchange(0, damage, karakter, enemy, crit);
 				}
 				else
 				{
@@ -562,12 +562,12 @@ private:
 					text += " HIT with ";
 					text += to_string((int)damage);
 					text += " damage!";
-					text += " (" + to_string((int)mHP) + "->" + to_string((int)max(0,mHP - (int)damage)) + ')';
+					text += " (" + to_string((int)mHP) + "->" + to_string((int)max(0, mHP - (int)damage)) + ')';
 					log.push_back(text);
 					printLog(log);
 
 					Music::playSoundEffect(1);
-					HPchange(0, damage, karakter, enemy,crit); // UBAH INI KALAU MAU NGECHEAT
+					HPchange(0, damage, karakter, enemy, crit); // UBAH INI KALAU MAU NGECHEAT
 				}
 				if (riposte) // PALADIN
 				{
@@ -635,12 +635,12 @@ private:
 					text += " CRITICAL HIT with ";
 					text += to_string((int)damage);
 					text += " damage!";
-					text += " (" + to_string((int)hHP) + "->" + to_string((int)max(0,hHP - (int)damage)) + ')';
+					text += " (" + to_string((int)hHP) + "->" + to_string((int)max(0, hHP - (int)damage)) + ')';
 					log.push_back(text);
 					printLog(log);
 
 					Music::playSoundEffect(2);
-					HPchange(1, damage, karakter, enemy,crit);
+					HPchange(1, damage, karakter, enemy, crit);
 				}
 				else
 				{
@@ -653,12 +653,12 @@ private:
 					text += " HIT with ";
 					text += to_string((int)damage);
 					text += " damage!";
-					text += " (" + to_string((int)hHP) + "->" + to_string((int)max(0,hHP - (int)damage)) + ')';
+					text += " (" + to_string((int)hHP) + "->" + to_string((int)max(0, hHP - (int)damage)) + ')';
 					log.push_back(text);
 					printLog(log);
 
 					Music::playSoundEffect(1);
-					HPchange(1, damage, karakter, enemy,crit); // UBAH INI KALAU MAU NGECHEAT
+					HPchange(1, damage, karakter, enemy, crit); // UBAH INI KALAU MAU NGECHEAT
 				}
 			}
 			else
@@ -670,7 +670,7 @@ private:
 			}
 		}
 	}
-	static void rest(int who,Human& karakter, Monster& enemy, deque<string>& log)
+	static void rest(int who, Human& karakter, Monster& enemy, deque<string>& log)
 	{
 		string text;
 		if (who == 0)
@@ -679,9 +679,9 @@ private:
 			text += " rested and gain ";
 			text += to_string(50 + karakter.getLevel());
 			text += " stamina.";
-			text += " (" + to_string((int)hStamina) + "->" + to_string((int)min(karakter.getMaxHealth(),(hStamina + (50 + karakter.getLevel())))) + ')';
+			text += " (" + to_string((int)hStamina) + "->" + to_string((int)min(karakter.getMaxHealth(), (hStamina + (50 + karakter.getLevel())))) + ')';
 			hStamina += (50 + karakter.getLevel());
-			STAchange(who,karakter,enemy);
+			STAchange(who, karakter, enemy);
 			log.push_back(text);
 			printLog(log);
 		}
@@ -691,9 +691,9 @@ private:
 			text += " rested and gain ";
 			text += to_string(50 + enemy.getLevel());
 			text += " stamina.";
-			text += " (" + to_string((int)mStamina) + "->" + to_string((int)min(enemy.getMaxStamina(),(mStamina + (50 + enemy.getLevel())))) + ')';
+			text += " (" + to_string((int)mStamina) + "->" + to_string((int)min(enemy.getMaxStamina(), (mStamina + (50 + enemy.getLevel())))) + ')';
 			mStamina += (50 + enemy.getLevel());
-			STAchange(who,karakter,enemy);
+			STAchange(who, karakter, enemy);
 			log.push_back(text);
 			printLog(log);
 		}
@@ -714,7 +714,7 @@ private:
 				float box = enemy.getMaxHealth() / 22.0f;
 				float counter = 0;
 				int x = 0;
-				while (x<22 && counter <= mHP)
+				while (x < 22 && counter <= mHP)
 				{
 					Console::setColor(WHITE);
 					Console::setCursorPos(40 + (x++), 4);
@@ -726,7 +726,7 @@ private:
 				mHP = -1;
 				Console::setColor(Console::COLOR_GRAY);
 				x = 0;
-				while (x<22)
+				while (x < 22)
 				{
 					Console::setCursorPos(40 + (x++), 4);
 					printf(" ");
@@ -747,14 +747,14 @@ private:
 
 				float counter = 0;
 				int x = 0;
-				while (x<22 && counter<=mHP)
+				while (x < 22 && counter <= mHP)
 				{
-					Console::setCursorPos(40+(x++), 4);
+					Console::setCursorPos(40 + (x++), 4);
 					printf("%c", ASCII_BOX_FULL);
 					counter += box;
 				}
 				int xBefore = x; // simpen angka x sebelumnya
-				while (x<22 && counter <= HPbefore)
+				while (x < 22 && counter <= HPbefore)
 				{
 					Console::setColor(WHITE);
 					Console::setCursorPos(40 + (x++), 4);
@@ -780,14 +780,14 @@ private:
 		{
 			Console::setCursorPos(10, 9);
 			Console::setColor(RED);
-			if (crit) printf("CRITTTT!");else printf("BAMMMMM!");
+			if (crit) printf("CRITTTT!"); else printf("BAMMMMM!");
 
 			if (hHP <= change)
 			{
 				float box = karakter.getMaxHealth() / 22.0f;
 				float counter = 0;
 				int x = 0;
-				while (x<22 && counter <= hHP)
+				while (x < 22 && counter <= hHP)
 				{
 					Console::setColor(WHITE);
 					Console::setCursorPos(7 + (x++), 4);
@@ -800,7 +800,7 @@ private:
 				hHP = -1;
 				Console::setColor(Console::COLOR_GRAY);
 				x = 0;
-				while (x<22)
+				while (x < 22)
 				{
 					Console::setCursorPos(7 + (x++), 4);
 					printf(" ");
@@ -821,14 +821,14 @@ private:
 
 				float counter = 0;
 				int x = 0;
-				while (x<22 && counter <= hHP)
+				while (x < 22 && counter <= hHP)
 				{
 					Console::setCursorPos(7 + (x++), 4);
 					printf("%c", ASCII_BOX_FULL);
 					counter += box;
 				}
 				int xBefore = x;
-				while (x<22 && counter <= HPbefore)
+				while (x < 22 && counter <= HPbefore)
 				{
 					Console::setColor(WHITE);
 					Console::setCursorPos(7 + (x++), 4);
@@ -862,7 +862,7 @@ private:
 
 			float counter = 0;
 			int x = 0;
-			while (x<22 && counter <= hStamina)
+			while (x < 22 && counter <= hStamina)
 			{
 				Console::setCursorPos(7 + (x++), 5);
 				printf("%c", ASCII_BOX_FULL);
@@ -883,7 +883,7 @@ private:
 
 			float counter = 0;
 			int x = 0;
-			while (x<22 && counter <= mStamina)
+			while (x < 22 && counter <= mStamina)
 			{
 				Console::setCursorPos(40 + (x++), 5);
 				printf("%c", ASCII_BOX_FULL);
@@ -896,7 +896,7 @@ private:
 			}
 		}
 
-		
+
 	}
 
 	static void printLog(deque<string>& log)
@@ -919,7 +919,7 @@ private:
 			deque<string>::reverse_iterator iter = log.rbegin();
 			for (int i = 4; i >= 0; i--, iter++)
 			{
-				Console::setCursorPos(2, 11+i);
+				Console::setCursorPos(2, 11 + i);
 				printf(" %s", iter->c_str());
 			}
 		}
@@ -927,16 +927,16 @@ private:
 		{
 			size_t size = log.size();
 			deque<string>::iterator iter = log.begin();
-			for (int i = 0; i < size; i++,iter++)
+			for (int i = 0; i < size; i++, iter++)
 			{
-				Console::setCursorPos(2, 11+i);
+				Console::setCursorPos(2, 11 + i);
 				printf(" %s", iter->c_str());
 			}
 		}
 
 		BattleDelay(1000);
 	}
-	
+
 	static void end(int who, Human& karakter, Monster& enemy, deque<string>& log)
 	{
 		string text;
@@ -1098,7 +1098,7 @@ private:
 						sampahFlag = 0;
 
 						// reset skill point lagi
-						{ 
+						{
 							for (int i = 0; i < 4; i++)
 							{
 								*stats[i] = 0;
@@ -1156,7 +1156,7 @@ private:
 				Console::resetColor();
 				for (int i = 0; i < 4; i++)
 				{
-					Console::setCursorPos(47, 14+i);
+					Console::setCursorPos(47, 14 + i);
 					printf(":");
 				}
 				printFlag = false;
@@ -1215,7 +1215,7 @@ private:
 						Console::setColor(GREEN);
 						printf("+");
 
-						(*stats[pickMenu])+=1;
+						(*stats[pickMenu]) += 1;
 
 						Console::resetColor();
 						Console::setCursorPos(64, 24);
@@ -1229,7 +1229,7 @@ private:
 			}
 		} // endWhile
 		Console::setColor(Console::COLOR_WHITE);
-		
+
 		karakter.levelUp(STR, END, AGI, DEX); // naik level sekali, untuk semua stats yang diambil
 		for (int i = 1; i < gain; i++)	karakter.levelUp(0, 0, 0, 0); // khusus buat naikin level doang (jika naik level lebih dari 1x)
 		system("cls");
@@ -1246,7 +1246,7 @@ private:
 			"| (___) || )   ( || )   ( || (____/\\  | (___) |  \\   /  | (____/\\| ) \\ \\__",
 			"(_______)|/     \\||/     \\|(_______/  (_______)   \\_/   (_______/|/   \\__/"
 		};
-		
+
 		system("cls");
 		printf("\n\n");
 		Console::setColor(RED);
@@ -1287,7 +1287,7 @@ private:
 		int x = 0;
 		float multiplier[3] = { 1.0f,0.8f,0.5f };
 		float tempDelay = delay*multiplier[index];
-		while (x<=tempDelay)
+		while (x <= tempDelay)
 		{
 			Console::delay(1);
 			x++;
@@ -1320,48 +1320,195 @@ private:
 				else delayFlag++;
 			}
 		}
-		
+
 		return;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static void printCave(int caveWidth, int caveHeight , int shiftX, int shiftY) {
+		caveHeight++;
+		caveWidth++;
 
-	static void printMap()
-	{
-		system("cls");
-	}
-public:
-	// enter Cave
-	static void enterCave(int level, Human* karakter, vector<Monster>& vMonster)
-	{
-		int index;
-		char map[20][20];
-		char player[3][3]
-		{
-
-		};
-
-		printMap();
-		while (1)
-		{
-			// ketemu monster
-			if (true)
-			{
-				startBattle(*karakter, vMonster[index]);
-				if (win)
-				{
-					printMap();
-					continue;
+		for (int height = 0; height < caveHeight; height++) {
+			for (int width = 0; width < caveWidth; width++) {
+				Console::setCursorPos(shiftX+width, shiftY+height);
+				if (height == 0 || height == (caveHeight - 1)) {
+					Console::printf("%c", 219);
 				}
-				else return;
+				else if (width == 0 || width == caveWidth - 1) {
+					Console::printf("%c", 219);
+				}
+				else {
+					printf(" ");
+				}
 			}
 		}
+
+	}
+
+public:
+	// enter Cave
+	static void enterCave(int caveLevel, Human* karakter, vector<Monster>& vMonster)
+	{
+		//while (1)
+		//{
+		//	// ketemu monster
+		//	if (true)
+		//	{
+		//		startBattle(*karakter, vMonster[index]);
+		//		if (win)
+		//		{
+		//			printMap();
+		//			continue;
+		//		}
+		//		else return;
+		//	}
+		//}
 	}
 
 	// post-battle getter
 	static bool getWin() { return win; }
 
 	// MAIN FUNCTION
-	static void selectMonster(Human* karakter,vector<Monster>& vMonster)
+	static void selectCave(Human* karakter, vector<Monster>& vMonster) {
+		vector<Monster*> vCaveMonster;	//monster yang ada di cave sekarang
+		int caveLevel;	//level Cave
+		int caveReq[7] = {0,6,11,16,21,26,29};	//level requirement
+		int lowestBoundary;	//lowest monster index in a cave
+		int highestBoundary;	//highest monster index in cave
+		int currX = 1, currY = 1; //current position
+		int prevX, prevY;	//previous position
+		int nextX, nextY;	//future position
+		bool canMove;	//can move or not
+		char moveInput;	//user input
+		int caveWidth = 60;	//max cave width
+		int caveHeight = 25;	//max cave height
+		int shiftX = 2;
+		int shiftY = 3;
+		bool canEnterCave;
+		//Cave Level Selection
+
+		system("cls");
+		Console::resetColor();
+		Console::setCursorPos(30, 1);
+		Console::setColor(79);
+		Console::printf(" C A V E ");
+		Console::resetColor();
+
+		Console::printf("\n\n\n");
+		do{
+			canEnterCave=false;
+			Console::printf("Select cave level[1-7]: ");
+			cin >> caveLevel;
+			cin.sync();
+			cin.clear();
+			if (caveLevel>7 || caveLevel<1) {
+				Console::printf("INVALID INPUT\n");
+			}
+			else if (karakter->getLevel() < caveReq[caveLevel - 1]) {
+				Console::printf("YOUR LEVEL IS NOT ENOUGH TO ENTER THIS CAVE\n");
+			}
+			else {
+				canEnterCave = true;
+			}
+		} while (canEnterCave ==false);
+		
+
+		//initialize cave boundaries
+		vCaveMonster.clear();
+		if (caveLevel < 6) {	//ordinary cave
+			lowestBoundary = (caveLevel - 1) * 5;
+			highestBoundary = (caveLevel * 5) - 1;
+		}
+		else if (caveLevel == 6) {	//mini boss cave
+			lowestBoundary = 25;
+			highestBoundary = 27;
+		}
+		else if (caveLevel == 7) {	//diablo's cave
+			lowestBoundary = highestBoundary = 28;
+		}
+		//input monster to temporary vector
+		for (int low = lowestBoundary; low <= highestBoundary; low++) {
+			vCaveMonster.push_back(&vMonster[low]);
+		}
+
+		//first print
+		system("cls");
+		nextX = prevX = currX;
+		nextY = prevY = currY;
+		Console::setCursorVisibility(false);
+		printCave(caveWidth, caveHeight, shiftX, shiftY);
+		Console::setCursorPos(shiftX + currX, shiftY + currY);
+		Console::printf("%c",1);
+
+		//moving
+		while (true) {
+			//ask input
+			moveInput = _getch();
+			moveInput = tolower(moveInput);
+			if (moveInput == 'w' || moveInput == 'a' || moveInput == 's' || moveInput == 'd') {
+				switch (moveInput) {
+				case 'w':
+					nextY = currY - 1;
+					break;
+				case 'a':
+					nextX = currX - 1;
+					break;
+				case 's':
+					nextY = currY + 1;
+					break;
+				case 'd':
+					nextX = currX + 1;
+					break;
+				}
+				if (nextX == 0 || nextX == caveWidth) {
+					canMove = false;
+				}
+				else if (nextY == 0 || nextY == caveHeight) {
+					canMove = false;
+				}
+				else {
+					canMove = true;
+				}
+				
+				if (canMove)
+				{
+					//move player
+					Console::setCursorPos(shiftX+currX, shiftY+currY);
+					Console::printf(" ");
+					Console::setCursorPos(shiftX+nextX, shiftY+nextY);
+					Console::printf("%c", 1);
+					currX = prevX = nextX;
+					currY = prevY = nextY;
+					//calculate chance
+					int chance = rand() % 10;
+					if (chance == 1) //10% chance to meet monster
+					{
+						int caveMonsterSelect;
+						//random available monster
+						if ((karakter->getLevel() - 1) >= highestBoundary) {
+							caveMonsterSelect = rand() % vCaveMonster.size(); //ALERT
+						}
+						else {
+							caveMonsterSelect = rand() % (karakter->getLevel() - lowestBoundary);
+						}
+
+						startBattle(*karakter, *(vCaveMonster[caveMonsterSelect]));
+						if (win) {
+							printCave(caveWidth, caveHeight, shiftX, shiftY);
+							continue;
+						}
+						else { return; }
+					}
+					else { continue; }
+				}
+				else {
+					continue;
+				}
+			}
+		}
+	}
+
+	static void selectMonster(Human* karakter, vector<Monster>& vMonster)
 	{
 		Music::playBackgroundMusic(2);
 		system("cls");
@@ -1385,7 +1532,7 @@ public:
 			for (vector<Monster>::iterator iter = vMonster.begin(); iter != vMonster.end(); iter++) {
 				Console::setCursorPos(1, y);
 				printf("%-3d| %-18s| %-5d | %-8d| %-8d| %-7.0f EXP | %-6d G - - - %d", counter,
-					iter->getName().c_str(), iter->getLevel(), iter->getOffense(), iter->getDefense(), iter->getExp(), iter->getGold(),iter->getOffense()+iter->getDefense());
+					iter->getName().c_str(), iter->getLevel(), iter->getOffense(), iter->getDefense(), iter->getExp(), iter->getGold(), iter->getOffense() + iter->getDefense());
 				y++; counter++;
 			}
 			Console::setCursorPos(1, y);
@@ -1428,7 +1575,7 @@ public:
 				Console::setColor(Console::COLOR_YELLOW);
 				printf("Monster level his higher than yours. Continue?");
 				int x = Console::getCursorX() + 1;
-				
+
 				int inputDelay = 0;
 				int print = 1;
 				int pickMenu = 0;
@@ -1442,7 +1589,7 @@ public:
 						else Console::resetColor();
 						printf(" NO ");
 
-						
+
 						Console::setCursorPos(x + 5, y + 2);
 						if (pickMenu == 1) Console::setColor(79);
 						else Console::resetColor();
@@ -1548,7 +1695,7 @@ public:
 		// print nama
 		{
 			stringstream temp;
-			temp << karakter.getName()  << " lv." << karakter.getLevel();
+			temp << karakter.getName() << " lv." << karakter.getLevel();
 			string nama;
 			getline(temp, nama);
 			Console::setCursorPos(2, 2);
@@ -1578,11 +1725,11 @@ public:
 			for (int i = 0; i < 22; i++)
 			{
 				Console::setColor(GREEN);
-				Console::setCursorPos(7+i, 4); printf("%c",ASCII_BOX_FULL);
+				Console::setCursorPos(7 + i, 4); printf("%c", ASCII_BOX_FULL);
 				Console::setCursorPos(40 + i, 4); printf("%c", ASCII_BOX_FULL);
 				Console::setColor(YELLOW);
-				Console::setCursorPos(7+i, 5); printf("%c", ASCII_BOX_FULL);
-				Console::setCursorPos(40+i, 5); printf("%c", ASCII_BOX_FULL);
+				Console::setCursorPos(7 + i, 5); printf("%c", ASCII_BOX_FULL);
+				Console::setCursorPos(40 + i, 5); printf("%c", ASCII_BOX_FULL);
 			}
 			Console::resetColor();
 		}
@@ -1601,10 +1748,10 @@ public:
 			Console::setColor(BLUE);
 			for (int i = 0; i < 27; i++)
 			{
-				Console::setCursorPos(2+i, 7);
+				Console::setCursorPos(2 + i, 7);
 				//printf("%c", ASCII_BOX_EMPTY);
 				printf(" ");
-				Console::setCursorPos(35+i, 7);
+				Console::setCursorPos(35 + i, 7);
 				//printf("%c", ASCII_BOX_EMPTY);
 				printf(" ");
 			}
@@ -1704,7 +1851,7 @@ public:
 				if (autoAttack)
 				{
 					// =========================================== LOGIKANYA SAMA KYK MONSTER
-					if (hStamina < (10 + karakter.getArmor()) ) rest(0, karakter, enemy, log);
+					if (hStamina < (10 + karakter.getArmor())) rest(0, karakter, enemy, log);
 					else attack(0, karakter, enemy, log);
 				}
 				else
@@ -1738,13 +1885,13 @@ public:
 							}
 							else
 							{
-								attack(0, karakter, enemy,log);
+								attack(0, karakter, enemy, log);
 								break;
 							}
 						}
 						else if (pickMenu == 1) // rest
 						{
-							rest(0, karakter, enemy,log);
+							rest(0, karakter, enemy, log);
 							// ===========================================  TAMBAHIN STAMINA
 							break;
 						}
@@ -1778,7 +1925,7 @@ public:
 								}
 								hStamina -= 30;
 								STAchange(0, karakter, enemy);
-								
+
 								text = karakter.getName();
 								text += " USES COUP DE GRACE!";
 								log.push_back(text);
@@ -1889,7 +2036,7 @@ public:
 				}
 				else
 				{
-					attack(1, karakter, enemy,log);
+					attack(1, karakter, enemy, log);
 				}
 				xEnemy = 35;
 			}
@@ -1942,7 +2089,7 @@ public:
 				log.push_back(text);
 				printLog(log);
 			}
-			else if (karakter.getExperience() >= karakter.getExpRequirement(karakter.getLevel()+1))
+			else if (karakter.getExperience() >= karakter.getExpRequirement(karakter.getLevel() + 1))
 			{
 				// maka level up
 				levelUp = true;
@@ -2098,7 +2245,7 @@ public:
 				prevGold++;
 				Console::setCursorPos(14, 5);
 				printf("%d", prevGold);
-				if(sec%secDelay==0)Console::delay(1);
+				if (sec%secDelay == 0)Console::delay(1);
 			}
 			Console::delay(700);
 			Console::setColor(GREY);
