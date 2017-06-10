@@ -1395,6 +1395,7 @@ public:
 		Console::resetColor();
 
 		Console::printf("\n\n\n");
+		Console::setCursorVisibility(true);
 		do{
 			canEnterCave=false;
 			Console::printf("Select cave level[1-7]: ");
@@ -1485,6 +1486,7 @@ public:
 					{
 						int caveMonsterSelect;
 						//random available monster
+						srand(time(NULL));
 						if ((karakter->getLevel() - 1) >= highestBoundary) {
 							caveMonsterSelect = rand() % vCaveMonster.size(); //ALERT
 						}
@@ -1494,6 +1496,8 @@ public:
 
 						startBattle(*karakter, *(vCaveMonster[caveMonsterSelect]));
 						if (win) {
+							Console::setCursorPos(shiftX + currX, shiftY + currY);
+							Console::printf("%c", 1);
 							printCave(caveWidth, caveHeight, shiftX, shiftY);
 							continue;
 						}
