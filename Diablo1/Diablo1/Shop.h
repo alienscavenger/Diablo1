@@ -130,7 +130,7 @@ public:
 			printf("\n");
 			Console::setColor(206); // BRIGHT RED BACKGROUND, WITH YELLOW TEXT
 			Console::setCursorPos(35, 0);
-			printf(" - TRISTAM SHOP - \n");
+			printf(" - TRISTAM SHOP - \n\n");
 			Console::resetColor();
 			printf(" =======================================================================================\n");
 			printf(" %3s | %18s | %5s  | %-28s | %10s | %6s\n", "No.", "ITEM NAME", "PRICE", "ITEM EFFECTS", "RESTRICTION", "TYPE");
@@ -611,7 +611,7 @@ public:
 				{
 					Console::setColor(Console::COLOR_RED);
 					printf("\n\n No Item detected!");
-					Console::delay(700);
+					Interface::delaySec(700);
 					Console::resetColor();
 					continue;
 				}

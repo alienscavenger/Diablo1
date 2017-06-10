@@ -72,7 +72,7 @@ public:
 			Console::delay(delayScreen);
 		}
 
-		if (delayFlag)Console::delay(500); // tambahin delay supaya bagus
+		if (delayFlag)Interface::delaySec(500); // tambahin delay supaya bagus
 
 		Console::setColor(Console::COLOR_RED); // ampun shifu >> HUEHUEHUEHUE
 		if (delayFlag)
@@ -154,7 +154,7 @@ public:
 				delayScreen = 0;
 				yes = 50;
 				no = 0;
-				//Console::delay(500); // tambahin delay supaya bagus
+				//Interface::delaySec(500); // tambahin delay supaya bagus
 				//break;
 			}
 			if (delayFlag) delayScreen = 100;
@@ -258,7 +258,7 @@ public:
 				if (input == VK_RETURN) {
 					delayFlag = 0;
 					delayScreen = 0;
-					//Console::delay(500); // tambahin delay supaya bagus
+					//Interface::delaySec(500); // tambahin delay supaya bagus
 					//break;
 				}
 				if (delayFlag) delayScreen = 30;

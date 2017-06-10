@@ -1194,8 +1194,9 @@ public:
 		{
 			system("cls");
 			Console::setColor(206); // BRIGHT RED BACKGROUND, WITH YELLOW TEXT
-			Console::setCursorPos(40, 0);
-			printf(" - %s's House - ", karakter->getName().c_str());
+			string houseName= karakter->getName() + "'s House";
+			Console::setCursorPos(48-(houseName.length()/2), 0);
+			cout << houseName;
 			Console::resetColor();
 
 			playerStatus(karakter, vMonster);
@@ -1596,7 +1597,7 @@ public:
 					Console::setColor(Console::COLOR_RED);
 					printf("\n\n");
 					printf(" No Item detected!");
-					Console::delay(700);
+					Interface::delaySec(700);
 					continue;
 				}
 				Console::setCursorVisibility(true);
@@ -1760,7 +1761,7 @@ public:
 					Console::setColor(Console::COLOR_RED);
 					printf("\n\n No item detected!");
 					Console::resetColor();
-					Console::delay(700);
+					Interface::delaySec(700);
 				}
 				else compareEquipment(filterType, karakter, temporary, 0, 0);
 				equipMenuPrintOnly = true;

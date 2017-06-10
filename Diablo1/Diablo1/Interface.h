@@ -32,6 +32,31 @@ public:
 	static NewGame& newGame;
 	static Home& home;
 	
+	static void delaySec(int sec)
+	{
+		int i = sec;
+		char buff;
+		int delay = 0;
+		while (i > 0)
+		{
+			buff = Console::getKeyPressed(); // supaya saat delay, apapun yang ditekan bakal kebuang
+			if (buff != -1)
+			{
+				if (delay)
+				{
+					if (buff == 'm' || buff == 'M')
+					{
+						Music::playBackgroundMusic(-1); // MUTE UNMUTE
+						delay = 0;
+					}
+				}
+				else delay = 1;
+			}
+			i--;
+			Console::delay(1);
+		}
+	}
+
 	static void ErrorMsg(string headerName,int line, int SaveErrorCount)
 	{
 		system("cls");
@@ -104,7 +129,7 @@ public:
 				Console::setCursorPos(x, y);
 				Console::setColor(Console::COLOR_RED);
 				printf("INVALID INPUT!");
-				Console::delay(500);
+				Interface::delaySec(500);
 				Console::setCursorPos(x, y);
 				printf("               ");
 				Console::resetColor();
@@ -164,7 +189,7 @@ public:
 					sampah = Console::getKeyPressed(); // harus pake ini, supaya getKeyPressed lainnya nggak ada masalah
 					if (sampah == VK_RETURN) {
 						//printf(" <-");
-						//Console::delay(50);
+						//Interface::delaySec(50);
 						break;
 					}
 				}

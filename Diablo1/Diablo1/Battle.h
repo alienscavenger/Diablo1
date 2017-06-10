@@ -313,7 +313,7 @@ private:
 	}
 
 	// action
-	static void printDescription(int pickMenu, Human& karakter)
+	static void printDescription(int pickMenu, Human& karakter, Monster& enemy)
 	{
 		// clear box4
 		{
@@ -335,7 +335,7 @@ private:
 			Console::setCursorPos(23, 20);
 			printf("Damage: %-3.0f Chance to Hit: %-3.0f%%", karakter.getDamage(), karakter.getChanceToHit() + (coupDeGrace ? 25 : 0));
 			Console::setCursorPos(23, 21);
-			printf("Critical chance: %.0f%%-%.0ff", max(0, karakter.getChanceToHit() + (coupDeGrace ? 25 : 0) - 100.0f));
+			printf("Critical chance: %.0f%%(CTH - EVA)", max(0, karakter.getChanceToHit() + (coupDeGrace ? 25 : 0) - enemy.getEvade() - 100.0f));
 		}
 		else if (pickMenu == 1) // rest
 		{
@@ -374,7 +374,7 @@ private:
 			printf("Uses 30 stamina");
 		}
 	}
-	static int pickAction(Human& karakter, int& pickMenu)
+	static int pickAction(Human& karakter, int& pickMenu,Monster& enemy)
 	{
 		if (pickMenu > 2) pickMenu = 2;
 
@@ -406,7 +406,7 @@ private:
 					Console::setColor(79);
 					printf("<Attack>");
 					Console::resetColor();
-					printDescription(pickMenu, karakter);
+					printDescription(pickMenu, karakter,enemy);
 				}
 				else printf(" Attack ");
 
@@ -416,7 +416,7 @@ private:
 					Console::setColor(79);
 					printf("<Rest>");
 					Console::resetColor();
-					printDescription(pickMenu, karakter);
+					printDescription(pickMenu, karakter,enemy);
 				}
 				else printf(" Rest ");
 
@@ -428,7 +428,7 @@ private:
 					printf("%s", ability.c_str());
 					printf(">");
 					Console::resetColor();
-					printDescription(pickMenu + karakter.getJob(), karakter);
+					printDescription(pickMenu + karakter.getJob(), karakter,enemy);
 				}
 				else printf(" %s ", ability.c_str());
 
@@ -647,7 +647,7 @@ private:
 					float MinDamage = max(0, enemy.getDamage() - karakter.getArmor());
 					float MaxDamage = max(0, (enemy.getDamage()*(1.0f + (float)enemy.getLevel()*0.05f)) - karakter.getArmor());
 					int diff = (int)ceil(MaxDamage - MinDamage);
-					float damage = MinDamage + (rand() % diff);
+					float damage = MinDamage + diff>0?(rand() % diff):0;
 
 					text += enemy.getName();
 					text += " HIT with ";
@@ -1254,11 +1254,11 @@ private:
 		{
 			printf("          ");
 			printf("%s\n", text[i]);
-			Console::delay(300);
+			Interface::delaySec(300);
 		}
 		printf("\n\n");
 		Console::setColor(GREY);
-		Console::delay(300);
+		Interface::delaySec(300);
 		printf("          Press any key to go back to your home...");
 		_getch();
 	}
@@ -1325,6 +1325,7 @@ private:
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void printCave(int caveWidth, int caveHeight , int shiftX, int shiftY) {
+		Console::resetColor();
 		caveHeight++;
 		caveWidth++;
 
@@ -1396,23 +1397,36 @@ public:
 
 		Console::printf("\n\n\n");
 		Console::setCursorVisibility(true);
+		int x = Console::getCursorX();
+		int y = Console::getCursorY();
 		do{
-			canEnterCave=false;
-			Console::printf("Select cave level[1-7]: ");
-			cin >> caveLevel;
-			cin.sync();
-			cin.clear();
-			if (caveLevel>7 || caveLevel<1) {
-				Console::printf("INVALID INPUT\n");
+			Console::setCursorPos(x, y);
+			Console::printf("Select cave level[1-7] ( 0 to go back ): ");
+			caveLevel = Interface::getInt(0, 7);
+
+
+			canEnterCave = false;
+			if (karakter->getLevel() < caveReq[caveLevel - 1])
+			{
+				Console::setCursorPos(x, y + 2);
+				Console::setColor(Console::COLOR_RED);
+				printf("YOUR LEVEL (%d) IS NOT ENOUGH TO ENTER THIS CAVE!\n",karakter->getLevel());
+				Console::setColor(Console::COLOR_YELLOW);
+				printf("Minimum requirement: LEVEL %d\n", caveReq[caveLevel - 1]);
+				Console::setColor(Interface::COLOR_GREY);
+				printf("Press enter to continue..");
+				Interface::pressEnterPlease();
+				Console::resetColor();
+				Console::setCursorPos(x + 42, y);
+				printf("    ");
+				Console::setCursorPos(x, y + 2);
+				printf("                                                      \n");
+				printf("                                   \n");
+				printf("                            ");
 			}
-			else if (karakter->getLevel() < caveReq[caveLevel - 1]) {
-				Console::printf("YOUR LEVEL IS NOT ENOUGH TO ENTER THIS CAVE\n");
-			}
-			else {
-				canEnterCave = true;
-			}
+			else canEnterCave = true;
 		} while (canEnterCave ==false);
-		
+		if (caveLevel == 0)return;
 
 		//initialize cave boundaries
 		vCaveMonster.clear();
@@ -1443,6 +1457,7 @@ public:
 
 		//moving
 		while (true) {
+			Console::resetColor();
 			//ask input
 			moveInput = _getch();
 			moveInput = tolower(moveInput);
@@ -1481,12 +1496,11 @@ public:
 					currX = prevX = nextX;
 					currY = prevY = nextY;
 					//calculate chance
-					int chance = rand() % 10;
-					if (chance == 1) //10% chance to meet monster
+					int chance = rand() % 100;
+					if (chance == 1) // 1/100 chance to meet monster
 					{
 						int caveMonsterSelect;
 						//random available monster
-						srand(time(NULL));
 						if ((karakter->getLevel() - 1) >= highestBoundary) {
 							caveMonsterSelect = rand() % vCaveMonster.size(); //ALERT
 						}
@@ -1496,17 +1510,14 @@ public:
 
 						startBattle(*karakter, *(vCaveMonster[caveMonsterSelect]));
 						if (win) {
+							printCave(caveWidth, caveHeight, shiftX, shiftY);
 							Console::setCursorPos(shiftX + currX, shiftY + currY);
 							Console::printf("%c", 1);
-							printCave(caveWidth, caveHeight, shiftX, shiftY);
 							continue;
 						}
-						else { return; }
+						else { return; } // kalau kalah
 					}
-					else { continue; }
-				}
-				else {
-					continue;
+					else { continue; } // kalau gk bisa move
 				}
 			}
 		}
@@ -1567,7 +1578,7 @@ public:
 				Console::setColor(Console::COLOR_RED);
 				printf("MONSTER LEVEL IS WAY TO HIGH!!");
 				Console::setCursorVisibility(false);
-				Console::delay(1000);
+				Interface::delaySec(1000);
 				Console::setCursorVisibility(true);
 				Console::setCursorPos(1, y + 2);
 				printf("                              ");
@@ -1644,7 +1655,6 @@ public:
 		}
 		//
 		Console::setCursorVisibility(false);
-		Music::playBackgroundMusic(3);
 		startBattle(*karakter, vMonster[monsterSelect - 1]);
 		system("cls");
 		return;
@@ -1653,6 +1663,7 @@ public:
 	static void startBattle(Human& karakter, Monster& enemy)
 	{
 		system("cls");
+		Music::playBackgroundMusic(3);
 		Console::setCursorVisibility(false);
 		Console::setCursorPos(25, 0);
 		Console::setColor(79);
@@ -1862,7 +1873,7 @@ public:
 				{
 					while (1)
 					{
-						pickMenu = pickAction(karakter, pickMenu);
+						pickMenu = pickAction(karakter, pickMenu,enemy);
 						if (pickMenu == 0) // attack
 						{
 							if (hStamina < (10 + karakter.getArmor()))
@@ -2126,7 +2137,7 @@ public:
 			{
 				Console::setCursorPos(4, 9);
 				printf("You get %d EXP!", expGained);
-				Console::delay(1000);
+				Interface::delaySec(1000);
 
 				printXPBox();
 				Console::setCursorPos(3, 2); printf("Experience");
@@ -2151,7 +2162,7 @@ public:
 							else printf("MAX LEVEL!!!");
 							Console::setCursorPos(4, 10 + add);
 							printf("Your EXP is now %d", karakter.getExperience());
-							Console::delay(1000);
+							Interface::delaySec(1000);
 							break; // kalau sudah dapat semua xp-nya
 						}
 						int expRequired = karakter.getExpRequirement(levelBefore + 1 + add) - karakter.getExpRequirement(levelBefore + add); // xp setelah - sebelum
@@ -2178,7 +2189,7 @@ public:
 								}
 								counterPrint++;
 							}
-							Console::delay(500);
+							Interface::delaySec(500);
 						}
 						while ((x < 25 || counter < expRequired) && gain < expGained)
 						{
@@ -2201,7 +2212,7 @@ public:
 							Console::setCursorPos(4, 10 + add);
 							levelCounter++;
 							printf("LEVEL UP!");
-							Console::delay(500);
+							Interface::delaySec(500);
 							levelUp = true;
 						}
 						// reset box kalau levelUp
@@ -2236,7 +2247,7 @@ public:
 			Console::resetColor();
 			printf(" gold!");
 
-			Console::delay(700);
+			Interface::delaySec(700);
 			Console::setCursorPos(3, 5);
 			printf("Your gold: ");
 
@@ -2251,7 +2262,7 @@ public:
 				printf("%d", prevGold);
 				if (sec%secDelay == 0)Console::delay(1);
 			}
-			Console::delay(700);
+			Interface::delaySec(700);
 			Console::setColor(GREY);
 			Console::setCursorPos(3, 7);
 			printf("Press enter to continue...");

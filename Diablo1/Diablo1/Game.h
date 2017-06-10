@@ -492,9 +492,9 @@ private:
 public:
 	Game() // constructor
 	{
-
+		srand(time(NULL));
 		Music::playBackgroundMusic(6);
-		Console::delay(1000);
+		Interface::delaySec(1000);
 		Interface::setDefaultFont(18);
 		Interface::setWindowSize(1100, 600);
 		Interface::introduction.titleScreen();
@@ -508,7 +508,7 @@ public:
 			printf("Input:");
 			int x = Interface::getInt(0, 20);
 			printf("\n\n\n%d", x);
-			Console::delay(500);
+			Interface::delaySec(500);
 		}*/
 
 		karakter = NULL; // state karakter pertama
