@@ -69,6 +69,11 @@ private:
 	static int riposte;
 	static int momentum;
 
+	//adventure in cave
+	static int monsterKilled;
+	static int goldEarned;
+	static int expGained;
+	
 	// helper function
 	static void printBox1(int x, int y)
 	{
@@ -1324,11 +1329,14 @@ private:
 		return;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void printCave(int caveWidth, int caveHeight , int shiftX, int shiftY) {
+	static void printCave(int caveWidth, int caveHeight , int shiftX, int shiftY, int caveLevel, vector<Monster*>vCaveMonster, Human *karakter, int lowBound, int highBound) {
+		int totalMonster;
+		
 		Console::resetColor();
 		caveHeight++;
 		caveWidth++;
 
+		//printing border
 		for (int height = 0; height < caveHeight; height++) {
 			for (int width = 0; width < caveWidth; width++) {
 				Console::setCursorPos(shiftX+width, shiftY+height);
@@ -1344,28 +1352,43 @@ private:
 			}
 		}
 
+		//printing stats (NOT THE ACTUAL NUMBER)
+		Console::setColor(79);
+		Console::setCursorPos(caveWidth+ shiftX + 8, shiftY);
+		Console::printf("C A V E");
+		Console::resetColor();
+		Console::setCursorPos(caveWidth + shiftX + 7, shiftY+1);
+		Console::printf("LEVEL : 1");
+		Console::setCursorPos(caveWidth + shiftX + 1, shiftY + 3);
+		Console::printf("Gold earned       : ");
+		Console::printf("%d", goldEarned);
+		Console::setCursorPos(caveWidth + shiftX + 1, shiftY + 4);
+		Console::printf("Exp gained        : ");
+		Console::printf("%d", expGained);
+		Console::setCursorPos(caveWidth + shiftX + 1, shiftY + 5);
+		Console::printf("Monster(s) killed : ");
+		Console::printf("%d", monsterKilled);
+		
+
+		totalMonster = 0;
+		Console::setCursorPos(caveWidth + shiftX + 1, Console::getCursorY()+3);
+		Console::printf("Monster lurking: ");
+		/*for (vector<Monster*>::iterator iter = vCaveMonster.begin(); iter != vCaveMonster.end(); iter++, totalMonster++) {
+			Console::setCursorPos(caveWidth + shiftX + 1, Console::getCursorY() + 1);
+			Console::printf("%d. %s",totalMonster+1, vCaveMonster[totalMonster]->getName().c_str());
+		}*/
+		for (totalMonster = 0; totalMonster <= min(highBound, karakter->getLevel()-1); totalMonster++) {
+			Console::setCursorPos(caveWidth + shiftX + 1, Console::getCursorY() + 1);
+			Console::printf("%d. %s", totalMonster + 1, vCaveMonster[totalMonster]->getName().c_str());
+		}
+		Console::setCursorPos(caveWidth + shiftX + 1, Console::getCursorY() + 3);
+		Console::printf("Press WASD to move");
+		Console::setCursorPos(caveWidth + shiftX + 1, Console::getCursorY() + 1);
+		Console::printf("Press ESC  to go back");
+
 	}
 
 public:
-	// enter Cave
-	static void enterCave(int caveLevel, Human* karakter, vector<Monster>& vMonster)
-	{
-		//while (1)
-		//{
-		//	// ketemu monster
-		//	if (true)
-		//	{
-		//		startBattle(*karakter, vMonster[index]);
-		//		if (win)
-		//		{
-		//			printMap();
-		//			continue;
-		//		}
-		//		else return;
-		//	}
-		//}
-	}
-
 	// post-battle getter
 	static bool getWin() { return win; }
 
@@ -1381,13 +1404,16 @@ public:
 		int nextX, nextY;	//future position
 		bool canMove;	//can move or not
 		char moveInput;	//user input
-		int caveWidth = 60;	//max cave width
+		int caveWidth = 30;	//max cave width
 		int caveHeight = 25;	//max cave height
 		int shiftX = 2;
 		int shiftY = 3;
 		bool canEnterCave;
-		//Cave Level Selection
 
+		monsterKilled = 0;
+		goldEarned = 0;
+		expGained = 0;
+		//Cave Level Selection format
 		system("cls");
 		Console::resetColor();
 		Console::setCursorPos(30, 1);
@@ -1396,6 +1422,8 @@ public:
 		Console::resetColor();
 
 		Console::printf("\n\n\n");
+		
+		//asking cave level
 		Console::setCursorVisibility(true);
 		int x = Console::getCursorX();
 		int y = Console::getCursorY();
@@ -1403,7 +1431,6 @@ public:
 			Console::setCursorPos(x, y);
 			Console::printf("Select cave level[1-7] ( 0 to go back ): ");
 			caveLevel = Interface::getInt(0, 7);
-
 
 			canEnterCave = false;
 			if (karakter->getLevel() < caveReq[caveLevel - 1])
@@ -1430,9 +1457,10 @@ public:
 
 		//initialize cave boundaries
 		vCaveMonster.clear();
+		vCaveMonster.empty();
 		if (caveLevel < 6) {	//ordinary cave
 			lowestBoundary = (caveLevel - 1) * 5;
-			highestBoundary = (caveLevel * 5) - 1;
+			highestBoundary = (caveLevel * 5) -1;
 		}
 		else if (caveLevel == 6) {	//mini boss cave
 			lowestBoundary = 25;
@@ -1451,16 +1479,22 @@ public:
 		nextX = prevX = currX;
 		nextY = prevY = currY;
 		Console::setCursorVisibility(false);
-		printCave(caveWidth, caveHeight, shiftX, shiftY);
+		printCave(caveWidth, caveHeight, shiftX, shiftY, caveLevel, vCaveMonster, karakter, lowestBoundary, highestBoundary);
 		Console::setCursorPos(shiftX + currX, shiftY + currY);
-		Console::printf("%c",1);
+		Console::printf("%c",2);
+		Music::playBackgroundMusic(2);
 
 		//moving
 		while (true) {
 			Console::resetColor();
+			nextX = currX;
+			nextY = currY;
 			//ask input
 			moveInput = _getch();
 			moveInput = tolower(moveInput);
+			if (moveInput==27) {
+				return;
+			}
 			if (moveInput == 'w' || moveInput == 'a' || moveInput == 's' || moveInput == 'd') {
 				switch (moveInput) {
 				case 'w':
@@ -1510,9 +1544,10 @@ public:
 
 						startBattle(*karakter, *(vCaveMonster[caveMonsterSelect]));
 						if (win) {
-							printCave(caveWidth, caveHeight, shiftX, shiftY);
+							printCave(caveWidth, caveHeight, shiftX, shiftY, caveLevel, vCaveMonster, karakter, lowestBoundary, highestBoundary);
 							Console::setCursorPos(shiftX + currX, shiftY + currY);
-							Console::printf("%c", 1);
+							Console::printf("%c", 2);
+							Music::playBackgroundMusic(2);
 							continue;
 						}
 						else { return; } // kalau kalah
@@ -2073,6 +2108,11 @@ public:
 			int goldGained = enemy.getGold();
 			int prevGold = karakter.getGold();
 
+			//tambahin ke cave punya earnings
+			Battle::expGained += expGained;
+			Battle::goldEarned += goldGained;
+			Battle::monsterKilled += 1;
+
 			text = karakter.getName();
 			text += " got ";
 			text += to_string((int)enemy.getExp());
@@ -2297,4 +2337,7 @@ int Battle::riposte = 0;
 int Battle::momentum = 0;
 bool Battle::win = false;
 
+int Battle::monsterKilled = 0;
+int Battle::expGained = 0;
+int Battle::goldEarned = 0;
 #endif
