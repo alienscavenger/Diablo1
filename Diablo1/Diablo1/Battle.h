@@ -73,7 +73,7 @@ private:
 	static int monsterKilled;
 	static int goldEarned;
 	static int expGained;
-	
+	static char caveName[7][30];
 	// helper function
 	static void printBox1(int x, int y)
 	{
@@ -1354,11 +1354,15 @@ private:
 
 		//printing stats (NOT THE ACTUAL NUMBER)
 		Console::setColor(79);
-		Console::setCursorPos(caveWidth+ shiftX + 8, shiftY);
-		Console::printf("C A V E");
+		/*Console::setCursorPos(caveWidth+ shiftX + 8, shiftY);
+		Console::printf("C A V E");*/
+		Console::setCursorPos(caveWidth + shiftX + 1, shiftY);
+		Console::printf("%s",caveName[caveLevel-1]);
+
 		Console::resetColor();
-		Console::setCursorPos(caveWidth + shiftX + 7, shiftY+1);
-		Console::printf("LEVEL : 1");
+		Console::setCursorPos(caveWidth + shiftX + 1, shiftY+1);
+		Console::printf("LEVEL : ");
+		Console::printf("%d",caveLevel);
 		Console::setCursorPos(caveWidth + shiftX + 1, shiftY + 3);
 		Console::printf("Gold earned       : ");
 		Console::printf("%d", goldEarned);
@@ -1395,7 +1399,7 @@ public:
 	// MAIN FUNCTION
 	static void selectCave(Human* karakter, vector<Monster>& vMonster) {
 		vector<Monster*> vCaveMonster;	//monster yang ada di cave sekarang
-		int caveLevel;	//level Cave
+		int caveLevel;
 		int caveReq[7] = {0,6,11,16,21,26,29};	//level requirement
 		int lowestBoundary;	//lowest monster index in a cave
 		int highestBoundary;	//highest monster index in cave
@@ -1416,20 +1420,30 @@ public:
 		//Cave Level Selection format
 		system("cls");
 		Console::resetColor();
-		Console::setCursorPos(30, 1);
+		Console::setCursorPos(15, 1);
 		Console::setColor(79);
 		Console::printf(" C A V E ");
 		Console::resetColor();
 
 		Console::printf("\n\n\n");
-		
+		//printing cave level detail
+		//DESPERATE ATTEMPT biar keluar --> forgive me :(
+		Console::setCursorPos(1,3);
+		Console::printf("Lv. | %-23s | Lv. Req |\n","Cave Name");
+		Console::printf("==========================================");
+		for (int caveCounter = 0; caveCounter < 7; caveCounter++ ) {
+			Console::setCursorPos(1, Console::getCursorY()+1);
+			Console::printf(" %d. | %-23s |    %2d   |", caveCounter+1, caveName[caveCounter], caveReq[caveCounter]);
+		}
+		printf("\n\n");
+
 		//asking cave level
 		Console::setCursorVisibility(true);
 		int x = Console::getCursorX();
 		int y = Console::getCursorY();
 		do{
 			Console::setCursorPos(x, y);
-			Console::printf("Select cave level[1-7] ( 0 to go back ): ");
+			Console::printf(" Select level[1-7] ( 0 to go back ):  ");
 			caveLevel = Interface::getInt(0, 7);
 
 			canEnterCave = false;
@@ -1536,7 +1550,7 @@ public:
 						int caveMonsterSelect;
 						//random available monster
 						if ((karakter->getLevel() - 1) >= highestBoundary) {
-							caveMonsterSelect = rand() % vCaveMonster.size(); //ALERT
+							caveMonsterSelect = rand() % vCaveMonster.size();
 						}
 						else {
 							caveMonsterSelect = rand() % (karakter->getLevel() - lowestBoundary);
@@ -2340,4 +2354,5 @@ bool Battle::win = false;
 int Battle::monsterKilled = 0;
 int Battle::expGained = 0;
 int Battle::goldEarned = 0;
+char Battle::caveName[7][30] = { "The Black Caverns","The Cursed Tombs","Mystical Sanctuary","Crypt of The Forgotten","Valley of the Dead","The Three Guardians", "The Crystal Arch" };
 #endif
