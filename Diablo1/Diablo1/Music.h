@@ -81,6 +81,9 @@ public:
 		case 6:	//title screen sampai story
 			mciSendString("open \"audio\\intro.mp3\" type mpegvideo alias musik", NULL, 0, NULL);
 			break;
+		case 7:
+			mciSendString("open \"audio\\outro.mp3\" type mpegvideo alias musik", NULL, 0, NULL);
+			break;
 		}
 		//Play
 		mciSendString("play musik repeat", NULL, 0, NULL);

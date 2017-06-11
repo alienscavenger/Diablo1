@@ -373,26 +373,33 @@ public:
 		return;
 	}
 
-	void cheat(string cheatCode) {
+	bool cheat(string cheatCode) {
 		Console::setCursorPos(2, Console::getCursorY()+1);
 		Console::setColor(Console::COLOR_YELLOW);
 		if (cheatCode == "aditya") {
-			this->gold += 5000;
+			setGold(5000);
 			Console::printf("You got 5000 gold!");
 		}
 		else if (cheatCode == "melvin") {
 			Console::printf("You level up!");
+			levelUp(1, 1, 1, 1);
 		}
 		else if (cheatCode == "stark") {
 			this->name = "GOD MODE";
-			this->level = 99;
+			this->level = 98;
 			this->gold = 999999;
-			Console::printf("You have ascended!");
+			levelUp(999, 999, 999,999);
+			setExperience(9999999);
+			Console::printf("You have ascended to the GOD itself!");
 		}
 		else {
+			Console::setColor(Console::COLOR_RED);
+			Console::printf("Cheat not recognized.");
 			Console::resetColor();
-			Console::printf("Cheat not recognized");
+			return false;
 		}
+		Console::resetColor();
+		return true;
 	}
 };
 

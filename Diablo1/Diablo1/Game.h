@@ -543,20 +543,44 @@ private:
 			Console::setCursorPos(2,Console::getCursorY()+1);
 			Console::printf("%s",creditText[textCounter].c_str());
 		}
-		Console::setCursorVisibility(true);
-		Console::setCursorPos(2, Console::getCursorY() + 5);
-		Console::printf("Input cheats: ");
-		cin >> tempCheatCode;
-		cin.sync(); cin.clear();
-		if (tempCheatCode=="0") {
-			return;
-		}
-		else {
-			karakter.cheat(tempCheatCode);
-			Console::resetColor();
-			Console::setCursorPos(2,Console::getCursorY()+1);
-			Console::printf("Press any key to continue");
-			_getch();
+		int y = Console::getCursorY();
+		while (1)
+		{
+			Console::setCursorPos(2,y + 5);
+			Console::printf("Input cheats (0 = back): ");
+			
+			Console::setCursorVisibility(true);
+			getline(cin, tempCheatCode);
+			Console::setCursorVisibility(false);
+
+			if (tempCheatCode == "0") {
+				return;
+			}
+			else {
+				if (karakter.cheat(tempCheatCode)==false)
+				{
+					Interface::delaySec(1000);
+					// hapus yg sebelumnya
+					Console::setCursorPos(0, Console::getCursorY());
+					printf("                                                  ");
+					{
+						int len = tempCheatCode.size();
+						Console::setCursorPos(27+len, y + 5);
+						for (int i = 0; i < len; i++)
+						{
+							printf("\b \b");
+						}
+					}
+					continue;
+				}
+				Console::resetColor();
+				Console::setCursorPos(2, Console::getCursorY() + 1);
+				Console::setColor(Interface::COLOR_GREY);
+				Console::printf("Press any key to continue");
+				Console::resetColor();
+				_getch();
+				return;
+			}
 		}
 	}
 	// ----------------------------------------------------------------------------------------------------

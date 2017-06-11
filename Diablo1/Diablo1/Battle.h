@@ -249,13 +249,13 @@ private:
 				Console::setColor(BLUE);
 			}
 			if (xYou == 29 || xEnemy == 62) break;
-			if (sec % (int)mySpeed == 0)
+			if (sec % (int)ceil(mySpeed) == 0)
 			{
 				Console::setCursorPos(xYou, 7);
 				printf("%c", ASCII_BOX_FULL);
 				xYou++;
 			}
-			if (sec % (int)enemySpeed == 0)
+			if (sec % (int)ceil(enemySpeed) == 0)
 			{
 				Console::setCursorPos(xEnemy, 7);
 				printf("%c", ASCII_BOX_FULL);
@@ -572,7 +572,7 @@ private:
 					printLog(log);
 
 					Music::playSoundEffect(1);
-					HPchange(0, 9999999, karakter, enemy, crit); // UBAH INI KALAU MAU NGECHEAT
+					HPchange(0, damage, karakter, enemy, crit); // UBAH INI KALAU MAU NGECHEAT
 				}
 				if (riposte) // PALADIN
 				{
@@ -1391,7 +1391,14 @@ private:
 		Console::printf("Press ESC  to go back");
 
 	}
-
+	static void THEEND()
+	{
+		Console::resetColor();
+		system("cls");
+		Music::playBackgroundMusic(7);
+		printf("the end?");
+		getchar();
+	}
 public:
 	// post-battle getter
 	static bool getWin() { return win; }
@@ -1558,6 +1565,12 @@ public:
 
 						startBattle(*karakter, *(vCaveMonster[caveMonsterSelect]));
 						if (win) {
+							if (vCaveMonster[caveMonsterSelect]->getName() == "Diablo")
+							{
+								// MAKA RUN CREDIT / ENDING SCENE / APAPUN
+								THEEND();
+								return;
+							}
 							printCave(caveWidth, caveHeight, shiftX, shiftY, caveLevel, vCaveMonster, karakter, lowestBoundary, highestBoundary, caveReq[caveLevel - 1]);
 							Console::setCursorPos(shiftX + currX, shiftY + currY);
 							Console::printf("%c", 2);
@@ -2112,7 +2125,7 @@ public:
 			karakter.kill(); // nambahin jumlah monster yang dikill karakter sebesar 1
 			bool levelUp;
 			bool levelToMax = false;
-			bool maxLevel = karakter.getLevel() == 30 ? true : false;
+			bool maxLevel = karakter.getLevel() >= 30 ? true : false;
 			string text;
 
 			int expBefore = karakter.getExperience();
@@ -2121,11 +2134,6 @@ public:
 			///expGained = 555000; // UBAH INI KALO MAU NGECHEAT
 			int goldGained = enemy.getGold();
 			int prevGold = karakter.getGold();
-
-			//tambahin ke cave punya earnings
-			Battle::expGained += expGained;
-			Battle::goldEarned += goldGained;
-			Battle::monsterKilled += 1;
 
 			text = karakter.getName();
 			text += " got ";
@@ -2139,6 +2147,7 @@ public:
 			karakter.setGold(goldGained); // tambahin gold
 			if (maxLevel) // kalau sebelumnya sudah maxLevel
 			{
+				expGained = 0;
 				levelUp = false;
 				text.clear();
 				text = karakter.getName();
@@ -2169,6 +2178,12 @@ public:
 				printLog(log);
 			}
 			else levelUp = false;
+
+
+			//tambahin ke cave punya earnings
+			Battle::expGained += expGained;
+			Battle::goldEarned += goldGained;
+			Battle::monsterKilled += 1;
 
 			enemy.die();
 			text.clear();
@@ -2311,16 +2326,23 @@ public:
 			int currGold = karakter.getGold();
 			Console::setColor(YELLOW);
 			int sec = 0;
+			goldGained = max(goldGained, 1); // BUAT DIABLO (GOLDGAINED = 0)
 			int secDelay = 2000 / goldGained;
-			secDelay = max(secDelay, 2);
+			secDelay = max(secDelay, 5);
 			while (prevGold < currGold)
 			{
 				prevGold++;
-				Console::setCursorPos(14, 5);
-				printf("%d", prevGold);
-				if (sec%secDelay == 0)Console::delay(1);
+				if (sec%secDelay == 0)
+				{
+					Console::setCursorPos(14, 5);
+					printf("%d", prevGold);
+					Console::delay(1);
+				}
 				sec++;
 			}
+			Console::setCursorPos(14, 5);
+			printf("%d", currGold);
+
 			Interface::delaySec(700);
 			Console::setColor(GREY);
 			Console::setCursorPos(3, 7);
