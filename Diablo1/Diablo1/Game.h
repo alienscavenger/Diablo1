@@ -280,9 +280,9 @@ private:
 			for (int height = 0; height < 23; height++) {
 				Console::setCursorPos(15, 4 + height);
 				for (int width = 0; width < strlen(map[height]); width++) {
-					if (map[height][width] == 'S') printf(" ");
-					else if (map[height][width] == '0') printf("%c", 219);
-					else if (map[height][width] == '1') printf("%c", 178);
+					if (map[height][width] == 'S') printf("%c",' ');
+					else if (map[height][width] == '0') printf("%c", ASCII_BOX_FULL);
+					else if (map[height][width] == '1') printf("%c", '_');
 					else printf("%c", map[height][width]);
 				}
 			}
@@ -299,8 +299,8 @@ private:
 			{
 				Console::setCursorPos(15 + width, 4 + height);
 				if (map[height][width] == 'S') printf(" ");
-				else if (map[height][width] == '0') printf("%c", 219);
-				else if (map[height][width] == '1') printf("%c", 178);
+				else if (map[height][width] == '0') printf("%c", ASCII_BOX_FULL);
+				else if (map[height][width] == '1') printf("%c", '_');
 				else printf("%c", map[height][width]);
 			}
 		}
@@ -311,8 +311,8 @@ private:
 				Console::setCursorPos(15 + width, 4 + height);
 
 				if (map[height][width] == 'S') printf(" ");
-				else if (map[height][width] == '0') printf("%c", 219);
-				else if (map[height][width] == '1') printf("%c", 178);
+				else if (map[height][width] == '0') printf("%c", ASCII_BOX_FULL);
+				else if (map[height][width] == '1') printf("%c", '_');
 				else printf("%c", map[height][width]);
 			}
 		}
@@ -323,8 +323,8 @@ private:
 				Console::setCursorPos(15 + width, 4 + height);
 
 				if (map[height][width] == 'S') printf(" ");
-				else if (map[height][width] == '0') printf("%c", 219);
-				else if (map[height][width] == '1') printf("%c", 178);
+				else if (map[height][width] == '0') printf("%c", ASCII_BOX_FULL);
+				else if (map[height][width] == '1') printf("%c", '_');
 				else printf("%c", map[height][width]);
 			}
 		}
@@ -334,7 +334,7 @@ private:
 		Console::printf("The Great River");
 		for (int height = 18; height <= 23; height++) {
 			Console::setCursorPos(64, height);
-			Console::printf("%c",219);
+			Console::printf("%c",ASCII_BOX_FULL);
 		}*/
 
 		//BUAT HIGHLIGHT
@@ -352,8 +352,8 @@ private:
 					Console::setCursorPos(15 + width, 4 + height);
 
 					if (map[height][width] == 'S') printf(" ");
-					else if (map[height][width] == '0') printf("%c", 219);
-					else if (map[height][width] == '1') printf("%c", 178);
+					else if (map[height][width] == '0') printf("%c", ASCII_BOX_FULL);
+					else if (map[height][width] == '1') printf("%c", '_');
 					else printf("%c", map[height][width]);
 				}
 			}
@@ -371,8 +371,8 @@ private:
 					Console::setCursorPos(15 + width, 4 + height);
 
 					if (map[height][width] == 'S') printf(" ");
-					else if (map[height][width] == '0') printf("%c", 219);
-					else if (map[height][width] == '1') printf("%c", 178);
+					else if (map[height][width] == '0') printf("%c", ASCII_BOX_FULL);
+					else if (map[height][width] == '1') printf("%c", '_');
 					else printf("%c", map[height][width]);
 				}
 			}
@@ -390,21 +390,20 @@ private:
 					Console::setCursorPos(15 + width, 4 + height);
 
 					if (map[height][width] == 'S') printf(" ");
-					else if (map[height][width] == '0') printf("%c", 219);
-					else if (map[height][width] == '1') printf("%c", 178);
+					else if (map[height][width] == '0') printf("%c", ASCII_BOX_FULL);
+					else if (map[height][width] == '1') printf("%c", '_');
 					else printf("%c", map[height][width]);
 				}
 			}
 			Console::resetColor(); //somehow the color gets into the list of monsters
 		}
-
 	}
 
 	bool exitPrompt()
 	{
 		system("cls");
 		Console::setCursorPos(0, 2);
-		Console::setColor(Console::COLOR_RED);
+		Console::setColor(Console::COLOR_MAGENTA);
 		char* wallpaper[20] = {
 			"                          )       \\   /      (",
 			"                         /|\\      )\\_/(     /|\\",

@@ -1329,7 +1329,7 @@ private:
 		return;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void printCave(int caveWidth, int caveHeight , int shiftX, int shiftY, int caveLevel, vector<Monster*>vCaveMonster, Human *karakter, int lowBound, int highBound) {
+	static void printCave(int caveWidth, int caveHeight , int shiftX, int shiftY, int caveLevel, vector<Monster*>vCaveMonster, Human *karakter, int lowBound, int highBound, int levelRequirement) {
 		int totalMonster;
 		
 		Console::resetColor();
@@ -1381,7 +1381,7 @@ private:
 			Console::setCursorPos(caveWidth + shiftX + 1, Console::getCursorY() + 1);
 			Console::printf("%d. %s",totalMonster+1, vCaveMonster[totalMonster]->getName().c_str());
 		}*/
-		for (totalMonster = 0; totalMonster <= min(highBound, karakter->getLevel()-1); totalMonster++) {
+		for (totalMonster = 0; totalMonster <= min(highBound-lowBound, karakter->getLevel()- levelRequirement); totalMonster++) { // sebenernya highBound-lowBound pasti samadengan 5. Tapi biar lu ngerti
 			Console::setCursorPos(caveWidth + shiftX + 1, Console::getCursorY() + 1);
 			Console::printf("%d. %s", totalMonster + 1, vCaveMonster[totalMonster]->getName().c_str());
 		}
@@ -1443,7 +1443,7 @@ public:
 		int y = Console::getCursorY();
 		do{
 			Console::setCursorPos(x, y);
-			Console::printf(" Select level[1-7] ( 0 to go back ):  ");
+			Console::printf(" Select level[1-7] ( 0 to go back ): ");
 			caveLevel = Interface::getInt(0, 7);
 
 			canEnterCave = false;
@@ -1451,19 +1451,19 @@ public:
 			{
 				Console::setCursorPos(x, y + 2);
 				Console::setColor(Console::COLOR_RED);
-				printf("YOUR LEVEL (%d) IS NOT ENOUGH TO ENTER THIS CAVE!\n",karakter->getLevel());
+				printf(" YOUR LEVEL (%d) IS NOT ENOUGH TO ENTER THIS CAVE!\n",karakter->getLevel());
 				Console::setColor(Console::COLOR_YELLOW);
-				printf("Minimum requirement: LEVEL %d\n", caveReq[caveLevel - 1]);
+				printf(" Minimum requirement: LEVEL %d\n", caveReq[caveLevel - 1]);
 				Console::setColor(Interface::COLOR_GREY);
-				printf("Press enter to continue..");
+				printf(" Press enter to continue..");
 				Interface::pressEnterPlease();
 				Console::resetColor();
-				Console::setCursorPos(x + 42, y);
-				printf("    ");
+				Console::setCursorPos(x + 38, y); // 39 = length dari " Select level[1-7] ( 0 to go back ): "
+				printf("   ");
 				Console::setCursorPos(x, y + 2);
-				printf("                                                      \n");
-				printf("                                   \n");
-				printf("                            ");
+				printf("                                                       \n");
+				printf("                                    \n");
+				printf("                             ");
 			}
 			else canEnterCave = true;
 		} while (canEnterCave ==false);
@@ -1493,7 +1493,7 @@ public:
 		nextX = prevX = currX;
 		nextY = prevY = currY;
 		Console::setCursorVisibility(false);
-		printCave(caveWidth, caveHeight, shiftX, shiftY, caveLevel, vCaveMonster, karakter, lowestBoundary, highestBoundary);
+		printCave(caveWidth, caveHeight, shiftX, shiftY, caveLevel, vCaveMonster, karakter, lowestBoundary, highestBoundary,caveReq[caveLevel-1]);
 		Console::setCursorPos(shiftX + currX, shiftY + currY);
 		Console::printf("%c",2);
 		Music::playBackgroundMusic(2);
@@ -1544,7 +1544,7 @@ public:
 					currX = prevX = nextX;
 					currY = prevY = nextY;
 					//calculate chance
-					int chance = rand() % 100;
+					int chance = rand() % 30;
 					if (chance == 1) // 1/100 chance to meet monster
 					{
 						int caveMonsterSelect;
@@ -1558,7 +1558,7 @@ public:
 
 						startBattle(*karakter, *(vCaveMonster[caveMonsterSelect]));
 						if (win) {
-							printCave(caveWidth, caveHeight, shiftX, shiftY, caveLevel, vCaveMonster, karakter, lowestBoundary, highestBoundary);
+							printCave(caveWidth, caveHeight, shiftX, shiftY, caveLevel, vCaveMonster, karakter, lowestBoundary, highestBoundary, caveReq[caveLevel - 1]);
 							Console::setCursorPos(shiftX + currX, shiftY + currY);
 							Console::printf("%c", 2);
 							Music::playBackgroundMusic(2);
@@ -2263,6 +2263,9 @@ public:
 						}
 						if (counter == karakter.getExpRequirement(levelBefore + 1 + add) - karakter.getExpRequirement(levelBefore + add)) // kalau level up
 						{
+							Console::setCursorPos(14, 2);
+							printf("%6d/%-6d", karakter.getExpRequirement(levelBefore + 1 + add) - karakter.getExpRequirement(levelBefore + add), karakter.getExpRequirement(levelBefore + 1 + add) - karakter.getExpRequirement(levelBefore + add));
+
 							Console::setCursorPos(4, 10 + add);
 							levelCounter++;
 							printf("LEVEL UP!");
@@ -2308,13 +2311,15 @@ public:
 			int currGold = karakter.getGold();
 			Console::setColor(YELLOW);
 			int sec = 0;
-			int secDelay = 1000 / goldGained;
+			int secDelay = 2000 / goldGained;
+			secDelay = max(secDelay, 2);
 			while (prevGold < currGold)
 			{
 				prevGold++;
 				Console::setCursorPos(14, 5);
 				printf("%d", prevGold);
 				if (sec%secDelay == 0)Console::delay(1);
+				sec++;
 			}
 			Interface::delaySec(700);
 			Console::setColor(GREY);
