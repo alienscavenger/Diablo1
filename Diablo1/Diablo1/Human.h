@@ -81,59 +81,59 @@ private:
 	}
 
 	/*
-		Jadi gini cara kerja untuk inventory (beda New Game dan Load Game hanya pada actual parameternya saja):
+	Jadi gini cara kerja untuk inventory (beda New Game dan Load Game hanya pada actual parameternya saja):
 
-			1. Di Game class, akan ada fungsi yang baca file untuk semua item yang ada di game.
-			   (including yang di equip dan tidak) (save cuman 1 file kalo bisa) (read terjadi saat load game)
+	1. Di Game class, akan ada fungsi yang baca file untuk semua item yang ada di game.
+	(including yang di equip dan tidak) (save cuman 1 file kalo bisa) (read terjadi saat load game)
 
-			2. Saat load game, semua informasi item yang dibaca akan dimasukkan ke dalam sebuah vector<Item> yang di-declare
-			   di dalam class Game, bernama vShop. Vector ini tidak akan dapat berubah" di dalam game, jadi tidak usah khawatir akan
-			   pointer invalidation. Nanti di file save-nya bakal ada variable yang menentukan sudah dibeli apa belum,
-			   dan segala jenis stats dan restrictionnya (supaya tau ini item berada pada tipe apa gitu").
+	2. Saat load game, semua informasi item yang dibaca akan dimasukkan ke dalam sebuah vector<Item> yang di-declare
+	di dalam class Game, bernama vShop. Vector ini tidak akan dapat berubah" di dalam game, jadi tidak usah khawatir akan
+	pointer invalidation. Nanti di file save-nya bakal ada variable yang menentukan sudah dibeli apa belum,
+	dan segala jenis stats dan restrictionnya (supaya tau ini item berada pada tipe apa gitu").
 
-			3. Class Human mempunyai sebuah vector yang berisi pointer to Item object. Saat objek Human di-construct,
-			   vector vShop (yang berisi semua item yang ada di game) akan di-pass by reference ke ctor Human, dan di
-			   ctor Human sendiri lah yang akan mengecek apakah elemen (item) di vector vShop tersebut sudah dibeli atau
-			   belum (ada variable yang menentukan).
+	3. Class Human mempunyai sebuah vector yang berisi pointer to Item object. Saat objek Human di-construct,
+	vector vShop (yang berisi semua item yang ada di game) akan di-pass by reference ke ctor Human, dan di
+	ctor Human sendiri lah yang akan mengecek apakah elemen (item) di vector vShop tersebut sudah dibeli atau
+	belum (ada variable yang menentukan).
 
-			4. Semua yang sudah kita beli akan berada di vector vInventory Human, berupa pointer to Item. Dan yang kita
-			   equip berupa sebuah array of pointer to Item. Hanya perlu 7, karena hanya ada 7 tipe item (index ke-0 untuk
-			   sementara diabaikan aja)
+	4. Semua yang sudah kita beli akan berada di vector vInventory Human, berupa pointer to Item. Dan yang kita
+	equip berupa sebuah array of pointer to Item. Hanya perlu 7, karena hanya ada 7 tipe item (index ke-0 untuk
+	sementara diabaikan aja)
 
-			5. Intinya, vShop tidak akan/dapat diubah oleh class Human, dan vInventory serta equipment hanyalah sebuah pointer
-			   to object, si vShop itu sendiri.
+	5. Intinya, vShop tidak akan/dapat diubah oleh class Human, dan vInventory serta equipment hanyalah sebuah pointer
+	to object, si vShop itu sendiri.
 
-			6. vShop berisi semua item yang ada dalam game, entah itu unequipped item, equipped item, dsb.
+	6. vShop berisi semua item yang ada dalam game, entah itu unequipped item, equipped item, dsb.
 
-			7. Kalau mau beli item, tinggal ganti status bought item di vector vShop jadi true pake setBought, lalu di push_back
-			   ke vector vInventory.
+	7. Kalau mau beli item, tinggal ganti status bought item di vector vShop jadi true pake setBought, lalu di push_back
+	ke vector vInventory.
 
-			8. Kalau mau menjual item, cek dulu apakah item di vector vInventory sedang di-equip atau tidak. Kita hanya bisa
-			   menjual item yang sedang tidak di-equip
+	8. Kalau mau menjual item, cek dulu apakah item di vector vInventory sedang di-equip atau tidak. Kita hanya bisa
+	menjual item yang sedang tidak di-equip
 
-			9. Untuk menjual item, tinggal saja vInventory.erase(vInventory.begin() + index). Index ditentukan dari Main class aja.
+	9. Untuk menjual item, tinggal saja vInventory.erase(vInventory.begin() + index). Index ditentukan dari Main class aja.
 
-			10. Untuk unequip item, tinggal set equipStatus[index] ke false, dan set equipment[index] ke NULL;
+	10. Untuk unequip item, tinggal set equipStatus[index] ke false, dan set equipment[index] ke NULL;
 
-			11. Untuk equip item, validasi dilakukan di main Class dengan mengecek apakah equipStatus[index] false. Kalau true, break;
-				kalau false, maka set ke true, set equipment[index] menjadi pointer ke Item tersebut, dan setEquipped(true) pada item tersebut.
+	11. Untuk equip item, validasi dilakukan di main Class dengan mengecek apakah equipStatus[index] false. Kalau true, break;
+	kalau false, maka set ke true, set equipment[index] menjadi pointer ke Item tersebut, dan setEquipped(true) pada item tersebut.
 
-			12. Setiap equip dan unequip, jangan lupa di-update attribute Humannya dengan setAttributesItem
+	12. Setiap equip dan unequip, jangan lupa di-update attribute Humannya dengan setAttributesItem
 	*/
 	vector <Item*> vInventory; // yang ada di inventory (termasuk yang sudah di-equip)
 	size_t nInventory; // jumlah barang yang ada di inventory
 
 	bool equipStatus[EQUIPMENT_SLOT]; // true kalau item type ke-index (sesuai type di Item.h) sudah di-equip, false kalau belum
 	Item* equipment[EQUIPMENT_SLOT]; // yang sekarang sedang dipakai (penggunaan index sama dengan equipStatus)
-	/*
-		index 1 = helmet(type 1)
-		index 2 = weapon&shield(type 5 dan type 6)
-		index 3 = weapon(type 5)
-		index 4 = gloves(type 2)
-		index 5 = armor(type 3)
-		index 6 = boots(type 4)
+									 /*
+									 index 1 = helmet(type 1)
+									 index 2 = weapon&shield(type 5 dan type 6)
+									 index 3 = weapon(type 5)
+									 index 4 = gloves(type 2)
+									 index 5 = armor(type 3)
+									 index 6 = boots(type 4)
 
-	*/
+									 */
 	void checkInventory(vector<Item>&fileRead)
 	{
 		int i = 0;
@@ -157,7 +157,7 @@ private:
 			equipStatus[i] = false; // awalnya set equipped ke false dulu (character tidak wear apa")
 			equipment[i] = NULL; // awalnya tidak menunjuk ke apa"
 		}
-		
+
 		bool weaponEquipped = false; // awalnya belom ada weapon yang di-equip
 		for (vector<Item*>::iterator iter = vInventory.begin(); iter != vInventory.end(); iter++)
 		{
@@ -185,7 +185,7 @@ private:
 					else { index = RightArm; weaponEquipped = true; } // tangan kanan di-prioritas
 					break;
 				}
-					break;
+				break;
 				case Shield:
 					index = LeftArm;
 					break;
@@ -198,13 +198,13 @@ private:
 
 public:
 	enum SLOT { Head = 1, LeftArm, RightArm, Hands, Torso, Legs };
-	enum EQUIPTYPE { WeaponAndShield=-1,Helmet = 1, Gloves, Armor, Boots, Weapon, Shield };
-	enum JOB {Assassin=1,Paladin,Barbarian};
+	enum EQUIPTYPE { WeaponAndShield = -1, Helmet = 1, Gloves, Armor, Boots, Weapon, Shield };
+	enum JOB { Assassin = 1, Paladin, Barbarian };
 	static const int MAX_LEVEL;
 
 	//constructor buat new Game
 	// walaupun cuman new Game, vInventory dan equipment juga perlu di-initialize
-	Human(vector <Item>& fileRead,int pilihanJob,string name)
+	Human(vector <Item>& fileRead, int pilihanJob, string name)
 	{
 		vInventory.reserve(Item::MAX_ITEM); // jadi ada maksimal 110 item di inventory
 		monsterKilled = 0;
@@ -222,8 +222,8 @@ public:
 	}
 
 	//constructor buat load Game
-	Human(vector <Item>& fileRead,string name, int lvl,  int pilihanJob, int gold,int exp, int str, int end, int agi,
-		  int dex, float dmg, float cth, float eva, float spd, float mhp, float mst, int amr, int kill)
+	Human(vector <Item>& fileRead, string name, int lvl, int pilihanJob, int gold, int exp, int str, int end, int agi,
+		int dex, float dmg, float cth, float eva, float spd, float mhp, float mst, int amr, int kill)
 	{
 		monsterKilled = kill;
 		this->name = name;
@@ -314,7 +314,7 @@ public:
 		maxHealth += (5 * strength) + (10 * endurance);
 		maxStamina += (3 * strength) + (10 * endurance) + (2 * dexterity);
 	}
-	
+
 	// ini fungsi buat nambahin monster yang dikill
 	void kill()
 	{
@@ -345,17 +345,17 @@ public:
 		equipStatus[index] = false; // set status equipped di Human menjadi false
 		equipment[index] = NULL; // equipment[index] di-unequip
 		setAttributesItem(-1 * (pointer->getStrength()), -1 * (pointer->getEndurance()), -1 * (pointer->getAgility()), -1 * (pointer->getDexterity()),
-						-1 * (pointer->getDamage()), -1 * (pointer->getChanceToHit()), -1 * (pointer->getEvade()), -1 * (pointer->getSpeed()),
-						-1 * (pointer->getMaxHealth()), -1 * (pointer->getMaxStamina()), -1 * (pointer->getArmor)());
+			-1 * (pointer->getDamage()), -1 * (pointer->getChanceToHit()), -1 * (pointer->getEvade()), -1 * (pointer->getSpeed()),
+			-1 * (pointer->getMaxHealth()), -1 * (pointer->getMaxStamina()), -1 * (pointer->getArmor)());
 	}
-	void equipItem(int index,Item* pointer)
+	void equipItem(int index, Item* pointer)
 	{
 		pointer->setEquip(1); // set true
 		equipStatus[index] = true;
 		equipment[index] = pointer;
 		setAttributesItem(pointer->getStrength(), pointer->getEndurance(), pointer->getAgility(), pointer->getDexterity(),
-							pointer->getDamage(), pointer->getChanceToHit(), pointer->getEvade(), pointer->getSpeed(),
-							pointer->getMaxHealth(), pointer->getMaxStamina(), pointer->getArmor());
+			pointer->getDamage(), pointer->getChanceToHit(), pointer->getEvade(), pointer->getSpeed(),
+			pointer->getMaxHealth(), pointer->getMaxStamina(), pointer->getArmor());
 	}
 	void setExperience(float exp)
 	{
@@ -372,11 +372,33 @@ public:
 		gold += amount;
 		return;
 	}
+
+	void cheat(string cheatCode) {
+		Console::setCursorPos(2, Console::getCursorY()+1);
+		Console::setColor(Console::COLOR_YELLOW);
+		if (cheatCode == "aditya") {
+			this->gold += 5000;
+			Console::printf("You got 5000 gold!");
+		}
+		else if (cheatCode == "melvin") {
+			Console::printf("You level up!");
+		}
+		else if (cheatCode == "stark") {
+			this->name = "GOD MODE";
+			this->level = 99;
+			this->gold = 999999;
+			Console::printf("You have ascended!");
+		}
+		else {
+			Console::resetColor();
+			Console::printf("Cheat not recognized");
+		}
+	}
 };
 
 const int Human::MAX_LEVEL = 30;
 
-int Human::expRequirement[MAX_LEVEL+2] = {
+int Human::expRequirement[MAX_LEVEL + 2] = {
 	0,0,1000,5000,10000,15000,20000,25000,30000,40000,50000,65000,80000,95000,110000,125000,140000,160000,180000,200000,220000,240000,260000,280000,300000,330000,360000,390000,420000,450000,500000,500001
 }; //    ^lv2											^lv10															^lv20																	^lv30 ^placeholder
 

@@ -63,7 +63,7 @@ private:
 	int offense;
 	int defense;
 	float exp; // float (monster)
-	// item:
+			   // item:
 	string effect;
 	char tempEffect[100];
 	int price;
@@ -78,7 +78,7 @@ private:
 	Human* karakter; // karakternya
 	vector<Item> vShop; // item yang ada di game
 	vector<Monster> vMonster; // monster yang ada di game
-	// ----------------------------------- M A P ----------------------------------------------------------
+							  // ----------------------------------- M A P ----------------------------------------------------------
 	char map[23][64] = {
 		"0000000000000000000000000000000000000000000000000000000000\n",
 		"0SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS___SSSSS___SSSSSSS0\n",
@@ -103,21 +103,21 @@ private:
 		"0SSSSCaveSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS~MadeSbySMelvinS0\n",
 		"0SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSandSAditya~S0\n",
 		"0000000000000000000000000000000000000000000000000000000000\n"
-	};// 23 height
-	// -------------------------------- SAVE function -----------------------------------------------------
-	/*
-		LANGKAH-LANGKAH BUAT NEW GAME DAN LOAD GAME:
-		1. lakukan checkSave() dan resetDefaultSave() (menjamin default.txt ada)
-		2. kalau saveGameAvailable, maka pilihan LOAD GAME ada
-		3. kalau pilih NEW GAME: (save.txt bisa ada, bisa tidak aja, tapi itu tidak penting. Karena tidak bakal di-write maupun overwrite)
-			3.1	lakukan newData() (ini buat reset data vMonster dan vShop yang ada kemungkinan sudah dibuat maupun belum ke default)
-			3.2 delete objek human lama (kalau ada)
-			3.3 bikin objek human baru
-		4. kalau pilih LOAD GAME: (save.txt sudah pasti ada, karena saveGameAvailable benar)
-			4.1 (optional) lakuin checkSave() lagi untuk benar" menjamin data save ada
-			4.2 delete objek human lama
-			4.3 lakukan loadSave()
-	*/
+	};// 23 height , 58 width
+	  // -------------------------------- SAVE function -----------------------------------------------------
+	  /*
+	  LANGKAH-LANGKAH BUAT NEW GAME DAN LOAD GAME:
+	  1. lakukan checkSave() dan resetDefaultSave() (menjamin default.txt ada)
+	  2. kalau saveGameAvailable, maka pilihan LOAD GAME ada
+	  3. kalau pilih NEW GAME: (save.txt bisa ada, bisa tidak aja, tapi itu tidak penting. Karena tidak bakal di-write maupun overwrite)
+	  3.1	lakukan newData() (ini buat reset data vMonster dan vShop yang ada kemungkinan sudah dibuat maupun belum ke default)
+	  3.2 delete objek human lama (kalau ada)
+	  3.3 bikin objek human baru
+	  4. kalau pilih LOAD GAME: (save.txt sudah pasti ada, karena saveGameAvailable benar)
+	  4.1 (optional) lakuin checkSave() lagi untuk benar" menjamin data save ada
+	  4.2 delete objek human lama
+	  4.3 lakukan loadSave()
+	  */
 	bool saveGameAvailable; // kalau save game ada, maka true. Kalo nggak, maka false
 
 	void checkSave() // check save.txt ada apa nggak
@@ -280,9 +280,9 @@ private:
 			for (int height = 0; height < 23; height++) {
 				Console::setCursorPos(15, 4 + height);
 				for (int width = 0; width < strlen(map[height]); width++) {
-					if (map[height][width] == 'S') printf("%c",' ');
-					else if (map[height][width] == '0') printf("%c", ASCII_BOX_FULL);
-					else if (map[height][width] == '1') printf("%c", '_');
+					if (map[height][width] == 'S') printf(" ");
+					else if (map[height][width] == '0') printf("%c", 219);
+					else if (map[height][width] == '1') printf("%c", ' ');
 					else printf("%c", map[height][width]);
 				}
 			}
@@ -299,8 +299,8 @@ private:
 			{
 				Console::setCursorPos(15 + width, 4 + height);
 				if (map[height][width] == 'S') printf(" ");
-				else if (map[height][width] == '0') printf("%c", ASCII_BOX_FULL);
-				else if (map[height][width] == '1') printf("%c", '_');
+				else if (map[height][width] == '0') printf("%c", 219);
+				else if (map[height][width] == '1') printf("%c", 178);
 				else printf("%c", map[height][width]);
 			}
 		}
@@ -311,8 +311,8 @@ private:
 				Console::setCursorPos(15 + width, 4 + height);
 
 				if (map[height][width] == 'S') printf(" ");
-				else if (map[height][width] == '0') printf("%c", ASCII_BOX_FULL);
-				else if (map[height][width] == '1') printf("%c", '_');
+				else if (map[height][width] == '0') printf("%c", 219);
+				else if (map[height][width] == '1') printf("%c", 178);
 				else printf("%c", map[height][width]);
 			}
 		}
@@ -323,8 +323,20 @@ private:
 				Console::setCursorPos(15 + width, 4 + height);
 
 				if (map[height][width] == 'S') printf(" ");
-				else if (map[height][width] == '0') printf("%c", ASCII_BOX_FULL);
-				else if (map[height][width] == '1') printf("%c", '_');
+				else if (map[height][width] == '0') printf("%c", 219);
+				else if (map[height][width] == '1') printf("%c", 178);
+				else printf("%c", map[height][width]);
+			}
+		}
+		for (int height = 20; height <= 21; height++)
+		{
+			for (int width = 41; width <= 56; width++)
+			{
+				Console::setCursorPos(15 + width, 4 + height);
+
+				if (map[height][width] == 'S') printf(" ");
+				else if (map[height][width] == '0') printf("%c", 219);
+				else if (map[height][width] == '1') printf("%c", 178);
 				else printf("%c", map[height][width]);
 			}
 		}
@@ -333,18 +345,18 @@ private:
 		/*Console::setCursorPos(62,18);
 		Console::printf("The Great River");
 		for (int height = 18; height <= 23; height++) {
-			Console::setCursorPos(64, height);
-			Console::printf("%c",ASCII_BOX_FULL);
+		Console::setCursorPos(64, height);
+		Console::printf("%c",219);
 		}*/
 
 		//BUAT HIGHLIGHT
 		Console::setCursorPos(27, 28);
 		if (place == 0) {
-			Console::setColor(Console::COLOR_BLUE);
+			Console::setColor(Console::COLOR_GREEN);
 			Console::printf("Home");
 			Console::resetColor();
 			Console::printf(" : view inventory and equipment     ");
-			Console::setColor(Console::COLOR_BLUE);
+			Console::setColor(Console::COLOR_GREEN);
 			for (int height = 3; height <= 7; height++)
 			{
 				for (int width = 19; width <= 27; width++)
@@ -352,8 +364,8 @@ private:
 					Console::setCursorPos(15 + width, 4 + height);
 
 					if (map[height][width] == 'S') printf(" ");
-					else if (map[height][width] == '0') printf("%c", ASCII_BOX_FULL);
-					else if (map[height][width] == '1') printf("%c", '_');
+					else if (map[height][width] == '0') printf("%c", 219);
+					else if (map[height][width] == '1') printf("%c", 178);
 					else printf("%c", map[height][width]);
 				}
 			}
@@ -371,8 +383,8 @@ private:
 					Console::setCursorPos(15 + width, 4 + height);
 
 					if (map[height][width] == 'S') printf(" ");
-					else if (map[height][width] == '0') printf("%c", ASCII_BOX_FULL);
-					else if (map[height][width] == '1') printf("%c", '_');
+					else if (map[height][width] == '0') printf("%c", 219);
+					else if (map[height][width] == '1') printf("%c", 178);
 					else printf("%c", map[height][width]);
 				}
 			}
@@ -390,20 +402,40 @@ private:
 					Console::setCursorPos(15 + width, 4 + height);
 
 					if (map[height][width] == 'S') printf(" ");
-					else if (map[height][width] == '0') printf("%c", ASCII_BOX_FULL);
-					else if (map[height][width] == '1') printf("%c", '_');
+					else if (map[height][width] == '0') printf("%c", 219);
+					else if (map[height][width] == '1') printf("%c", 178);
 					else printf("%c", map[height][width]);
 				}
 			}
 			Console::resetColor(); //somehow the color gets into the list of monsters
 		}
+		else if (place == 3) {
+			Console::setColor(Console::COLOR_BLUE);
+			Console::printf("Credit");
+			Console::resetColor();
+			Console::printf(" : view credit                               ");
+			Console::setColor(Console::COLOR_BLUE);
+			for (int height = 20; height <= 21; height++)
+			{
+				for (int width = 41; width <= 56; width++)
+				{
+					Console::setCursorPos(15 + width, 4 + height);
+
+					if (map[height][width] == 'S') printf(" ");
+					else if (map[height][width] == '0') printf("%c", 219);
+					else if (map[height][width] == '1') printf("%c", 178);
+					else printf("%c", map[height][width]);
+				}
+			}
+		}
+
 	}
 
 	bool exitPrompt()
 	{
 		system("cls");
 		Console::setCursorPos(0, 2);
-		Console::setColor(Console::COLOR_MAGENTA);
+		Console::setColor(Console::COLOR_RED);
 		char* wallpaper[20] = {
 			"                          )       \\   /      (",
 			"                         /|\\      )\\_/(     /|\\",
@@ -486,6 +518,47 @@ private:
 		if (pickMenu == 1) return false; // tidak exit
 		else return true; // exit
 	}
+
+	void viewCredit(Human &karakter) {
+		string tempCheatCode;
+		system("cls");
+		string creditText[10] = {
+			"            This game is inspired by Diablo",
+			"  We do not intend to violate any copyrights, whatsoever",
+			"        This game is made as our school project",
+			"--------------------------------------------------------",
+			"      If you found any bug, please kindly contact : ",
+			"  adityawiryadarma@gmail.com OR melvinshb@yahoo.co.id",
+			"--------------------------------------------------------",
+			"",
+			"           ~Thank you for trying this game~",
+			"                   Have a good day"
+		};
+		system("cls");
+		Console::setCursorPos(23, 1);
+		Console::printf(" C R E D I T ");
+
+		Console::setCursorPos(1, 3);
+		for (int textCounter = 0; textCounter < 10; textCounter++) {
+			Console::setCursorPos(2,Console::getCursorY()+1);
+			Console::printf("%s",creditText[textCounter].c_str());
+		}
+		Console::setCursorVisibility(true);
+		Console::setCursorPos(2, Console::getCursorY() + 5);
+		Console::printf("Input cheats: ");
+		cin >> tempCheatCode;
+		cin.sync(); cin.clear();
+		if (tempCheatCode=="0") {
+			return;
+		}
+		else {
+			karakter.cheat(tempCheatCode);
+			Console::resetColor();
+			Console::setCursorPos(2,Console::getCursorY()+1);
+			Console::printf("Press any key to continue");
+			_getch();
+		}
+	}
 	// ----------------------------------------------------------------------------------------------------
 
 public:
@@ -503,11 +576,11 @@ public:
 		// Interface::getInt(x,y) tester
 		/*while(1)
 		{
-			system("cls");
-			printf("Input:");
-			int x = Interface::getInt(0, 20);
-			printf("\n\n\n%d", x);
-			Interface::delaySec(500);
+		system("cls");
+		printf("Input:");
+		int x = Interface::getInt(0, 20);
+		printf("\n\n\n%d", x);
+		Interface::delaySec(500);
 		}*/
 
 		karakter = NULL; // state karakter pertama
@@ -579,7 +652,7 @@ public:
 			int currentPlace = 0;
 			bool print = false;
 			int inputDelay = 0;
-//virtual key codes
+			//virtual key codes
 #define W_KEY 0x57
 #define S_KEY 0x53
 #define A_KEY 0x41
@@ -587,7 +660,7 @@ public:
 #define M_KEY 0x4D
 			while (1)
 			{
-				
+
 				Console::setCursorVisibility(false);
 				Console::resetColor();
 				if (print)
@@ -598,7 +671,7 @@ public:
 				// 0 = home
 				// 1 = town
 				// 2 = cave
-				enum LOCATION { HOME = 0, TOWN, CAVE };
+				enum LOCATION { HOME = 0, TOWN, CAVE, CREDIT };
 				//mapMenu = _getch();
 				mapMenu = Console::getKeyPressed();
 				if (mapMenu == -1)continue;
@@ -636,8 +709,8 @@ public:
 				}
 				else if (currentPlace == TOWN) {
 					if (mapMenu == S_KEY || mapMenu == VK_DOWN) {
-						printMap(CAVE, false);
-						currentPlace = CAVE;
+						printMap(CREDIT, false);
+						currentPlace = CREDIT;
 					}
 					else if (mapMenu == A_KEY || mapMenu == VK_LEFT) {
 						printMap(HOME, false);
@@ -648,14 +721,14 @@ public:
 						print = true; // PENTING
 					}
 				}
-				else {
+				else if (currentPlace == CAVE) {
 					if (mapMenu == W_KEY || mapMenu == VK_UP) {
 						printMap(HOME, false);
 						currentPlace = HOME;
 					}
 					else if (mapMenu == D_KEY || mapMenu == VK_RIGHT) {
-						printMap(TOWN, false);
-						currentPlace = TOWN;
+						printMap(CREDIT, false);
+						currentPlace = CREDIT;
 					}
 					else if (mapMenu == VK_RETURN) {
 						{
@@ -664,15 +737,30 @@ public:
 
 							Music::playBackgroundMusic(TOWN);
 							print = true; // PENTING
-							//if (Battle::getWin())
-							//{
-							//	continue;
-							//}
-							//else
-							//{
-							//	continue;
-							//}
+										  //if (Battle::getWin())
+										  //{
+										  //	continue;
+										  //}
+										  //else
+										  //{
+										  //	continue;
+										  //}
 						}
+					}
+				}
+				else {
+					if (mapMenu == W_KEY || mapMenu == VK_UP) {
+						printMap(TOWN, false);
+						currentPlace = TOWN;
+					}
+					else if (mapMenu == A_KEY || mapMenu == VK_LEFT) {
+						printMap(CAVE, false);
+						currentPlace = CAVE;
+					}
+					else if (mapMenu == VK_RETURN) {
+						//credit here
+						viewCredit(*karakter);
+						print = true;
 					}
 				}
 
