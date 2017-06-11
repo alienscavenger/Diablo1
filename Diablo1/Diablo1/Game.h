@@ -94,7 +94,7 @@ private:
 		"0SSS___,-SSSSSSSSS~~~~~~SS0SSS0SSSSSSS~~~~~~~~~~~~~~~~~SS0\n",
 		"0SS/\'SS\\``-SSSSSSSS~~~~~~~01110SSS~~~~~~~~~~~~~SSSSSSSSSS0\n",
 		"0S/SSSS\'\\```SSSSSSSSS~~~~~01110~~~~~~~~~~~~SSSSSSSSSSSSSS0\n",
-		"0/S/111\\SS\\``,SSSSSSSSS~~~01110~~~~~~~~SSSSSSSSSSSSSSSSSS0\n",
+		"0/S/111\\SS\\``,SSSSSSSSS~~~01110~~~~~~~~SSThe Great RiverS0\n",
 		"0S/11111\\_S\\`/SSSSSSSSSSSS01110~~~~~SSSSSSSSSSSSSSSSSSSSS0\n",
 		"0/11111111\\S\\`\'\"SSSSSSSSSS0SSS0SSSSSSSSSSSSSSSSSSSSSSSSSS0\n",
 		"01111111111\\_S\\``SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS0\n",
@@ -282,7 +282,7 @@ private:
 				for (int width = 0; width < strlen(map[height]); width++) {
 					if (map[height][width] == 'S') printf(" ");
 					else if (map[height][width] == '0') printf("%c", 219);
-					else if (map[height][width] == '1') printf("%c", 178);
+					else if (map[height][width] == '1') printf("%c", ' ');
 					else printf("%c", map[height][width]);
 				}
 			}

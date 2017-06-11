@@ -74,6 +74,9 @@ private:
 	static int goldEarned;
 	static int expGained;
 	static char caveName[7][30];
+	static int lowestBoundary[7];
+	static int highestBoundary[7];
+
 	// helper function
 	static void printBox1(int x, int y)
 	{
@@ -1329,7 +1332,7 @@ private:
 		return;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void printCave(int caveWidth, int caveHeight , int shiftX, int shiftY, int caveLevel, vector<Monster*>vCaveMonster, Human *karakter, int lowBound, int highBound) {
+	static void printCave(int caveWidth, int caveHeight , int shiftX, int shiftY, int caveLevel, vector<Monster*>vCaveMonster, Human *karakter) {
 		int totalMonster;
 		
 		Console::resetColor();
@@ -1381,7 +1384,7 @@ private:
 			Console::setCursorPos(caveWidth + shiftX + 1, Console::getCursorY() + 1);
 			Console::printf("%d. %s",totalMonster+1, vCaveMonster[totalMonster]->getName().c_str());
 		}*/
-		for (totalMonster = 0; totalMonster <= min(highBound, karakter->getLevel()-1); totalMonster++) {
+		for (totalMonster = 0; totalMonster < min(highestBoundary[caveLevel], karakter->getLevel()-1); totalMonster++) {
 			Console::setCursorPos(caveWidth + shiftX + 1, Console::getCursorY() + 1);
 			Console::printf("%d. %s", totalMonster + 1, vCaveMonster[totalMonster]->getName().c_str());
 		}
@@ -1399,10 +1402,9 @@ public:
 	// MAIN FUNCTION
 	static void selectCave(Human* karakter, vector<Monster>& vMonster) {
 		vector<Monster*> vCaveMonster;	//monster yang ada di cave sekarang
+		vCaveMonster.reserve(6);
 		int caveLevel;
 		int caveReq[7] = {0,6,11,16,21,26,29};	//level requirement
-		int lowestBoundary;	//lowest monster index in a cave
-		int highestBoundary;	//highest monster index in cave
 		int currX = 1, currY = 1; //current position
 		int prevX, prevY;	//previous position
 		int nextX, nextY;	//future position
@@ -1471,20 +1473,22 @@ public:
 
 		//initialize cave boundaries
 		vCaveMonster.clear();
-		vCaveMonster.empty();
-		if (caveLevel < 6) {	//ordinary cave
-			lowestBoundary = (caveLevel - 1) * 5;
-			highestBoundary = (caveLevel * 5) -1;
-		}
-		else if (caveLevel == 6) {	//mini boss cave
-			lowestBoundary = 25;
-			highestBoundary = 27;
-		}
-		else if (caveLevel == 7) {	//diablo's cave
-			lowestBoundary = highestBoundary = 28;
-		}
+		//vCaveMonster.empty();
+		//if (caveLevel < 6) {	//ordinary cave
+		//	lowestBoundary = (caveLevel - 1) * 5;
+		//	highestBoundary = (caveLevel * 5) -1;
+		//	printf("low:%d  high:%d",lowestBoundary, highestBoundary);
+		//	cin.get();
+		//}
+		//else if (caveLevel == 6) {	//mini boss cave
+		//	lowestBoundary = 25;
+		//	highestBoundary = 27;
+		//}
+		//else if (caveLevel == 7) {	//diablo's cave
+		//	lowestBoundary = highestBoundary = 28;
+		//}
 		//input monster to temporary vector
-		for (int low = lowestBoundary; low <= highestBoundary; low++) {
+		for (int low = lowestBoundary[caveLevel-1]; low <= highestBoundary[caveLevel-1]; low++) {
 			vCaveMonster.push_back(&vMonster[low]);
 		}
 
@@ -1493,7 +1497,7 @@ public:
 		nextX = prevX = currX;
 		nextY = prevY = currY;
 		Console::setCursorVisibility(false);
-		printCave(caveWidth, caveHeight, shiftX, shiftY, caveLevel, vCaveMonster, karakter, lowestBoundary, highestBoundary);
+		printCave(caveWidth, caveHeight, shiftX, shiftY, caveLevel, vCaveMonster, karakter);
 		Console::setCursorPos(shiftX + currX, shiftY + currY);
 		Console::printf("%c",2);
 		Music::playBackgroundMusic(2);
@@ -1549,16 +1553,18 @@ public:
 					{
 						int caveMonsterSelect;
 						//random available monster
-						if ((karakter->getLevel() - 1) >= highestBoundary) {
+						if ((karakter->getLevel() - 1) >= highestBoundary[caveLevel-1]) {
 							caveMonsterSelect = rand() % vCaveMonster.size();
 						}
 						else {
-							caveMonsterSelect = rand() % (karakter->getLevel() - lowestBoundary);
+							Console::printf("%d",lowestBoundary);
+							cin.get();
+							caveMonsterSelect = rand() % (karakter->getLevel() - lowestBoundary[caveLevel-1]);
 						}
 
 						startBattle(*karakter, *(vCaveMonster[caveMonsterSelect]));
 						if (win) {
-							printCave(caveWidth, caveHeight, shiftX, shiftY, caveLevel, vCaveMonster, karakter, lowestBoundary, highestBoundary);
+							printCave(caveWidth, caveHeight, shiftX, shiftY, caveLevel, vCaveMonster, karakter);
 							Console::setCursorPos(shiftX + currX, shiftY + currY);
 							Console::printf("%c", 2);
 							Music::playBackgroundMusic(2);
@@ -2351,6 +2357,8 @@ int Battle::riposte = 0;
 int Battle::momentum = 0;
 bool Battle::win = false;
 
+int Battle::lowestBoundary[7] = {0,5,10,15,20,25,29};
+int Battle::highestBoundary[7] = {4,9,14,19,24,27,29};
 int Battle::monsterKilled = 0;
 int Battle::expGained = 0;
 int Battle::goldEarned = 0;
