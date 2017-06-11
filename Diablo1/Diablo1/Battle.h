@@ -560,7 +560,7 @@ private:
 					float MinDamage = max(0, karakter.getDamage() - enemy.getArmor());
 					float MaxDamage = max(0, (karakter.getDamage()*(1.0f + (float)karakter.getStrength()*0.05f)) - enemy.getArmor());
 					int diff = (int)ceil(MaxDamage - MinDamage);
-					float damage = MinDamage + (rand() % diff);
+					float damage = MinDamage + (diff>1?(rand() % diff):0);
 					if (riposte) damage *= 1.5; // PALADIN
 
 					text += karakter.getName();
@@ -572,7 +572,7 @@ private:
 					printLog(log);
 
 					Music::playSoundEffect(1);
-					HPchange(0, damage, karakter, enemy, crit); // UBAH INI KALAU MAU NGECHEAT
+					HPchange(0, 9999999, karakter, enemy, crit); // UBAH INI KALAU MAU NGECHEAT
 				}
 				if (riposte) // PALADIN
 				{
@@ -652,7 +652,7 @@ private:
 					float MinDamage = max(0, enemy.getDamage() - karakter.getArmor());
 					float MaxDamage = max(0, (enemy.getDamage()*(1.0f + (float)enemy.getLevel()*0.05f)) - karakter.getArmor());
 					int diff = (int)ceil(MaxDamage - MinDamage);
-					float damage = MinDamage + diff>0?(rand() % diff):0;
+					float damage = MinDamage + (diff>1 ? (rand() % diff) : 0);
 
 					text += enemy.getName();
 					text += " HIT with ";
@@ -1381,7 +1381,7 @@ private:
 			Console::setCursorPos(caveWidth + shiftX + 1, Console::getCursorY() + 1);
 			Console::printf("%d. %s",totalMonster+1, vCaveMonster[totalMonster]->getName().c_str());
 		}*/
-		for (totalMonster = 0; totalMonster <= min(highBound-lowBound, karakter->getLevel()- levelRequirement); totalMonster++) { // sebenernya highBound-lowBound pasti samadengan 5. Tapi biar lu ngerti
+		for (totalMonster = 0; totalMonster <= min(highBound-lowBound, karakter->getLevel()-levelRequirement); totalMonster++) { // sebenernya highBound-lowBound pasti sama dengan 4. Tapi biar lu ngerti
 			Console::setCursorPos(caveWidth + shiftX + 1, Console::getCursorY() + 1);
 			Console::printf("%d. %s", totalMonster + 1, vCaveMonster[totalMonster]->getName().c_str());
 		}
@@ -1400,7 +1400,7 @@ public:
 	static void selectCave(Human* karakter, vector<Monster>& vMonster) {
 		vector<Monster*> vCaveMonster;	//monster yang ada di cave sekarang
 		int caveLevel;
-		int caveReq[7] = {0,6,11,16,21,26,29};	//level requirement
+		int caveReq[7] = {1,6,11,16,21,26,29};	//level requirement
 		int lowestBoundary;	//lowest monster index in a cave
 		int highestBoundary;	//highest monster index in cave
 		int currX = 1, currY = 1; //current position
