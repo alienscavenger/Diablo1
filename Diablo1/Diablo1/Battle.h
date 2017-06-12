@@ -1393,18 +1393,19 @@ private:
 	}
 	static void theEnd(Human *karakter)
 	{
-		char dialogue[11][70]{
+		char dialogue[12][70]{
 			"                In the end, it was a mortal heart",
 			"that saved two worlds from ruin and cast down the Prime Evil forever",
 			"--------------------------------------------------------------------",
 			"            A new day breaks for both angels and man",
-			"                           For mankind's greatest champion, ",
-			"  rose to confront the darkness that we in our pride would not face",
+			"                For mankind's greatest champion, ",
+			"",
+			" rose to confront the darkness that we in our pride would not face",
 			"--------------------------------------------------------------------",
 			"                 Forever we shall stand together, ",
 			"         angels and men, in light of this glorious new dawn",
 			"--------------------------------------------------------------------",
-			"     The day is won. Diablo is vanquished, and all evil with him"
+			"    The day is won. Diablo is vanquished, and all evil with him"
 		};
 		char sun[10][70] = {
 			"                         AAAAAAA                          ",
@@ -1455,24 +1456,19 @@ private:
 			Console::printf("%s", angel[angelCounter]);
 			Console::delay(100);
 		}
-		/*for (int angelCounter = 0; angelCounter < 10; angelCounter++) {
-			Console::setCursorPos(55, angelCounter + 5);
-			Console::printf("%s", angel[angelCounter]);
-			Console::delay(100);
-		}*/
+		
+		//printing dialogue
 		Console::resetColor();
-		for (int dialogueCounter = 0; dialogueCounter < 11; dialogueCounter++) {
+		for (int dialogueCounter = 0; dialogueCounter < 12; dialogueCounter++) {
 			Console::setCursorPos(7, Console::getCursorY()+1);
 			if (dialogueCounter == 5) {
-				Console::setCursorPos(41 - (karakter->getName().length() / 2), Console::getCursorY());
+				Console::setCursorPos(39 - (karakter->getName().length() / 2), Console::getCursorY());
 				Console::setColor(13);
 				for (int karChar = 0; karChar < strlen(karakter->getName().c_str()); karChar++) {
 					Console::printf("%c", karakter->getName().c_str()[karChar]);
-					Console::delay(50);
-
+					Console::delay(500);
 				}
 				Console::resetColor();
-				Console::printf("\n");
 			}
 			for (int dialogueChar = 0; dialogueChar < strlen(dialogue[dialogueCounter]); dialogueChar++) {
 					Console::printf("%c", dialogue[dialogueCounter][dialogueChar]);
@@ -1931,13 +1927,15 @@ public:
 							else {
 								caveMonsterSelect = rand() % (karakter->getLevel() - lowestBoundary);
 							}
-
+							if (vCaveMonster[caveMonsterSelect]->getName() == "Diablo") {
+								diabloStart(karakter);
+							}
 							startBattle(*karakter, *(vCaveMonster[caveMonsterSelect]));
 							if (win) {
 								if (vCaveMonster[caveMonsterSelect]->getName() == "Diablo")
 								{
 									// MAKA RUN CREDIT / ENDING SCENE / APAPUN
-									THEEND();
+									theEnd(karakter);
 									return;
 								}
 								printCave(caveWidth, caveHeight, shiftX, shiftY, caveLevel, vCaveMonster, karakter, lowestBoundary, highestBoundary, caveReq[caveLevel - 1]);
