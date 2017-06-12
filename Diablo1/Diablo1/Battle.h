@@ -1264,8 +1264,8 @@ private:
 		printf("\n\n");
 		Console::setColor(GREY);
 		Interface::delaySec(300);
-		printf("          Press any key to go back to your home...");
-		_getch();
+		printf("                        Press enter to go back to your home...");
+		Interface::pressEnterPlease();
 	}
 	static void gameLog(deque<string>&log)
 	{
@@ -1412,7 +1412,7 @@ private:
 			"                 Forever we shall stand together, ",
 			"         angels and men, in light of this glorious new dawn",
 			"--------------------------------------------------------------------",
-			"    The day is won. Diablo is vanquished, and all evil with him"
+			"    The day is won. Diablo is vanquished, and all evil with him.."
 		};
 		char sun[10][70] = {
 			"                         AAAAAAA                          ",
@@ -1452,7 +1452,7 @@ private:
 				else if (sun[sunCounter][sunChar] == 'P') { Console::printf("%c", 219); }
 				else { Console::printf(" "); }
 			}
-			Console::delay(500);
+			Interface::delaySec(500);
 		}
 
 		//printing angels
@@ -1461,7 +1461,7 @@ private:
 			Console::printf("%s", angel[angelCounter]);
 			Console::setCursorPos(55, angelCounter + 5);
 			Console::printf("%s", angel[angelCounter]);
-			Console::delay(100);
+			Interface::delaySec(100);
 		}
 		
 		//printing dialogue
@@ -1473,23 +1473,56 @@ private:
 				Console::setColor(13);
 				for (int karChar = 0; karChar < strlen(karakter->getName().c_str()); karChar++) {
 					Console::printf("%c", karakter->getName().c_str()[karChar]);
-					Console::delay(500);
+					Interface::delaySec(500);
 				}
 				Console::resetColor();
 			}
 			for (int dialogueChar = 0; dialogueChar < strlen(dialogue[dialogueCounter]); dialogueChar++) {
 					Console::printf("%c", dialogue[dialogueCounter][dialogueChar]);
 				if (dialogue[dialogueCounter][dialogueChar] == '-') {
-					Console::delay(10);
+					Interface::delaySec(10);
 				}
 				else {
-					Console::delay(100);
+					Interface::delaySec(100);
 				}
 			}
 		}
-		
-		getchar();
+
+		Interface::delaySec(1000);
+		Console::setColor(GREY);
+		printf("\n");
+		printf("                         Press enter to continue...");
+		Interface::pressEnterPlease();
+
+		{
+			system("cls");
+			char* text[] =
+			{   "_________          _______    _______  _        ______  ",
+				"\\__   __/|\\     /|(  ____ \\  (  ____ \\( (    /|(  __  \\ ",
+				"   ) (   | )   ( || (    \\/  | (    \\/|  \\  ( || (  \\  )",
+				"   | |   | (___) || (__      | (__    |   \\ | || |   ) |",
+				"   | |   |  ___  ||  __)     |  __)   | (\\ \\) || |   | |",
+				"   | |   | (   ) || (        | (      | | \\   || |   ) |",
+				"   | |   | )   ( || (____/\\  | (____/\\| )  \\  || (__/  )",
+				"   )_(   |/     \\|(_______/  (_______/|/    )_)(______/ "
+			};
+			printf("\n\n");
+			Console::setColor(Console::COLOR_GREEN);
+			for (int i = 0; i < 8; i++)
+			{
+				printf("                  ");
+				printf("%s\n", text[i]);
+				Interface::delaySec(300);
+			}
+			printf("\n\n");
+			Console::setColor(GREY);
+			Interface::delaySec(300);
+			printf("                        Press enter to go back to your home...");
+			Interface::pressEnterPlease();
+			Console::resetColor();
+		}
 	}
+
 	static void diabloStart(Human *karakter) {
 		Console::resetColor();
 		system("cls");
@@ -1548,7 +1581,7 @@ private:
 			Console::setCursorPos(65, Console::getCursorY()+1);
 			for (int letter = 0; letter < strlen(dialogue[dialogueText]); letter++) {
 				Console::printf("%c", dialogue[dialogueText][letter]);
-				Console::delay(50);
+				Interface::delaySec(50);
 			}
 		}
 
@@ -1557,7 +1590,13 @@ private:
 		Console::setColor(13);
 		for (int tName = 0; tName < strlen(karakter->getName().c_str()); tName++) {
 			Console::printf("%c", karakter->getName().c_str()[tName]);
-			Console::delay(50);
+			Interface::delaySec(50);
+		}
+		Console::resetColor();
+		for (int i = 0; i < 3; i++)
+		{
+			printf("%c", '.');
+			Interface::delaySec(50);
 		}
 
 		//enter
@@ -1802,18 +1841,9 @@ public:
 
 		system("cls");
 		printCave(caveWidth, caveHeight, shiftX, shiftY, caveLevel, vCaveMonster, karakter, lowestBoundary, highestBoundary, caveReq[caveLevel - 1]);
-		//Console::setCursorPos(shiftX + currX, shiftY + currY);
-		//Console::printf("%c",2);
-		Music::playBackgroundMusic(2);
-
-		//--------------------- DISINI MULAI KODE GW ---------------------
-		///
-		///
-		///
 
 		currX = 2;
 		currY = 2;
-
 
 		int leftArm = -1;
 		int rightArm = -1;
@@ -1870,8 +1900,6 @@ public:
 		const int minStep = 5;
 		while (true) {
 			Console::resetColor();
-			//nextX = currX;
-			//nextY = currY;
 			//ask input
 			moveInput = _getch();
 			moveInput = tolower(moveInput);
@@ -1912,10 +1940,6 @@ public:
 				if (canMove)
 				{
 					//move player
-					/*Console::setCursorPos(shiftX+currX, shiftY+currY);
-					Console::printf(" ");
-					Console::setCursorPos(shiftX+nextX, shiftY+nextY);
-					Console::printf("%c", 1);*/
 					mapPrintChar(nextX, nextY, currX, currY, shiftX, shiftY, shiftKiri, shiftKanan, karakterIcon, previous);
 					currX = prevX = nextX;
 					currY = prevY = nextY;
@@ -1946,8 +1970,6 @@ public:
 									return;
 								}
 								printCave(caveWidth, caveHeight, shiftX, shiftY, caveLevel, vCaveMonster, karakter, lowestBoundary, highestBoundary, caveReq[caveLevel - 1]);
-								/*Console::setCursorPos(shiftX + currX, shiftY + currY);
-								Console::printf("%c", 2);*/
 								mapPrintChar(currX, currY, prevX, prevY, shiftX, shiftY, shiftKiri, shiftKanan, karakterIcon, previous);
 								Music::playBackgroundMusic(2);
 								continue;
@@ -2011,7 +2033,9 @@ public:
 			monsterSelect = Interface::getInt(0, counter);
 			if (monsterSelect == 0) return;
 			int monsterLevel = vMonster[monsterSelect - 1].getLevel();
-			if (monsterLevel > levelBoundary)
+			
+			if (monsterLevel > levelBoundary && false)
+				//                                ^ gaush ada level restriction
 			{
 				Console::setCursorPos(1, y + 2);
 				Console::setColor(Console::COLOR_RED);
@@ -2023,7 +2047,7 @@ public:
 				printf("                              ");
 				continue;
 			}
-			else if (monsterLevel > karakter->getLevel() && monsterLevel <= levelBoundary)
+			else if (monsterLevel > karakter->getLevel())
 			{
 				Console::setCursorPos(1, y + 2);
 				Console::setColor(Console::COLOR_YELLOW);
@@ -2096,6 +2120,7 @@ public:
 		Console::setCursorVisibility(false);
 		startBattle(*karakter, vMonster[monsterSelect - 1]);
 		system("cls");
+		Music::playBackgroundMusic(1);
 		return;
 	}
 
