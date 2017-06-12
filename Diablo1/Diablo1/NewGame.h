@@ -293,7 +293,7 @@ public:
 					Console::setColor(Console::COLOR_WHITE);
 					Console::setCursorPos(40 - ((int)name.length() / 2), 1);
 					cout << "What class are you, ";
-					Console::setColor(Console::COLOR_RED);
+					Console::setColor(Console::COLOR_MAGENTA);
 					cout << name;
 					Console::setColor(Console::COLOR_WHITE);
 					cout << '?';

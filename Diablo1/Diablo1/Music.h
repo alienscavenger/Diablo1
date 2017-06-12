@@ -41,6 +41,7 @@ public:
 
 	static void playBackgroundMusic(int bgm) {
 		stopBackgroundMusic();
+		if (bgm == 999) return;
 		//open file according to the place
 		//untuk sementara alias BGM = "musik"
 

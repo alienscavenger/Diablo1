@@ -1568,23 +1568,139 @@ public:
 	static bool getWin() { return win; }
 
 	// MAIN FUNCTION
-	static void selectCave(Human* karakter, vector<Monster>& vMonster) {
-		vector<Monster*> vCaveMonster;	//monster yang ada di cave sekarang
-		int caveLevel;
-		int caveReq[7] = { 1,6,11,16,21,26,29 };	//level requirement
-		int lowestBoundary;	//lowest monster index in a cave
-		int highestBoundary;	//highest monster index in cave
-		int currX = 1, currY = 1; //current position
-		int prevX, prevY;	//previous position
-		int nextX, nextY;	//future position
-		bool canMove;	//can move or not
-		char moveInput;	//user input
-		int caveWidth = 30;	//max cave width
-		int caveHeight = 25;	//max cave height
-		int shiftX = 2;
-		int shiftY = 3;
-		bool canEnterCave;
+	static void mapPrintChar(int currX, int currY, int prevX, int prevY, int shiftX, int shiftY, int shiftKiri, int shiftKanan, char icon[][6], char* previous[])
+	{
+		currX -= 1; currY -= 1; prevX -= 1; prevY -= 1;
+		currX -= shiftKiri;
+		prevX -= shiftKiri;
+		Console::resetColor();
+		int xCounter = 0;
+		int yCounter = 0;
 
+		for (int i = 0; i < 3; i++)
+		{
+			xCounter = 0;
+			for (int j = 1 - shiftKiri; j < 4 + shiftKanan; j++)
+			{
+				Console::setCursorPos(shiftX + prevX + xCounter, shiftY + prevY + yCounter);
+				printf("%c", previous[i][j]);
+				xCounter++;
+			}
+			yCounter++;
+		}
+
+		xCounter = 0;
+		yCounter = 0;
+		for (int i = 0; i < 3; i++)
+		{
+			xCounter = 0;
+			for (int j = 1 - shiftKiri; j < 4 + shiftKanan; j++)
+			{
+				Console::setCursorPos(shiftX + currX + xCounter, shiftY + currY + yCounter);
+				printf("%c", icon[i][j]);
+				xCounter++;
+			}
+			yCounter++;
+		}
+	}
+
+	static void foundMonster()
+	{
+		system("cls");
+		char* background[14] =
+		{
+			" _    _    _    _    _    _    _    _    _    _    ",
+			" \\\"-._\\\"-._\\\"-._\\\"-._\\\"-._\\\"-._\\\"-._\\\"-._\\\"-._\\\"-._",
+			" \"    \"    \"    \"    \"    \"    \"    \"    \"    \"    ",
+			"",
+			"",
+			"",
+			"",
+			"",
+			"",
+			"",
+			"",
+			" _    _    _    _    _    _    _    _    _    _    ",
+			" \\\"-._\\\"-._\\\"-._\\\"-._\\\"-._\\\"-._\\\"-._\\\"-._\\\"-._\\\"-._",
+			" \"    \"    \"    \"    \"    \"    \"    \"    \"    \"                  "
+		};
+
+		char* WILD[8] =
+		{
+			"                     (    (    (                      ",
+			"		   (  (      )\\ ) )\\ ) )\\ )                 ",
+			"           )\\))(   \'(()/((()/((()/(                 ",
+			"           ((_)()\\ )  /(_))/(_))/(_)) (              ",
+			"           _(())\\_)()(_)) (_)) (_))_  )              ",
+			"           \\ \\((_)/ /|_ _|| |   |   \\              ",
+			"            \\ \\/\\/ /  | | | |__ | |) |             ",
+			"             \\_/\\_/  |___||____||___/               "
+		};
+
+		char* MONSTER[8] =
+		{
+			"              )      )  (                (            ",
+			"    (  `    ( /(   ( /(  )\\ )  *   )      )\\ )      ",
+			"    )\\))(   )\\())  )\\())(()/(` )  /( (   (()/(     ",
+			"   ((_)()\\ ((_)\\  ((_)\\  /(_))( )(_)))\\   /(_))   ",
+			"   (_()((_)  ((_)  _((_)(_)) (_(_())((_) (_))         ",
+			"   |  \\/  | / _ \\ | \\| |/ __||_   _|| __|| _ \\    ",
+			"   | |\\/| || (_) || .` |\\__ \\  | |  | _| |   /     ",
+			"   |_|  |_| \\___/ |_|\\_||___/  |_|  |___||_|_\\     "
+		};
+
+		char* FOUND[8] =
+		{
+			"          (    (                 (        (      ",
+			"   (      )\\ ) )\\ )       (      )\\ )     )\\ )    ",
+			"   )\\    (()/((()/( (     )\\    (()/( (  (()/(      ",
+			"((((_)(   /(_))/(_)))\\ ((((_)(   /(_)))\\  /(_))     ",
+			" )\\ _ )\\ (_)) (_)) ((_) )\\ _ )\\ (_)) ((_)(_))_    ",
+			" (_)_\\(_)| _ \\| _ \\| __|(_)_\\(_)| _ \\| __||   \\ ",
+			"  / _ \\  |  _/|  _/| _|  / _ \\  |   /| _| | |) |    ",
+			" /_/ \\_\\ |_|  |_|  |___|/_/ \\_\\ |_|_\\|___||___/  "
+		};
+
+		Console::setCursorPos(0, 4);
+		Console::setCursorVisibility(false);
+		Console::setColor(Console::COLOR_RED);
+		for (int i = 0; i < 14; i++)
+		{
+			printf("               %s\n", background[i]);
+		}
+		{
+			Console::setColor(Console::COLOR_YELLOW);
+			Console::setCursorPos(0, 7);
+			for (int i = 0; i < 8; i++)
+			{
+				if (i >= 5)Console::resetColor();
+				printf("               %s\n", WILD[i]);
+			}
+			Interface::delaySec(700);
+		}
+		{
+			Console::setColor(Console::COLOR_YELLOW);
+			Console::setCursorPos(0, 7);
+			for (int i = 0; i < 8; i++)
+			{
+				if (i >= 5)Console::resetColor();
+				printf("               %s\n", MONSTER[i]);
+			}
+			Interface::delaySec(700);
+		}
+		{
+			Console::setColor(Console::COLOR_YELLOW);
+			Console::setCursorPos(0, 7);
+			for (int i = 0; i < 8; i++)
+			{
+				if (i >= 5)Console::resetColor();
+				printf("               %s\n", FOUND[i]);
+			}
+			Interface::delaySec(1000);
+		}
+	}
+
+	static void selectCave(Human* karakter, vector<Monster>& vMonster) {
 		monsterKilled = 0;
 		goldEarned = 0;
 		expGained = 0;
@@ -1595,10 +1711,10 @@ public:
 		Console::setColor(79);
 		Console::printf(" C A V E ");
 		Console::resetColor();
-
 		Console::printf("\n\n\n");
+
 		//printing cave level detail
-		//DESPERATE ATTEMPT biar keluar --> forgive me :(
+		int caveReq[7] = { 1,6,11,16,21,26,29 };	//level requirement
 		Console::setCursorPos(1, 3);
 		Console::printf("Lv. | %-23s | Lv. Req |\n", "Cave Name");
 		Console::printf("==========================================");
@@ -1609,6 +1725,8 @@ public:
 		printf("\n\n");
 
 		//asking cave level
+		int caveLevel;
+		bool canEnterCave;
 		Console::setCursorVisibility(true);
 		int x = Console::getCursorX();
 		int y = Console::getCursorY();
@@ -1641,6 +1759,10 @@ public:
 		if (caveLevel == 0)return;
 
 		//initialize cave boundaries
+		int lowestBoundary;	//lowest monster index in a cave
+		int highestBoundary; //highest monster index in cave
+		vector<Monster*> vCaveMonster; //monster yang ada di cave sekarang
+
 		vCaveMonster.clear();
 		vCaveMonster.empty();
 		if (caveLevel < 6) {	//ordinary cave
@@ -1660,20 +1782,91 @@ public:
 		}
 
 		//first print
-		system("cls");
-		nextX = prevX = currX;
-		nextY = prevY = currY;
 		Console::setCursorVisibility(false);
+		int caveWidth = 30;	//max cave width
+		int caveHeight = 17;	//max cave height
+
+		int prevX, prevY;	//previous position
+		int nextX, nextY;	//future position
+		int currX, currY; //current position
+
+		int shiftX = 2;
+		int shiftY = 3;
+		int shiftKiri = 0; // kalau ada weapon/shield
+		int shiftKanan = 0;
+
+		system("cls");
 		printCave(caveWidth, caveHeight, shiftX, shiftY, caveLevel, vCaveMonster, karakter, lowestBoundary, highestBoundary, caveReq[caveLevel - 1]);
-		Console::setCursorPos(shiftX + currX, shiftY + currY);
-		Console::printf("%c", 2);
+		//Console::setCursorPos(shiftX + currX, shiftY + currY);
+		//Console::printf("%c",2);
 		Music::playBackgroundMusic(2);
 
+		//--------------------- DISINI MULAI KODE GW ---------------------
+		///
+		///
+		///
+
+		currX = 2;
+		currY = 2;
+
+
+		int leftArm = -1;
+		int rightArm = -1;
+		if (karakter->getEquipStatus(Human::LeftArm))
+		{
+			if (karakter->getEquipment(Human::LeftArm)->getType() == Human::Shield) leftArm = Human::Shield;
+			else leftArm = Human::Weapon;
+		}
+		if (karakter->getEquipStatus(Human::RightArm))
+		{
+			rightArm = Human::Weapon;
+		}
+		char karakterIcon[3][6] = { // 3x6
+			//"  0~  ",
+			//" /|\  ",
+			//" / \  "
+			' ',' ','0','~',' ',' ',
+			' ','/','|','\\',' ',' ',
+			' ','/',' ','\\',' ',' '
+		};
+		if (rightArm != -1)
+		{
+			karakterIcon[1][0] = '!';
+			shiftKiri = 1;
+			currX += 1;
+		}
+		if (leftArm != -1)
+		{
+			if (leftArm == Human::Shield)
+			{
+				karakterIcon[1][4] = '(';
+				karakterIcon[1][5] = ')';
+				shiftKanan = 2;
+			}
+			else
+			{
+				karakterIcon[1][4] = '!';
+				shiftKanan = 1;
+			}
+		}
+		nextX = prevX = currX;
+		nextY = prevY = currY;
+
+		char* previous[3] = {
+			"       ",
+			"       ",
+			"       "
+		};
+		mapPrintChar(nextX, nextY, currX, currY, shiftX, shiftY, shiftKiri, shiftKanan, karakterIcon, previous);
 		//moving
+		char moveInput;	//user input
+		bool canMove;	//can move or not
+		int counter = 5;
+		const int minStep = 5;
 		while (true) {
 			Console::resetColor();
-			nextX = currX;
-			nextY = currY;
+			//nextX = currX;
+			//nextY = currY;
 			//ask input
 			moveInput = _getch();
 			moveInput = tolower(moveInput);
@@ -1681,6 +1874,8 @@ public:
 				return;
 			}
 			if (moveInput == 'w' || moveInput == 'a' || moveInput == 's' || moveInput == 'd') {
+				int nextY_ = nextY;
+				int nextX_ = nextX;
 				switch (moveInput) {
 				case 'w':
 					nextY = currY - 1;
@@ -1695,10 +1890,14 @@ public:
 					nextX = currX + 1;
 					break;
 				}
-				if (nextX == 0 || nextX == caveWidth) {
+				if (nextX == 1 + shiftKiri || nextX == caveWidth - 1 - shiftKanan) {
+					nextY = nextY_;
+					nextX = nextX_;
 					canMove = false;
 				}
-				else if (nextY == 0 || nextY == caveHeight) {
+				else if (nextY == 1 || nextY == caveHeight - 1) {
+					nextY = nextY_;
+					nextX = nextX_;
 					canMove = false;
 				}
 				else {
@@ -1708,47 +1907,54 @@ public:
 				if (canMove)
 				{
 					//move player
-					Console::setCursorPos(shiftX + currX, shiftY + currY);
+					/*Console::setCursorPos(shiftX+currX, shiftY+currY);
 					Console::printf(" ");
-					Console::setCursorPos(shiftX + nextX, shiftY + nextY);
-					Console::printf("%c", 1);
+					Console::setCursorPos(shiftX+nextX, shiftY+nextY);
+					Console::printf("%c", 1);*/
+					mapPrintChar(nextX, nextY, currX, currY, shiftX, shiftY, shiftKiri, shiftKanan, karakterIcon, previous);
 					currX = prevX = nextX;
 					currY = prevY = nextY;
-					//calculate chance
-					int chance = rand() % 30;
-					if (chance == 1) // 1/100 chance to meet monster
+
+					//minimum 5 step sampe bisa ketemu monster
+					if (counter == 0)
 					{
-						int caveMonsterSelect;
-						//random available monster
-						if ((karakter->getLevel() - 1) >= highestBoundary) {
-							caveMonsterSelect = rand() % vCaveMonster.size();
-						}
-						else {
-							caveMonsterSelect = rand() % (karakter->getLevel() - lowestBoundary);
-						}
-						if (vCaveMonster[caveMonsterSelect]->getName() == "Diablo") {
-							diabloStart(karakter);
-						}
-						startBattle(*karakter, *(vCaveMonster[caveMonsterSelect]));
-						if (win) {
-							if (vCaveMonster[caveMonsterSelect]->getName() == "Diablo")
-							{
-								// MAKA RUN CREDIT / ENDING SCENE / APAPUN
-								theEnd(karakter);
-								return;
+						//calculate chance
+						int chance = rand() % 20;
+						if (chance == 1) // 1/20 chance to meet monster
+						{
+							counter = minStep; // reset counter step jadi minStep lagi
+							int caveMonsterSelect;
+							//random available monster
+							if ((karakter->getLevel() - 1) >= highestBoundary) {
+								caveMonsterSelect = rand() % vCaveMonster.size();
 							}
-							printCave(caveWidth, caveHeight, shiftX, shiftY, caveLevel, vCaveMonster, karakter, lowestBoundary, highestBoundary, caveReq[caveLevel - 1]);
-							Console::setCursorPos(shiftX + currX, shiftY + currY);
-							Console::printf("%c", 2);
-							Music::playBackgroundMusic(2);
-							continue;
+							else {
+								caveMonsterSelect = rand() % (karakter->getLevel() - lowestBoundary);
+							}
+
+							startBattle(*karakter, *(vCaveMonster[caveMonsterSelect]));
+							if (win) {
+								if (vCaveMonster[caveMonsterSelect]->getName() == "Diablo")
+								{
+									// MAKA RUN CREDIT / ENDING SCENE / APAPUN
+									THEEND();
+									return;
+								}
+								printCave(caveWidth, caveHeight, shiftX, shiftY, caveLevel, vCaveMonster, karakter, lowestBoundary, highestBoundary, caveReq[caveLevel - 1]);
+								/*Console::setCursorPos(shiftX + currX, shiftY + currY);
+								Console::printf("%c", 2);*/
+								mapPrintChar(currX, currY, prevX, prevY, shiftX, shiftY, shiftKiri, shiftKanan, karakterIcon, previous);
+								Music::playBackgroundMusic(2);
+								continue;
+							}
+							else { return; } // kalau kalah
 						}
-						else { return; } // kalau kalah
 					}
-					else { continue; } // kalau gk bisa move
+					else counter--;
 				}
-			}
-		}
+				else { continue; } // kalau gk bisa move
+			} // end if
+		} // end while(1)
 	}
 
 	static void selectMonster(Human* karakter, vector<Monster>& vMonster)
@@ -1890,8 +2096,19 @@ public:
 
 	static void startBattle(Human& karakter, Monster& enemy)
 	{
-		system("cls");
 		Music::playBackgroundMusic(3);
+		foundMonster();
+		system("cls");
+		if (rand()%20==1 && enemy.getName()!="Diablo")
+		{
+			Music::playBackgroundMusic(999);
+			Console::setCursorPos(20, 7);
+			printf("The monster flee..");
+			Interface::delaySec(1500);
+			system("cls");
+			win = true;
+			return;
+		}
 		Console::setCursorVisibility(false);
 		Console::setCursorPos(25, 0);
 		Console::setColor(79);
