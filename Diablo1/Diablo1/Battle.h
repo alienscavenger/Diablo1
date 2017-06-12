@@ -379,7 +379,7 @@ private:
 			printf("Uses 30 stamina");
 		}
 	}
-	static int pickAction(Human& karakter, int& pickMenu,Monster& enemy)
+	static int pickAction(Human& karakter, int& pickMenu, Monster& enemy)
 	{
 		if (pickMenu > 2) pickMenu = 2;
 
@@ -411,7 +411,7 @@ private:
 					Console::setColor(79);
 					printf("<Attack>");
 					Console::resetColor();
-					printDescription(pickMenu, karakter,enemy);
+					printDescription(pickMenu, karakter, enemy);
 				}
 				else printf(" Attack ");
 
@@ -421,7 +421,7 @@ private:
 					Console::setColor(79);
 					printf("<Rest>");
 					Console::resetColor();
-					printDescription(pickMenu, karakter,enemy);
+					printDescription(pickMenu, karakter, enemy);
 				}
 				else printf(" Rest ");
 
@@ -433,7 +433,7 @@ private:
 					printf("%s", ability.c_str());
 					printf(">");
 					Console::resetColor();
-					printDescription(pickMenu + karakter.getJob(), karakter,enemy);
+					printDescription(pickMenu + karakter.getJob(), karakter, enemy);
 				}
 				else printf(" %s ", ability.c_str());
 
@@ -560,7 +560,7 @@ private:
 					float MinDamage = max(0, karakter.getDamage() - enemy.getArmor());
 					float MaxDamage = max(0, (karakter.getDamage()*(1.0f + (float)karakter.getStrength()*0.05f)) - enemy.getArmor());
 					int diff = (int)ceil(MaxDamage - MinDamage);
-					float damage = MinDamage + (diff>1?(rand() % diff):0);
+					float damage = MinDamage + (diff > 1 ? (rand() % diff) : 0);
 					if (riposte) damage *= 1.5; // PALADIN
 
 					text += karakter.getName();
@@ -652,7 +652,7 @@ private:
 					float MinDamage = max(0, enemy.getDamage() - karakter.getArmor());
 					float MaxDamage = max(0, (enemy.getDamage()*(1.0f + (float)enemy.getLevel()*0.05f)) - karakter.getArmor());
 					int diff = (int)ceil(MaxDamage - MinDamage);
-					float damage = MinDamage + (diff>1 ? (rand() % diff) : 0);
+					float damage = MinDamage + (diff > 1 ? (rand() % diff) : 0);
 
 					text += enemy.getName();
 					text += " HIT with ";
@@ -1329,9 +1329,9 @@ private:
 		return;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void printCave(int caveWidth, int caveHeight , int shiftX, int shiftY, int caveLevel, vector<Monster*>vCaveMonster, Human *karakter, int lowBound, int highBound, int levelRequirement) {
+	static void printCave(int caveWidth, int caveHeight, int shiftX, int shiftY, int caveLevel, vector<Monster*>vCaveMonster, Human *karakter, int lowBound, int highBound, int levelRequirement) {
 		int totalMonster;
-		
+
 		Console::resetColor();
 		caveHeight++;
 		caveWidth++;
@@ -1339,7 +1339,7 @@ private:
 		//printing border
 		for (int height = 0; height < caveHeight; height++) {
 			for (int width = 0; width < caveWidth; width++) {
-				Console::setCursorPos(shiftX+width, shiftY+height);
+				Console::setCursorPos(shiftX + width, shiftY + height);
 				if (height == 0 || height == (caveHeight - 1)) {
 					Console::printf("%c", 219);
 				}
@@ -1357,12 +1357,12 @@ private:
 		/*Console::setCursorPos(caveWidth+ shiftX + 8, shiftY);
 		Console::printf("C A V E");*/
 		Console::setCursorPos(caveWidth + shiftX + 1, shiftY);
-		Console::printf("%s",caveName[caveLevel-1]);
+		Console::printf("%s", caveName[caveLevel - 1]);
 
 		Console::resetColor();
-		Console::setCursorPos(caveWidth + shiftX + 1, shiftY+1);
+		Console::setCursorPos(caveWidth + shiftX + 1, shiftY + 1);
 		Console::printf("LEVEL : ");
-		Console::printf("%d",caveLevel);
+		Console::printf("%d", caveLevel);
 		Console::setCursorPos(caveWidth + shiftX + 1, shiftY + 3);
 		Console::printf("Gold earned       : ");
 		Console::printf("%d", goldEarned);
@@ -1372,16 +1372,16 @@ private:
 		Console::setCursorPos(caveWidth + shiftX + 1, shiftY + 5);
 		Console::printf("Monster(s) killed : ");
 		Console::printf("%d", monsterKilled);
-		
+
 
 		totalMonster = 0;
-		Console::setCursorPos(caveWidth + shiftX + 1, Console::getCursorY()+3);
+		Console::setCursorPos(caveWidth + shiftX + 1, Console::getCursorY() + 3);
 		Console::printf("Monster lurking: ");
 		/*for (vector<Monster*>::iterator iter = vCaveMonster.begin(); iter != vCaveMonster.end(); iter++, totalMonster++) {
 			Console::setCursorPos(caveWidth + shiftX + 1, Console::getCursorY() + 1);
 			Console::printf("%d. %s",totalMonster+1, vCaveMonster[totalMonster]->getName().c_str());
 		}*/
-		for (totalMonster = 0; totalMonster <= min(highBound-lowBound, karakter->getLevel()-levelRequirement); totalMonster++) { // sebenernya highBound-lowBound pasti sama dengan 4. Tapi biar lu ngerti
+		for (totalMonster = 0; totalMonster <= min(highBound - lowBound, karakter->getLevel() - levelRequirement); totalMonster++) { // sebenernya highBound-lowBound pasti sama dengan 4. Tapi biar lu ngerti
 			Console::setCursorPos(caveWidth + shiftX + 1, Console::getCursorY() + 1);
 			Console::printf("%d. %s", totalMonster + 1, vCaveMonster[totalMonster]->getName().c_str());
 		}
@@ -1391,13 +1391,177 @@ private:
 		Console::printf("Press ESC  to go back");
 
 	}
-	static void THEEND()
+	static void theEnd(Human *karakter)
 	{
+		char dialogue[11][70]{
+			"                In the end, it was a mortal heart",
+			"that saved two worlds from ruin and cast down the Prime Evil forever",
+			"--------------------------------------------------------------------",
+			"            A new day breaks for both angels and man",
+			"                           For mankind's greatest champion, ",
+			"  rose to confront the darkness that we in our pride would not face",
+			"--------------------------------------------------------------------",
+			"                 Forever we shall stand together, ",
+			"         angels and men, in light of this glorious new dawn",
+			"--------------------------------------------------------------------",
+			"     The day is won. Diablo is vanquished, and all evil with him"
+		};
+		char sun[10][70] = {
+			"                         AAAAAAA                          ",
+			"                      AAAPPPPPPPAAA                       ",
+			"                    AAPPPPPPPPPPPPPAA                     ",
+			"                   APPPPPPPPPPPPPPPPPA                    ",
+			"                   APPPPPPPPPPPPPPPPPA                    ",
+			"                   APPPPPPPPPPPPPPPPPA                    ",
+			"                   APPPPPPPPPPPPPPPPPA                    ",
+			"                    AAPPPPPPPPPPPPPAA                     ",
+			"                      AAAPPPPPPPAAA                       ",
+			"                         AAAAAAA                          ",
+		};
+		char angel[10][25] = {
+			"     __/)     (\\__",
+			"  ,-\'~~(   _   )~~`-.",
+			" /      \\/\'_`\\/      \\",
+			"|       /_(_)_\\       |",
+			"|     _(/(\\_/)\\)_     |",
+			"|    / // \\ / \\\\ \\    |",
+			" \\  | ``  / \\ \'\'  |  /",
+			"  \\  )   /   \\   (  /",
+			"   )/   /     \\   \\(",
+			"   \'    `-`-\'-\'    `"
+		};
 		Console::resetColor();
 		system("cls");
 		Music::playBackgroundMusic(7);
-		printf("the end?");
+		
+		//printing sun
+		Console::setColor(Console::COLOR_YELLOW);
+		for (int sunCounter = 0; sunCounter < 10; sunCounter++) {
+			//Console::printf("%s\n",sun[sunCounter]);
+			Console::setCursorPos(11, Console::getCursorY()+1);
+			for (int sunChar = 0; sunChar < strlen(sun[sunCounter]); sunChar++) {
+				if (sun[sunCounter][sunChar] == 'A') { Console::printf("%c", '#'); }
+				else if (sun[sunCounter][sunChar] == 'P') { Console::printf("%c", 219); }
+				else { Console::printf(" "); }
+			}
+			Console::delay(500);
+		}
+
+		//printing angels
+		for (int angelCounter = 0; angelCounter < 10; angelCounter++) {
+			Console::setCursorPos(1, angelCounter+5);
+			Console::printf("%s", angel[angelCounter]);
+			Console::setCursorPos(55, angelCounter + 5);
+			Console::printf("%s", angel[angelCounter]);
+			Console::delay(100);
+		}
+		/*for (int angelCounter = 0; angelCounter < 10; angelCounter++) {
+			Console::setCursorPos(55, angelCounter + 5);
+			Console::printf("%s", angel[angelCounter]);
+			Console::delay(100);
+		}*/
+		Console::resetColor();
+		for (int dialogueCounter = 0; dialogueCounter < 11; dialogueCounter++) {
+			Console::setCursorPos(7, Console::getCursorY()+1);
+			if (dialogueCounter == 5) {
+				Console::setCursorPos(41 - (karakter->getName().length() / 2), Console::getCursorY());
+				Console::setColor(13);
+				for (int karChar = 0; karChar < strlen(karakter->getName().c_str()); karChar++) {
+					Console::printf("%c", karakter->getName().c_str()[karChar]);
+					Console::delay(50);
+
+				}
+				Console::resetColor();
+				Console::printf("\n");
+			}
+			for (int dialogueChar = 0; dialogueChar < strlen(dialogue[dialogueCounter]); dialogueChar++) {
+					Console::printf("%c", dialogue[dialogueCounter][dialogueChar]);
+				if (dialogue[dialogueCounter][dialogueChar] == '-') {
+					Console::delay(10);
+				}
+				else {
+					Console::delay(100);
+				}
+			}
+		}
+		
 		getchar();
+	}
+	static void diabloStart(Human *karakter) {
+		Console::resetColor();
+		system("cls");
+		char dragon[28][70] = {
+"                                          ",
+"                               //        ",
+"                              /:      ,",
+"                             ;.(     //",
+"                   |   ,     /`|    //",
+"                   |\\  |\\    |,|   //",
+"                |  (\\  (\\    |`|   |(",
+"                (\\  \\\\  \\\\   |,|   ;|",
+"            .   ||   \\\\  \\\\  |`(   ;(",
+"            \\\\   \\\\  \\\\  \\\\  |.\\\\  ((",
+"             \\\\   \\\\  \\\\  \\\\  \\\\ \\;/:\\",
+"               \\\\  \\\\  \\\'. \\\\_,\\\\ /\\\"\"-.",
+"                \\\\  \\\\  \\ \\-\"   \\/ `;._ \".",
+"               ___\\\\-\\\\-\" \\ \\_  /,  |_ \"._\\",
+"         _,--\"\"___ \\ \\,_   \"-_\"- |\".|(._ \".\".-.",
+"     _,-\"_,--\"\"\"__ ) \".\"-_    \"--\\ \\\"(\"o\\_\\ \"- \".",
+"   ,\",-\"\"\" _.-\'\'\'_-\"   \"-_\"-.__   \\ \\_\\_//\\)__\"\\_)",
+" ,\"    \',-\'  ,-\"\"   7\"  _ \"-.._\"\"_>\\__`\"\"\'\"__ \"\"``-._",
+"        ;  ,\" ,-\",\'/` ,\":\\.    `   `  `\"\"\"___`\"\"-._  \".   )",
+"        ;,\"_,\" ,\' /`,\"}}::\\\\         `... \\____\'\'\' \"\\  \'.|\\",
+"       ,\",\"   :  /`/{{)/:::\"\\__,---._    \\  \\_____\'\'\'\\    \\",
+"      , ,\"_  ;  /`/ ///::::::::\' ,-\"-\\    \\__   \\____\'\'\\ \\ \\",
+"     ,,\"   `;| \";; /}}/::\'``\':::(._``.\"-.__  \"\"\"--    \'_\\ \\ \\",
+"    (\'       ;// / {;;:\'`````\':; /`._.\"\"\"  \"\"-.._ `\"-. \" (   )",
+"    /         )(/ <\";\"\'``   ``/ /_.(             \"_  \"-_\"\\`);",
+"              (/ <\";\"``     `/ /`,(                \"._ _\".\\;",
+"               |<\";\"`   ``  / /\"-\"                    \"",
+"               <\";\"` ``    / /__,;"
+		};
+		char dialogue[5][70] = {
+			"Filthy mortals.....",
+			"Coming here with the thought of killing me.",
+			"I, The Prime Evil shall eradicate this light",
+			"All that you have ever loved shall fall with it",
+			"Prepare to die "
+		};
+
+		//printing dragon
+		for (int dragonText = 0; dragonText < 28; dragonText++) {
+			Console::printf("%s \n", dragon[dragonText]);
+		}
+		//DIABLO
+		Console::setCursorPos(65, 3);
+		Console::setColor(12);
+		Console::printf(" D I A B L O ");
+		Console::resetColor();
+
+		//printing dialogue
+		Console::setCursorPos(65, 5);
+		for (int dialogueText = 0; dialogueText < 5; dialogueText++) {
+			Console::setCursorPos(65, Console::getCursorY()+1);
+			for (int letter = 0; letter < strlen(dialogue[dialogueText]); letter++) {
+				Console::printf("%c", dialogue[dialogueText][letter]);
+				Console::delay(50);
+			}
+		}
+
+		//printing nama karakter
+		Console::setCursorPos(Console::getCursorX(), Console::getCursorY());
+		Console::setColor(13);
+		for (int tName = 0; tName < strlen(karakter->getName().c_str()); tName++) {
+			Console::printf("%c", karakter->getName().c_str()[tName]);
+			Console::delay(50);
+		}
+
+		//enter
+		Console::setColor(Console::COLOR_CYAN);
+		Console::setCursorPos(75, Console::getCursorY()+5);
+		Console::printf("Press enter to fight DIABLO!");
+		Interface::pressEnterPlease();
+		Console::resetColor();
 	}
 public:
 	// post-battle getter
@@ -1407,7 +1571,7 @@ public:
 	static void selectCave(Human* karakter, vector<Monster>& vMonster) {
 		vector<Monster*> vCaveMonster;	//monster yang ada di cave sekarang
 		int caveLevel;
-		int caveReq[7] = {1,6,11,16,21,26,29};	//level requirement
+		int caveReq[7] = { 1,6,11,16,21,26,29 };	//level requirement
 		int lowestBoundary;	//lowest monster index in a cave
 		int highestBoundary;	//highest monster index in cave
 		int currX = 1, currY = 1; //current position
@@ -1435,12 +1599,12 @@ public:
 		Console::printf("\n\n\n");
 		//printing cave level detail
 		//DESPERATE ATTEMPT biar keluar --> forgive me :(
-		Console::setCursorPos(1,3);
-		Console::printf("Lv. | %-23s | Lv. Req |\n","Cave Name");
+		Console::setCursorPos(1, 3);
+		Console::printf("Lv. | %-23s | Lv. Req |\n", "Cave Name");
 		Console::printf("==========================================");
-		for (int caveCounter = 0; caveCounter < 7; caveCounter++ ) {
-			Console::setCursorPos(1, Console::getCursorY()+1);
-			Console::printf(" %d. | %-23s |    %2d   |", caveCounter+1, caveName[caveCounter], caveReq[caveCounter]);
+		for (int caveCounter = 0; caveCounter < 7; caveCounter++) {
+			Console::setCursorPos(1, Console::getCursorY() + 1);
+			Console::printf(" %d. | %-23s |    %2d   |", caveCounter + 1, caveName[caveCounter], caveReq[caveCounter]);
 		}
 		printf("\n\n");
 
@@ -1448,7 +1612,7 @@ public:
 		Console::setCursorVisibility(true);
 		int x = Console::getCursorX();
 		int y = Console::getCursorY();
-		do{
+		do {
 			Console::setCursorPos(x, y);
 			Console::printf(" Select level[1-7] ( 0 to go back ): ");
 			caveLevel = Interface::getInt(0, 7);
@@ -1458,7 +1622,7 @@ public:
 			{
 				Console::setCursorPos(x, y + 2);
 				Console::setColor(Console::COLOR_RED);
-				printf(" YOUR LEVEL (%d) IS NOT ENOUGH TO ENTER THIS CAVE!\n",karakter->getLevel());
+				printf(" YOUR LEVEL (%d) IS NOT ENOUGH TO ENTER THIS CAVE!\n", karakter->getLevel());
 				Console::setColor(Console::COLOR_YELLOW);
 				printf(" Minimum requirement: LEVEL %d\n", caveReq[caveLevel - 1]);
 				Console::setColor(Interface::COLOR_GREY);
@@ -1473,7 +1637,7 @@ public:
 				printf("                             ");
 			}
 			else canEnterCave = true;
-		} while (canEnterCave ==false);
+		} while (canEnterCave == false);
 		if (caveLevel == 0)return;
 
 		//initialize cave boundaries
@@ -1481,7 +1645,7 @@ public:
 		vCaveMonster.empty();
 		if (caveLevel < 6) {	//ordinary cave
 			lowestBoundary = (caveLevel - 1) * 5;
-			highestBoundary = (caveLevel * 5) -1;
+			highestBoundary = (caveLevel * 5) - 1;
 		}
 		else if (caveLevel == 6) {	//mini boss cave
 			lowestBoundary = 25;
@@ -1500,9 +1664,9 @@ public:
 		nextX = prevX = currX;
 		nextY = prevY = currY;
 		Console::setCursorVisibility(false);
-		printCave(caveWidth, caveHeight, shiftX, shiftY, caveLevel, vCaveMonster, karakter, lowestBoundary, highestBoundary,caveReq[caveLevel-1]);
+		printCave(caveWidth, caveHeight, shiftX, shiftY, caveLevel, vCaveMonster, karakter, lowestBoundary, highestBoundary, caveReq[caveLevel - 1]);
 		Console::setCursorPos(shiftX + currX, shiftY + currY);
-		Console::printf("%c",2);
+		Console::printf("%c", 2);
 		Music::playBackgroundMusic(2);
 
 		//moving
@@ -1513,7 +1677,7 @@ public:
 			//ask input
 			moveInput = _getch();
 			moveInput = tolower(moveInput);
-			if (moveInput==27) {
+			if (moveInput == 27) {
 				return;
 			}
 			if (moveInput == 'w' || moveInput == 'a' || moveInput == 's' || moveInput == 'd') {
@@ -1540,13 +1704,13 @@ public:
 				else {
 					canMove = true;
 				}
-				
+
 				if (canMove)
 				{
 					//move player
-					Console::setCursorPos(shiftX+currX, shiftY+currY);
+					Console::setCursorPos(shiftX + currX, shiftY + currY);
 					Console::printf(" ");
-					Console::setCursorPos(shiftX+nextX, shiftY+nextY);
+					Console::setCursorPos(shiftX + nextX, shiftY + nextY);
 					Console::printf("%c", 1);
 					currX = prevX = nextX;
 					currY = prevY = nextY;
@@ -1562,13 +1726,15 @@ public:
 						else {
 							caveMonsterSelect = rand() % (karakter->getLevel() - lowestBoundary);
 						}
-
+						if (vCaveMonster[caveMonsterSelect]->getName() == "Diablo") {
+							diabloStart(karakter);
+						}
 						startBattle(*karakter, *(vCaveMonster[caveMonsterSelect]));
 						if (win) {
 							if (vCaveMonster[caveMonsterSelect]->getName() == "Diablo")
 							{
 								// MAKA RUN CREDIT / ENDING SCENE / APAPUN
-								THEEND();
+								theEnd(karakter);
 								return;
 							}
 							printCave(caveWidth, caveHeight, shiftX, shiftY, caveLevel, vCaveMonster, karakter, lowestBoundary, highestBoundary, caveReq[caveLevel - 1]);
@@ -1935,7 +2101,7 @@ public:
 				{
 					while (1)
 					{
-						pickMenu = pickAction(karakter, pickMenu,enemy);
+						pickMenu = pickAction(karakter, pickMenu, enemy);
 						if (pickMenu == 0) // attack
 						{
 							if (hStamina < (10 + karakter.getArmor()))

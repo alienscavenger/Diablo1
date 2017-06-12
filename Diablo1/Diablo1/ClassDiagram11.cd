@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Base">
+    <Position X="5.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAIAAAkgAAAAEEAABAAAAEEERABBAAEABQAAAA=</HashCode>
+      <FileName>Base.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Battle">
+    <Position X="0.5" Y="3.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEACoBFgQwoAAEEAIAAAgBAAIACAQIDAAQABAMg=</HashCode>
+      <FileName>Battle.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Game">
+    <Position X="2.25" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAALGcAIAACEohAqlFQgAUogQIkFEwALSABCABEAggo=</HashCode>
+      <FileName>Game.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Home">
+    <Position X="0.5" Y="0.5" Width="1.75" />
+    <NestedTypes>
+      <Struct Name="Home::ComparePrice" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Home.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Struct Name="Home::CompareName" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Home.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Struct Name="Home::CompareArmor" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Home.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Struct Name="Home::CompareDamage" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Home.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAQAACAAAACCAAAAAIAAAAAAAAAAAAIAQAAAwAAAAA=</HashCode>
+      <FileName>Home.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Human">
+    <Position X="7.5" Y="0.5" Width="2" />
+    <NestedTypes>
+      <Enum Name="Human::SLOT" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Human.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="Human::EQUIPTYPE" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Human.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="Human::JOB" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Human.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AkBCASAEEkAQoABEREMAAQoWAAAFYQACQAVABARAAAA=</HashCode>
+      <FileName>Human.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Interface">
+    <Position X="5.75" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AISAAAAAAAAAAAAAAABAAAAAAIAAAAAEhAgAAEAADAA=</HashCode>
+      <FileName>Interface.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Introduction">
+    <Position X="4.25" Y="11" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAABAQAAAAAAAAAAAAABAAAACAAAAABAAAAABAAAA=</HashCode>
+      <FileName>Introduction.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Item">
+    <Position X="4" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AgABCAIIAAg0hEAEAFIAARgEQQIFURABRAAEABQAgAA=</HashCode>
+      <FileName>Item.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Monster">
+    <Position X="5.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAQAAACAAAAAACAAgAAAQAAAAAAAAAgAAgBIAAgI=</HashCode>
+      <FileName>Monster.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Music">
+    <Position X="7.5" Y="10.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACIAAIAAAAAAAAAAAAAAAAgAAAEAAAAAAA=</HashCode>
+      <FileName>Music.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NewGame">
+    <Position X="4.25" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAACAAAAAAAAAEAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>NewGame.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Shop">
+    <Position X="0.5" Y="11.75" Width="1.5" />
+    <NestedTypes>
+      <Struct Name="Shop::ComparePrice" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Shop.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Struct Name="Shop::CompareName" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Shop.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Struct Name="Shop::CompareArmor" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Shop.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Struct Name="Shop::CompareDamage" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Shop.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Shop.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
