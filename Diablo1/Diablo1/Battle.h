@@ -1390,6 +1390,13 @@ private:
 		Console::setCursorPos(caveWidth + shiftX + 1, Console::getCursorY() + 1);
 		Console::printf("Press ESC  to go back");
 
+		if (karakter->getLevel() >= (levelRequirement + (caveLevel<6?5:3)) && caveLevel<7)
+		{
+			Console::setCursorPos(shiftX, caveHeight + shiftY + 1);
+			Console::setColor(Console::COLOR_YELLOW);
+			printf("CAVE LEVEL %d UNLOCKED!", caveLevel + 1);
+			Console::resetColor();
+		}
 	}
 	static void theEnd(Human *karakter)
 	{
@@ -1455,11 +1462,7 @@ private:
 			Console::printf("%s", angel[angelCounter]);
 			Console::delay(100);
 		}
-		/*for (int angelCounter = 0; angelCounter < 10; angelCounter++) {
-			Console::setCursorPos(55, angelCounter + 5);
-			Console::printf("%s", angel[angelCounter]);
-			Console::delay(100);
-		}*/
+		
 		Console::resetColor();
 		for (int dialogueCounter = 0; dialogueCounter < 11; dialogueCounter++) {
 			Console::setCursorPos(7, Console::getCursorY()+1);
@@ -1529,6 +1532,7 @@ private:
 		};
 
 		//printing dragon
+		Console::setColor(Console::COLOR_RED);
 		for (int dragonText = 0; dragonText < 28; dragonText++) {
 			Console::printf("%s \n", dragon[dragonText]);
 		}
@@ -1701,6 +1705,7 @@ public:
 	}
 
 	static void selectCave(Human* karakter, vector<Monster>& vMonster) {
+		Music::playBackgroundMusic(2);
 		monsterKilled = 0;
 		goldEarned = 0;
 		expGained = 0;
@@ -1717,7 +1722,7 @@ public:
 		int caveReq[7] = { 1,6,11,16,21,26,29 };	//level requirement
 		Console::setCursorPos(1, 3);
 		Console::printf("Lv. | %-23s | Lv. Req |\n", "Cave Name");
-		Console::printf("==========================================");
+		Console::printf(" =========================================");
 		for (int caveCounter = 0; caveCounter < 7; caveCounter++) {
 			Console::setCursorPos(1, Console::getCursorY() + 1);
 			Console::printf(" %d. | %-23s |    %2d   |", caveCounter + 1, caveName[caveCounter], caveReq[caveCounter]);
@@ -1937,7 +1942,7 @@ public:
 								if (vCaveMonster[caveMonsterSelect]->getName() == "Diablo")
 								{
 									// MAKA RUN CREDIT / ENDING SCENE / APAPUN
-									THEEND();
+									theEnd(karakter);
 									return;
 								}
 								printCave(caveWidth, caveHeight, shiftX, shiftY, caveLevel, vCaveMonster, karakter, lowestBoundary, highestBoundary, caveReq[caveLevel - 1]);
@@ -1980,8 +1985,8 @@ public:
 			int y = 6;
 			for (vector<Monster>::iterator iter = vMonster.begin(); iter != vMonster.end(); iter++) {
 				Console::setCursorPos(1, y);
-				printf("%-3d| %-18s| %-5d | %-8d| %-8d| %-7.0f EXP | %-6d G - - - %d", counter,
-					iter->getName().c_str(), iter->getLevel(), iter->getOffense(), iter->getDefense(), iter->getExp(), iter->getGold(), iter->getOffense() + iter->getDefense());
+				printf("%-3d| %-18s| %-5d | %-8d| %-8d| %-7.0f EXP | %-6d G", counter,
+					iter->getName().c_str(), iter->getLevel(), iter->getOffense(), iter->getDefense(), iter->getExp(), iter->getGold());
 				y++; counter++;
 			}
 			Console::setCursorPos(1, y);
@@ -2098,6 +2103,7 @@ public:
 	{
 		Music::playBackgroundMusic(3);
 		foundMonster();
+		if(enemy.getName()=="Diablo")diabloStart(&karakter);
 		system("cls");
 		if (rand()%20==1 && enemy.getName()!="Diablo")
 		{

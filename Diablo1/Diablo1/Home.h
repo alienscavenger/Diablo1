@@ -298,8 +298,8 @@ public:
 			}
 			if (hp < 0)
 			{
-				setPos(38, 12);
-				printf("%3.0f ", karakter->getMaxHealth());
+				setPos(37, 12);
+				printf("%4.0f ", karakter->getMaxHealth());
 				resetColor();
 				printf("(");
 				changeRed();
@@ -309,8 +309,8 @@ public:
 			}
 			else if (hp > 0)
 			{
-				setPos(38, 12);
-				printf("%3.0f ", karakter->getMaxHealth());
+				setPos(37, 12);
+				printf("%4.0f ", karakter->getMaxHealth());
 				resetColor();
 				printf("(");
 				changeGreen();
@@ -320,8 +320,8 @@ public:
 			}
 			if (sta < 0)
 			{
-				setPos(38, 13);
-				printf("%3.0f ", karakter->getMaxStamina());
+				setPos(37, 13);
+				printf("%4.0f ", karakter->getMaxStamina());
 				resetColor();
 				printf("(");
 				changeRed();
@@ -331,8 +331,8 @@ public:
 			}
 			else if (sta > 0)
 			{
-				setPos(38, 13);
-				printf("%3.0f ", karakter->getMaxStamina());
+				setPos(37, 13);
+				printf("%4.0f ", karakter->getMaxStamina());
 				resetColor();
 				printf("(");
 				changeGreen();
@@ -1148,12 +1148,12 @@ public:
 		printf(" %-9s: %3d%7s %-13s: %3.0f%%\n", "Endurance", karakter->getEndurance(), " ", "Chance to Hit", karakter->getChanceToHit());
 		printf(" %-9s: %3d%7s %-13s: %3.0f%%\n", "Agility", karakter->getAgility(), " ", "Evade", karakter->getEvade());
 		printf(" %-9s: %3d%7s %-13s: %3.0f\n", "Dexterity", karakter->getDexterity(), " ", "Speed", karakter->getSpeed());
-		printf(" %21s %-13s: %3.0f\n", " ", "Max Health", karakter->getMaxHealth());
+		printf(" %21s %-13s:%4.0f\n", " ", "Max Health", karakter->getMaxHealth());
 		stringstream temp;
 		temp << karakter->getGold() << " G";
 		string gold_string;
 		getline(temp, gold_string);
-		printf(" %-5s: %-14s %-13s: %3.0f\n", "Gold", gold_string.c_str(), "Max Stamina", karakter->getMaxStamina());
+		printf(" %-5s: %-14s %-13s:%4.0f\n", "Gold", gold_string.c_str(), "Max Stamina", karakter->getMaxStamina());
 		temp.clear();
 
 		if (karakter->getLevel() < Human::MAX_LEVEL)
@@ -1539,6 +1539,10 @@ public:
 						{
 							delayFlag = 0;
 							break;
+						}
+						else if (buff == VK_ESCAPE)
+						{
+							return;
 						}
 						else if (pickMenu == 0 && (buff == 0x41 || buff == VK_LEFT)) // 'a'
 						{

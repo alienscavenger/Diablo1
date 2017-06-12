@@ -395,6 +395,10 @@ public:
 							delayFlag = 0;
 							break;
 						}
+						else if (buff == VK_ESCAPE)
+						{
+							return;
+						}
 						else if (pickMenu == 0 && (buff == 0x41 || buff == VK_LEFT)) // 'a'
 						{
 							sortA = true;

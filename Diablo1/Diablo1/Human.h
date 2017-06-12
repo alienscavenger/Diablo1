@@ -383,14 +383,16 @@ public:
 		else if (cheatCode == "melvin") {
 			Console::printf("You level up!");
 			levelUp(1, 1, 1, 1);
+			experience = expRequirement[level];
 		}
 		else if (cheatCode == "stark") {
 			this->name = "GOD MODE";
 			this->level = 98;
 			this->gold = 999999;
-			levelUp(999, 999, 999,999);
+			levelUp(99, 99, 99,99);
 			this->damage = 999;
-			setExperience(9999999);
+			this->armor = 99;
+			setExperience(999999);
 			Console::printf("You have ascended to the GOD itself!");
 		}
 		else {

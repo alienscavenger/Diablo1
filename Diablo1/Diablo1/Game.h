@@ -93,12 +93,12 @@ private:
 		"0SSSSSSSSSSSSSSSS~~~~~~SSSSSSSSSSSSSSSSSS~~~~~~~~~~~~~~~~0\n",
 		"0SSS___,-SSSSSSSSS~~~~~~SS0SSS0SSSSSSS~~~~~~~~~~~~~~~~~SS0\n",
 		"0SS/\'SS\\``-SSSSSSSS~~~~~~~01110SSS~~~~~~~~~~~~~SSSSSSSSSS0\n",
-		"0S/SSSS\'\\```SSSSSSSSS~~~~~01110~~~~~~~~~~~~SSSSSSSSSSSSSS0\n",
+		"0S/S__S\'\\```SSSSSSSSS~~~~~01110~~~~~~~~~~~~SSSSSSSSSSSSSS0\n",
 		"0/S/111\\SS\\``,SSSSSSSSS~~~01110~~~~~~~~SSThe Great RiverS0\n",
 		"0S/11111\\_S\\`/SSSSSSSSSSSS01110~~~~~SSSSSSSSSSSSSSSSSSSSS0\n",
-		"0/11111111\\S\\`\'\"SSSSSSSSSS0SSS0SSSSSSSSSSSSSSSSSSSSSSSSSS0\n",
-		"01111111111\\_S\\``SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS0\n",
-		"0111111111111\'\'\\``SSSSSSSSBridgeSSSSSSSSSSSSSSSSSSSSSSSSS0\n",
+		"0/1\'11\'111\\S\\`\'\"SSSSSSSSSS0SSS0SSSSSSSSSSSSSSSSSSSSSSSSSS0\n",
+		"011111_1111\\_S\\``SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS0\n",
+		"01111|1|1\'111\'\'\\``SSSSSSSSBridgeSSSSSSSSSSSSSSSSSSSSSSSSS0\n",
 		"0\"\'\"\'\"\'\'\'\'\"\'\'\"\'\'\'`SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS0\n",
 		"0SSSSCaveSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS~MadeSbySMelvinS0\n",
 		"0SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSandSAditya~S0\n",
@@ -300,7 +300,7 @@ private:
 				Console::setCursorPos(15 + width, 4 + height);
 				if (map[height][width] == 'S') printf(" ");
 				else if (map[height][width] == '0') printf("%c", 219);
-				else if (map[height][width] == '1') printf("%c", 178);
+				else if (map[height][width] == '1') printf("%c", ' ');
 				else printf("%c", map[height][width]);
 			}
 		}
@@ -312,7 +312,7 @@ private:
 
 				if (map[height][width] == 'S') printf(" ");
 				else if (map[height][width] == '0') printf("%c", 219);
-				else if (map[height][width] == '1') printf("%c", 178);
+				else if (map[height][width] == '1') printf("%c", ' ');
 				else printf("%c", map[height][width]);
 			}
 		}
@@ -324,7 +324,7 @@ private:
 
 				if (map[height][width] == 'S') printf(" ");
 				else if (map[height][width] == '0') printf("%c", 219);
-				else if (map[height][width] == '1') printf("%c", 178);
+				else if (map[height][width] == '1') printf("%c", ' ');
 				else printf("%c", map[height][width]);
 			}
 		}
@@ -336,18 +336,10 @@ private:
 
 				if (map[height][width] == 'S') printf(" ");
 				else if (map[height][width] == '0') printf("%c", 219);
-				else if (map[height][width] == '1') printf("%c", 178);
+				else if (map[height][width] == '1') printf("%c", ' ');
 				else printf("%c", map[height][width]);
 			}
 		}
-
-		//RESET BUG in The Great River and Border (OPTIONAL, di laptop gw sih error)
-		/*Console::setCursorPos(62,18);
-		Console::printf("The Great River");
-		for (int height = 18; height <= 23; height++) {
-		Console::setCursorPos(64, height);
-		Console::printf("%c",219);
-		}*/
 
 		//BUAT HIGHLIGHT
 		Console::setCursorPos(27, 28);
@@ -365,7 +357,7 @@ private:
 
 					if (map[height][width] == 'S') printf(" ");
 					else if (map[height][width] == '0') printf("%c", 219);
-					else if (map[height][width] == '1') printf("%c", 178);
+					else if (map[height][width] == '1') printf("%c", ' ');
 					else printf("%c", map[height][width]);
 				}
 			}
@@ -384,7 +376,7 @@ private:
 
 					if (map[height][width] == 'S') printf(" ");
 					else if (map[height][width] == '0') printf("%c", 219);
-					else if (map[height][width] == '1') printf("%c", 178);
+					else if (map[height][width] == '1') printf("%c", ' ');
 					else printf("%c", map[height][width]);
 				}
 			}
@@ -403,7 +395,7 @@ private:
 
 					if (map[height][width] == 'S') printf(" ");
 					else if (map[height][width] == '0') printf("%c", 219);
-					else if (map[height][width] == '1') printf("%c", 178);
+					else if (map[height][width] == '1') printf("%c", ' ');
 					else printf("%c", map[height][width]);
 				}
 			}
@@ -423,7 +415,7 @@ private:
 
 					if (map[height][width] == 'S') printf(" ");
 					else if (map[height][width] == '0') printf("%c", 219);
-					else if (map[height][width] == '1') printf("%c", 178);
+					else if (map[height][width] == '1') printf("%c", ' ');
 					else printf("%c", map[height][width]);
 				}
 			}
@@ -557,7 +549,12 @@ private:
 				return;
 			}
 			else {
-				if (karakter.cheat(tempCheatCode)==false)
+				if (tempCheatCode == "monster")
+				{
+					Battle::selectMonster(&karakter, vMonster);
+					return;
+				}
+				else if (karakter.cheat(tempCheatCode)==false)
 				{
 					Interface::delaySec(1000);
 					// hapus yg sebelumnya
@@ -596,16 +593,6 @@ public:
 		Interface::introduction.titleScreen();
 		Interface::introduction.loading();
 		Interface::introduction.intro();
-
-		// Interface::getInt(x,y) tester
-		/*while(1)
-		{
-		system("cls");
-		printf("Input:");
-		int x = Interface::getInt(0, 20);
-		printf("\n\n\n%d", x);
-		Interface::delaySec(500);
-		}*/
 
 		karakter = NULL; // state karakter pertama
 		vShop.reserve(Item::MAX_ITEM);
@@ -676,15 +663,15 @@ public:
 			int currentPlace = 0;
 			bool print = false;
 			int inputDelay = 0;
+
 			//virtual key codes
-#define W_KEY 0x57
-#define S_KEY 0x53
-#define A_KEY 0x41
-#define D_KEY 0x44
-#define M_KEY 0x4D
+			const int W_KEY = 0x57;
+			const int S_KEY = 0x53;
+			const int A_KEY = 0x41;
+			const int D_KEY = 0x44;
+			const int M_KEY = 0x4D;
 			while (1)
 			{
-
 				Console::setCursorVisibility(false);
 				Console::resetColor();
 				if (print)
@@ -696,7 +683,6 @@ public:
 				// 1 = town
 				// 2 = cave
 				enum LOCATION { HOME = 0, TOWN, CAVE, CREDIT };
-				//mapMenu = _getch();
 				mapMenu = Console::getKeyPressed();
 				if (mapMenu == -1)continue;
 				if (inputDelay == 0)
@@ -761,14 +747,6 @@ public:
 
 							Music::playBackgroundMusic(TOWN);
 							print = true; // PENTING
-										  //if (Battle::getWin())
-										  //{
-										  //	continue;
-										  //}
-										  //else
-										  //{
-										  //	continue;
-										  //}
 						}
 					}
 				}
