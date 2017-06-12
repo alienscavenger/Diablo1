@@ -389,6 +389,7 @@ public:
 			this->level = 98;
 			this->gold = 999999;
 			levelUp(999, 999, 999,999);
+			this->damage = 999;
 			setExperience(9999999);
 			Console::printf("You have ascended to the GOD itself!");
 		}
