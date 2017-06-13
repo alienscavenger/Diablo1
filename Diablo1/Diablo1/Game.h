@@ -78,7 +78,7 @@ private:
 	Human* karakter; // karakternya
 	vector<Item> vShop; // item yang ada di game
 	vector<Monster> vMonster; // monster yang ada di game
-							  // ----------------------------------- M A P ----------------------------------------------------------
+	 // ----------------------------------- M A P ----------------------------------------------------------
 	char map[23][64] = {
 		"0000000000000000000000000000000000000000000000000000000000\n",
 		"0SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS___SSSSS___SSSSSSS0\n",
@@ -591,7 +591,8 @@ public:
 		Interface::setDefaultFont(18);
 		Interface::setWindowSize(1100, 600);
 		Interface::introduction.titleScreen();
-		Interface::introduction.loading();
+		//Interface::introduction.loading();
+		Interface::introduction.improvedLoading();
 		Interface::introduction.intro();
 
 		karakter = NULL; // state karakter pertama
@@ -774,7 +775,7 @@ public:
 			Console::setColor(Console::COLOR_YELLOW);
 			cout << "GAME SAVED!";
 			Console::resetColor();
-			Interface::flush(); // untuk tahan screen
+			Interface::delaySec(1000);
 		}
 	} // END constructor
 };

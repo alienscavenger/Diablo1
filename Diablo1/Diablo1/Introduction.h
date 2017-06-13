@@ -201,6 +201,53 @@ public:
 		Interface::pressEnterPlease();
 	}
 
+	static void improvedLoading() {
+		int yes, no;
+		yes = 0;
+		no = 49;
+		system("cls");
+		Console::setCursorVisibility(false);
+		while (yes!=54) {
+			//resetting
+			Console::setCursorPos(25, 10);
+			for (int spasi = 0; spasi < 50; spasi++) {
+				Console::printf(" ");
+			}
+			/*Console::setCursorPos(44, 13);
+			Console::printf("                        ");*/
+			
+			//printing
+			Console::setCursorPos(25, 10);
+			Console::setColor(Console::COLOR_GREEN);
+			for (int hijau = 0; hijau < yes; hijau++) {
+				Console::printf("*");
+			}
+			Console::resetColor();
+			for (int putih = 0; putih < no; putih++) {
+				int wala;
+				do
+				{
+					wala = rand() % 241 + 14;
+				} while (wala == 32 || wala == 27);
+				Console::printf("%c", wala);
+			}
+
+			Console::setCursorPos(44,13);
+			if (yes!=53) {
+				Console::resetColor();
+				Console::printf("GAME LOADING ");
+			}
+			else {
+				Console::setColor(Console::COLOR_GREEN);
+				Console::printf(" GAME LOADED");
+				Interface::delaySec(2000);
+			}
+			Interface::delaySec(100);
+			yes++;
+			no--;
+		}
+	}
+
 	static void displaySword() {
 		system("cls");
 		char *sword[] = {
@@ -215,7 +262,7 @@ public:
 			"                (O)"
 
 		};
-		Console::setColor(3);
+		Console::setColor(Console::COLOR_CYAN);
 		printf("\n\n");
 		for (int x = 0; x<9; x++) {
 			//Console::delay(100);
@@ -233,7 +280,7 @@ public:
 			"The demons are roaming the outskirt of this city",
 			"and soon everything will be devoured...\n",
 			"Help liberate Tristam Town from hand of Diablo once and for all!" };
-		enter(27, 21, 1);
+		//enter(27, 21, 1);
 		Console::setCursorPos(0, 0);
 		printf("\n\n");
 		displaySword();

@@ -1414,11 +1414,10 @@ private:
 			"--------------------------------------------------------------------",
 			"    The day is won. Diablo is vanquished, and all evil with him.."
 		};
-		char sun[10][70] = {
+		char sun[9][70] = {
 			"                         AAAAAAA                          ",
 			"                      AAAPPPPPPPAAA                       ",
 			"                    AAPPPPPPPPPPPPPAA                     ",
-			"                   APPPPPPPPPPPPPPPPPA                    ",
 			"                   APPPPPPPPPPPPPPPPPA                    ",
 			"                   APPPPPPPPPPPPPPPPPA                    ",
 			"                   APPPPPPPPPPPPPPPPPA                    ",
@@ -1444,7 +1443,7 @@ private:
 		
 		//printing sun
 		Console::setColor(Console::COLOR_YELLOW);
-		for (int sunCounter = 0; sunCounter < 10; sunCounter++) {
+		for (int sunCounter = 0; sunCounter < 9; sunCounter++) {
 			//Console::printf("%s\n",sun[sunCounter]);
 			Console::setCursorPos(11, Console::getCursorY()+1);
 			for (int sunChar = 0; sunChar < strlen(sun[sunCounter]); sunChar++) {
@@ -1473,18 +1472,24 @@ private:
 				Console::setColor(13);
 				for (int karChar = 0; karChar < strlen(karakter->getName().c_str()); karChar++) {
 					Console::printf("%c", karakter->getName().c_str()[karChar]);
+					if (karakter->getName().c_str()[karChar] == ' ') {
+						Interface::delaySec(250);
+					}
 					Interface::delaySec(500);
 				}
 				Console::resetColor();
 			}
 			for (int dialogueChar = 0; dialogueChar < strlen(dialogue[dialogueCounter]); dialogueChar++) {
 					Console::printf("%c", dialogue[dialogueCounter][dialogueChar]);
-				if (dialogue[dialogueCounter][dialogueChar] == '-') {
-					Interface::delaySec(10);
-				}
-				else {
-					Interface::delaySec(100);
-				}
+					if (dialogue[dialogueCounter][dialogueChar] == ' ') {
+						Interface::delaySec(50);
+					}
+					else if (dialogue[dialogueCounter][dialogueChar] == '-') {
+						Interface::delaySec(10);
+					}
+					else {
+						Interface::delaySec(100);
+					}
 			}
 		}
 
