@@ -589,7 +589,7 @@ public:
 		Music::playBackgroundMusic(6);
 		Interface::delaySec(1000);
 		Interface::setDefaultFont(18);
-		Interface::setWindowSize(1100, 600);
+		Interface::setWindowSize(1300, 800);
 		Interface::introduction.titleScreen();
 		//Interface::introduction.loading();
 		Interface::introduction.improvedLoading();

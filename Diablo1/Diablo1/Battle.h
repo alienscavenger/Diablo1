@@ -1329,7 +1329,7 @@ private:
 		return;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void printCave(int caveWidth, int caveHeight, int shiftX, int shiftY, int caveLevel, vector<Monster*>vCaveMonster, Human *karakter, int lowBound, int highBound, int levelRequirement) {
+	static void printCave(bool useRestriction,int caveWidth, int caveHeight, int shiftX, int shiftY, int caveLevel, vector<Monster*>vCaveMonster, Human *karakter, int lowBound, int highBound, int levelRequirement) {
 		int totalMonster;
 
 		Console::resetColor();
@@ -1381,7 +1381,7 @@ private:
 			Console::setCursorPos(caveWidth + shiftX + 1, Console::getCursorY() + 1);
 			Console::printf("%d. %s",totalMonster+1, vCaveMonster[totalMonster]->getName().c_str());
 		}*/
-		for (totalMonster = 0; totalMonster <= min(highBound - lowBound, karakter->getLevel() - levelRequirement); totalMonster++) { // sebenernya highBound-lowBound pasti sama dengan 4. Tapi biar lu ngerti
+		for (totalMonster = 0; totalMonster <= (useRestriction?min(highBound - lowBound, karakter->getLevel() - levelRequirement):vCaveMonster.size()-1); totalMonster++) { // sebenernya highBound-lowBound pasti sama dengan 4. Tapi biar lu ngerti
 			Console::setCursorPos(caveWidth + shiftX + 1, Console::getCursorY() + 1);
 			Console::printf("%d. %s", totalMonster + 1, vCaveMonster[totalMonster]->getName().c_str());
 		}
@@ -1390,7 +1390,7 @@ private:
 		Console::setCursorPos(caveWidth + shiftX + 1, Console::getCursorY() + 1);
 		Console::printf("Press ESC  to go back");
 
-		if (karakter->getLevel() >= (levelRequirement + (caveLevel<6?5:3)) && caveLevel<7)
+		if (karakter->getLevel() >= (levelRequirement + (caveLevel<6?5:3)) && caveLevel<7 || (!useRestriction && caveLevel<7))
 		{
 			Console::setCursorPos(shiftX, caveHeight + shiftY + 1);
 			Console::setColor(Console::COLOR_YELLOW);
@@ -1749,6 +1749,8 @@ public:
 	}
 
 	static void selectCave(Human* karakter, vector<Monster>& vMonster) {
+		bool useRestriction = false;
+
 		Music::playBackgroundMusic(2);
 		monsterKilled = 0;
 		goldEarned = 0;
@@ -1759,6 +1761,11 @@ public:
 		Console::setCursorPos(15, 1);
 		Console::setColor(79);
 		Console::printf(" C A V E ");
+		if (!useRestriction)
+		{
+			Console::setColor(Console::COLOR_YELLOW);
+			printf("(NO RESTRICTION: ON)");
+		}
 		Console::resetColor();
 		Console::printf("\n\n\n");
 
@@ -1785,7 +1792,7 @@ public:
 			caveLevel = Interface::getInt(0, 7);
 
 			canEnterCave = false;
-			if (karakter->getLevel() < caveReq[caveLevel - 1])
+			if (karakter->getLevel() < caveReq[caveLevel - 1] && useRestriction)
 			{
 				Console::setCursorPos(x, y + 2);
 				Console::setColor(Console::COLOR_RED);
@@ -1845,7 +1852,7 @@ public:
 		int shiftKanan = 0;
 
 		system("cls");
-		printCave(caveWidth, caveHeight, shiftX, shiftY, caveLevel, vCaveMonster, karakter, lowestBoundary, highestBoundary, caveReq[caveLevel - 1]);
+		printCave(useRestriction,caveWidth, caveHeight, shiftX, shiftY, caveLevel, vCaveMonster, karakter, lowestBoundary, highestBoundary, caveReq[caveLevel - 1]);
 
 		currX = 2;
 		currY = 2;
@@ -1959,7 +1966,7 @@ public:
 							counter = minStep; // reset counter step jadi minStep lagi
 							int caveMonsterSelect;
 							//random available monster
-							if ((karakter->getLevel() - 1) >= highestBoundary) {
+							if ((karakter->getLevel() - 1) >= highestBoundary || !useRestriction) {
 								caveMonsterSelect = rand() % vCaveMonster.size();
 							}
 							else {
@@ -1974,7 +1981,7 @@ public:
 									theEnd(karakter);
 									return;
 								}
-								printCave(caveWidth, caveHeight, shiftX, shiftY, caveLevel, vCaveMonster, karakter, lowestBoundary, highestBoundary, caveReq[caveLevel - 1]);
+								printCave(useRestriction,caveWidth, caveHeight, shiftX, shiftY, caveLevel, vCaveMonster, karakter, lowestBoundary, highestBoundary, caveReq[caveLevel - 1]);
 								mapPrintChar(currX, currY, prevX, prevY, shiftX, shiftY, shiftKiri, shiftKanan, karakterIcon, previous);
 								Music::playBackgroundMusic(2);
 								continue;

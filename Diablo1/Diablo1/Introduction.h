@@ -240,9 +240,9 @@ public:
 			else {
 				Console::setColor(Console::COLOR_GREEN);
 				Console::printf(" GAME LOADED");
-				Interface::delaySec(2000);
+				Interface::delaySec(600);
 			}
-			Interface::delaySec(100);
+			Interface::delaySec(50);
 			yes++;
 			no--;
 		}
