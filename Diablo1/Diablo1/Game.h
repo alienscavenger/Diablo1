@@ -586,7 +586,7 @@ public:
 	Game() // constructor
 	{
 		srand(time(NULL));
-		Music::playBackgroundMusic(6);
+		Music::playBackgroundMusic(Music::INTRO);
 		Interface::delaySec(1000);
 		Interface::setDefaultFont(18);
 		Interface::setWindowSize(1300, 800);
@@ -658,7 +658,7 @@ public:
 					Console::setColor(Console::COLOR_WHITE);
 				}
 			}
-			Music::playBackgroundMusic(1);
+			Music::playBackgroundMusic(Music::TOWN);
 			printMap(0, true);
 			char mapMenu;
 			int currentPlace = 0;
@@ -701,7 +701,7 @@ public:
 				}
 				else if (mapMenu == M_KEY)
 				{
-					Music::playBackgroundMusic(-1);
+					Music::playBackgroundMusic(Music::TOGGLE);
 					continue;
 				}
 				else if (currentPlace == HOME) {

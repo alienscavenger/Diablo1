@@ -84,7 +84,7 @@ public:
 				{
 					if (charMenu =='M' || charMenu == 'm')
 					{
-						Music::playBackgroundMusic(-1);
+						Music::playBackgroundMusic(Music::TOGGLE);
 					}
 					if (charMenu == VK_UP || charMenu == 0x57) // 0x57 == 'w'
 					{
@@ -256,7 +256,7 @@ public:
 					{
 						if (buffer == 'M' || buffer == 'm')
 						{
-							Music::playBackgroundMusic(-1);
+							Music::playBackgroundMusic(Music::TOGGLE);
 						}
 						if (buffer == VK_LEFT || buffer == 0x41) // 41 == 'a'
 						{
@@ -377,7 +377,7 @@ public:
 					{
 						if (buf == 'M' || buf == 'm')
 						{
-							Music::playBackgroundMusic(-1);
+							Music::playBackgroundMusic(Music::TOGGLE);
 						}
 						if (buf == VK_ESCAPE)
 						{

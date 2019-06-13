@@ -41,7 +41,9 @@ public:
 		float counter = 0;
 		char *production = "Aditya n' Melvin Production presents";
 		char input = NULL;
+
 		enter(33, 20, 1);
+
 		int flag = 0;
 		int inputFlag = 0;
 		Console::setCursorPos(26, 5);
@@ -51,7 +53,7 @@ public:
 			{
 				if (inputFlag)
 				{
-					Music::playBackgroundMusic(-1);
+					Music::playBackgroundMusic(Music::TOGGLE);
 					inputFlag = 0;
 				}
 				else inputFlag++;
@@ -68,7 +70,7 @@ public:
 				else inputFlag++;
 			}
 			Console::printf("%c", production[x]);
-			if (delayFlag) delayScreen = 50;
+			if (delayFlag) delayScreen = 25;
 			Console::delay(delayScreen);
 		}
 
@@ -85,7 +87,7 @@ public:
 					if (inputFlag)
 					{
 						inputFlag = 0;
-						Music::playBackgroundMusic(-1);
+						Music::playBackgroundMusic(Music::TOGGLE);
 					}
 					else inputFlag++;
 				}
@@ -143,7 +145,7 @@ public:
 			{
 				if (inputFlag)
 				{
-					Music::playBackgroundMusic(-1);
+					Music::playBackgroundMusic(Music::TOGGLE);
 					inputFlag = 0;
 				}
 				else inputFlag++;
@@ -202,15 +204,16 @@ public:
 	}
 
 	static void improvedLoading() {
-		int yes, no;
+		int yes, no, maks;
+		maks = 50;
 		yes = 0;
-		no = 49;
+		no = maks;
 		system("cls");
 		Console::setCursorVisibility(false);
-		while (yes!=54) {
+		while (yes<=maks) {
 			//resetting
 			Console::setCursorPos(25, 10);
-			for (int spasi = 0; spasi < 50; spasi++) {
+			for (int spasi = 0; spasi < maks; spasi++) {
 				Console::printf(" ");
 			}
 			/*Console::setCursorPos(44, 13);
@@ -233,16 +236,16 @@ public:
 			}
 
 			Console::setCursorPos(44,13);
-			if (yes!=53) {
+			if (yes<maks) {
 				Console::resetColor();
 				Console::printf("GAME LOADING ");
 			}
 			else {
 				Console::setColor(Console::COLOR_GREEN);
 				Console::printf(" GAME LOADED");
-				Interface::delaySec(600);
+				Interface::delaySec(500);
 			}
-			Interface::delaySec(50);
+			Interface::delaySec(15);
 			yes++;
 			no--;
 		}
@@ -295,11 +298,12 @@ public:
 			printf("\t\t");
 			if (y == 5) { Console::setColor(11); }
 			else printf("\t");
+
 			for (int x = 0; x<strlen(introText[y]); x++) {
 				input = Console::getKeyPressed();
 				if (input == 'M' || input == 'm')
 				{
-					Music::playBackgroundMusic(-1);
+					Music::playBackgroundMusic(Music::TOGGLE);
 					delayFlag = 0;
 				}
 				if (input == VK_RETURN) {
@@ -308,14 +312,12 @@ public:
 					//Interface::delaySec(500); // tambahin delay supaya bagus
 					//break;
 				}
-				if (delayFlag) delayScreen = 30;
+				if (delayFlag) delayScreen = 15;
 				Console::delay(delayScreen);
 				Console::printf("%c", introText[y][x]);
 			}
-			if (input == VK_RETURN) { break; }
 			printf("\n");
 		}
-		if (input == VK_RETURN) { return; }
 		enter(32, 20, 2);
 		Interface::pressEnterPlease();
 	}

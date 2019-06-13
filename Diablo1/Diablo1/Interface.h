@@ -46,7 +46,7 @@ public:
 				{
 					if (buff == 'm' || buff == 'M')
 					{
-						Music::playBackgroundMusic(-1); // MUTE UNMUTE
+						Music::playBackgroundMusic(Music::TOGGLE); // MUTE UNMUTE
 						delay = 0;
 					}
 				}
@@ -86,7 +86,7 @@ public:
 		while (1)
 		{
 			buff = _getch();
-			if (buff == 'm' || buff == 'M') Music::playBackgroundMusic(-1); // mute
+			if (buff == 'm' || buff == 'M') Music::playBackgroundMusic(Music::TOGGLE); // mute
 			if (buff == VK_RETURN)
 			{
 				if (out.size() > 0)
@@ -179,7 +179,7 @@ public:
 			char x = _getch(); // tidak ngebaca key release (hanya key press), tapi getKeyPressed iya
 			if (x == 'M' || x == 'm')
 			{
-				Music::playBackgroundMusic(-1);
+				Music::playBackgroundMusic(Music::TOGGLE);
 			}
 			if (x == VK_RETURN)
 			{

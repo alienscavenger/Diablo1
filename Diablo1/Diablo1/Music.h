@@ -10,6 +10,8 @@
 #include <mmsystem.h>
 //gonna need this for .mp3 and .WAV files
 
+using namespace std;
+
 class Music {
 	//MP3
 	//---------------------------------------------------------------------------------------
@@ -35,9 +37,31 @@ class Music {
 	static void stopBackgroundMusic() {
 		mciSendString("close musik", NULL, 0, 0);
 	}
+
 	static bool mute;
 	static int save;
+
+	static void playMusic(string name, string alias="musik") {
+		string file = "open \"audio\\" + name + "\" type mpegvideo alias " + alias.c_str();
+		mciSendString(file.c_str(), NULL, 0, NULL);
+	}
+
 public:
+	static const int TOGGLE = 0;
+	static const int MUTE = -1;
+	static const int UNMUTE = -2;
+
+	static const int TOWN = 1;
+	static const int CAVE = 2;
+	static const int BATTLE = 3;
+	static const int VICTORY = 4;
+	static const int LOSE = 5;
+	static const int INTRO = 6;
+	static const int OUTRO = 7;
+
+	static const int HIT = 1;
+	static const int CRIT = 2;
+	static const int SKILL = 3;
 
 	static void playBackgroundMusic(int bgm) {
 		stopBackgroundMusic();
@@ -45,45 +69,45 @@ public:
 		//open file according to the place
 		//untuk sementara alias BGM = "musik"
 
-		if (bgm == -1) // toggle mute dan unmute
+		if (bgm == TOGGLE) // toggle mute dan unmute
 		{
 			if (!mute) // kalau sebelumnya tidak di-mute
 			{
 				// maka mute
 				mute = true;
-				playSoundEffect(-1);
+				playSoundEffect(MUTE);
 				return;
 			}
 			else if (mute)
 			{
 				mute = false;
-				playSoundEffect(-2);
+				playSoundEffect(UNMUTE);
 				bgm = save;
 			}
 		}
 		save = bgm;
 		if (mute) return;
 		switch (bgm) {
-		case 1:	//town
-			mciSendString("open \"audio\\town1.mp3\" type mpegvideo alias musik", NULL, 0, NULL);
+		case TOWN:	//town
+			playMusic("town1.mp3");
 			break;
-		case 2:	//cave
-			mciSendString("open \"audio\\cave1.mp3\" type mpegvideo alias musik", NULL, 0, NULL);
+		case CAVE:	//cave
+			playMusic("cave1.mp3");
 			break;
-		case 3:	//battle
-			mciSendString("open \"audio\\battle1.mp3\" type mpegvideo alias musik", NULL, 0, NULL);
+		case BATTLE:	//battle
+			playMusic("battle1.mp3");
 			break;
-		case 4:	//victory
-			mciSendString("open \"audio\\victory.mp3\" type mpegvideo alias musik", NULL, 0, NULL);
+		case VICTORY:	//victory
+			playMusic("victory.mp3");
 			break;
-		case 5:	//lose
-			mciSendString("open \"audio\\gameover.mp3\" type mpegvideo alias musik", NULL, 0, NULL);
+		case LOSE:	//lose
+			playMusic("gameover.mp3");
 			break;
-		case 6:	//title screen sampai story
-			mciSendString("open \"audio\\intro.mp3\" type mpegvideo alias musik", NULL, 0, NULL);
+		case INTRO:	//title screen sampai story
+			playMusic("intro.mp3");
 			break;
-		case 7:
-			mciSendString("open \"audio\\outro.mp3\" type mpegvideo alias musik", NULL, 0, NULL);
+		case OUTRO:
+			playMusic("outro.mp3");
 			break;
 		}
 		//Play
@@ -93,33 +117,29 @@ public:
 	static void playSoundEffect(int action) {
 		mciSendString("close efek", NULL, 0, 0);
 		switch (action) {
-		case -2: // unmute
-			mciSendString("open \"audio\\unmute.mp3\" type mpegvideo alias efek", NULL, 0, NULL);
+		case UNMUTE: // unmute
+			playMusic("unmute.mp3","efek");
 			break;
-		case -1: // mute
-			mciSendString("open \"audio\\mute.mp3\" type mpegvideo alias efek", NULL, 0, NULL);
+		case MUTE: // mute
+			playMusic("mute.mp3","efek");
 			break;
-		case 1:	//normal hit in battle
-			mciSendString("open \"audio\\hit2.wav\" type mpegvideo alias efek", NULL, 0, NULL);	//NOTICE : gw samain akhirnya karena suaranya kecil
+		case HIT:	//normal hit in battle
+			playMusic("hit2.wav","efek"); //NOTICE : gw samain akhirnya karena suaranya kecil
 			break;
-		case 2:	//critical hit in battle
-			mciSendString("open \"audio\\hit2.wav\" type mpegvideo alias efek", NULL, 0, NULL); // SAMA AJA, LUL
+		case CRIT:	//critical hit in battle
+			playMusic("hit2.wav","efek"); // SAMA AJA, LUL
 			break;
-		case 3:	//skill
-			mciSendString("open \"audio\\skill.wav\" type mpegvideo alias efek", NULL, 0, NULL);
+		case SKILL:	//skill
+			playMusic("skill.wav","efek");
 			break;
 		}
-
-
 
 		//play
 		mciSendString("play efek", NULL, 0, NULL);
 	}
 };
 
-
 bool Music::mute = false;
-int Music::save = 6;
-
+int Music::save = INTRO;
 
 #endif // !MUSIC.H

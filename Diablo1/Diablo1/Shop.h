@@ -370,7 +370,7 @@ public:
 					{
 						if (buff == 'M' || buff == 'm')
 						{
-							Music::playBackgroundMusic(-1);
+							Music::playBackgroundMusic(Music::TOGGLE);
 						}
 						if (buff == VK_UP || buff == 0x57) // 0x57 == 'w'
 						{
@@ -573,7 +573,7 @@ public:
 								{
 									if (buff == 'M' || buff == 'm')
 									{
-										Music::playBackgroundMusic(-1);
+										Music::playBackgroundMusic(Music::TOGGLE);
 									}
 									if (buff == VK_LEFT || buff == 0x41) // 41 == 'a'
 									{

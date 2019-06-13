@@ -219,7 +219,7 @@ private:
 				if (buff == 'M' || buff == 'm')
 				{
 					if (inputDelay)
-						Music::playBackgroundMusic(-1);
+						Music::playBackgroundMusic(Music::TOGGLE);
 					else
 						inputDelay++;
 				}
@@ -446,7 +446,7 @@ private:
 				{
 					if (buff == 'M' || buff == 'm')
 					{
-						Music::playBackgroundMusic(-1);
+						Music::playBackgroundMusic(Music::TOGGLE);
 					}
 					if (buff == VK_UP || buff == 0x57) // 0x57 == 'w'
 					{
@@ -552,7 +552,7 @@ private:
 					log.push_back(text);
 					printLog(log);
 
-					Music::playSoundEffect(2);
+					Music::playSoundEffect(Music::CRIT);
 					HPchange(0, damage, karakter, enemy, crit);
 				}
 				else
@@ -571,7 +571,7 @@ private:
 					log.push_back(text);
 					printLog(log);
 
-					Music::playSoundEffect(1);
+					Music::playSoundEffect(Music::HIT);
 					HPchange(0, damage, karakter, enemy, crit); // UBAH INI KALAU MAU NGECHEAT
 				}
 				if (riposte) // PALADIN
@@ -644,7 +644,7 @@ private:
 					log.push_back(text);
 					printLog(log);
 
-					Music::playSoundEffect(2);
+					Music::playSoundEffect(Music::CRIT);
 					HPchange(1, damage, karakter, enemy, crit);
 				}
 				else
@@ -662,7 +662,7 @@ private:
 					log.push_back(text);
 					printLog(log);
 
-					Music::playSoundEffect(1);
+					Music::playSoundEffect(Music::HIT);
 					HPchange(1, damage, karakter, enemy, crit); // UBAH INI KALAU MAU NGECHEAT
 				}
 			}
@@ -949,7 +949,7 @@ private:
 		{
 			// YOU WIN
 			win = true;
-			Music::playBackgroundMusic(4);
+			Music::playBackgroundMusic(Music::VICTORY);
 			text = enemy.getName();
 			text += " died!";
 			log.push_back(text);
@@ -1063,7 +1063,7 @@ private:
 							{
 								if (buff == 'M' || buff == 'm')
 								{
-									Music::playBackgroundMusic(-1);
+									Music::playBackgroundMusic(Music::TOGGLE);
 								}
 								if (buff == VK_LEFT || buff == 0x41) // 41 == 'a'
 								{
@@ -1173,7 +1173,7 @@ private:
 				{
 					if (charMenu == 'M' || charMenu == 'm')
 					{
-						Music::playBackgroundMusic(-1);
+						Music::playBackgroundMusic(Music::TOGGLE);
 					}
 					if (charMenu == VK_UP || charMenu == 0x57) // 0x57 == 'w'
 					{
@@ -1303,7 +1303,7 @@ private:
 				{
 					if (buff == 'M' || buff == 'm')
 					{
-						Music::playBackgroundMusic(-1);
+						Music::playBackgroundMusic(Music::TOGGLE);
 					}
 					if (buff == VK_TAB)
 					{
@@ -1439,7 +1439,7 @@ private:
 		};
 		Console::resetColor();
 		system("cls");
-		Music::playBackgroundMusic(7);
+		Music::playBackgroundMusic(Music::OUTRO);
 		
 		//printing sun
 		Console::setColor(Console::COLOR_YELLOW);
@@ -1751,7 +1751,7 @@ public:
 	static void selectCave(Human* karakter, vector<Monster>& vMonster) {
 		bool useRestriction = false;
 
-		Music::playBackgroundMusic(2);
+		Music::playBackgroundMusic(Music::CAVE);
 		monsterKilled = 0;
 		goldEarned = 0;
 		expGained = 0;
@@ -1983,7 +1983,7 @@ public:
 								}
 								printCave(useRestriction,caveWidth, caveHeight, shiftX, shiftY, caveLevel, vCaveMonster, karakter, lowestBoundary, highestBoundary, caveReq[caveLevel - 1]);
 								mapPrintChar(currX, currY, prevX, prevY, shiftX, shiftY, shiftKiri, shiftKanan, karakterIcon, previous);
-								Music::playBackgroundMusic(2);
+								Music::playBackgroundMusic(Music::CAVE);
 								continue;
 							}
 							else { return; } // kalau kalah
@@ -1998,7 +1998,7 @@ public:
 
 	static void selectMonster(Human* karakter, vector<Monster>& vMonster)
 	{
-		Music::playBackgroundMusic(2);
+		Music::playBackgroundMusic(Music::CAVE);
 		system("cls");
 		Console::setCursorPos(27, 1);
 		Console::setColor(79);
@@ -2096,7 +2096,7 @@ public:
 						{
 							if (pick == 'M' || pick == 'm')
 							{
-								Music::playBackgroundMusic(-1);
+								Music::playBackgroundMusic(Music::TOGGLE);
 							}
 							if (pick == VK_LEFT || pick == 0x41) // 41 == 'a'
 							{
@@ -2132,13 +2132,13 @@ public:
 		Console::setCursorVisibility(false);
 		startBattle(*karakter, vMonster[monsterSelect - 1]);
 		system("cls");
-		Music::playBackgroundMusic(1);
+		Music::playBackgroundMusic(Music::TOWN);
 		return;
 	}
 
 	static void startBattle(Human& karakter, Monster& enemy)
 	{
-		Music::playBackgroundMusic(3);
+		Music::playBackgroundMusic(Music::BATTLE);
 		foundMonster();
 		if(enemy.getName()=="Diablo")diabloStart(&karakter);
 		system("cls");
@@ -2279,7 +2279,7 @@ public:
 					char x = _getch(); // tidak ngebaca key release (hanya key press), tapi getKeyPressed iya
 					if (x == 'M' || x == 'm')
 					{
-						Music::playBackgroundMusic(-1);
+						Music::playBackgroundMusic(Music::TOGGLE);
 					}
 					if (x == VK_RETURN)
 					{
@@ -2400,7 +2400,7 @@ public:
 						}
 						else // special ability
 						{
-							Music::playSoundEffect(3);
+							Music::playSoundEffect(Music::SKILL);
 							string text;
 							switch (karakter.getJob())
 							{
@@ -2777,7 +2777,7 @@ public:
 		}
 		else
 		{
-			Music::playBackgroundMusic(5);
+			Music::playBackgroundMusic(Music::LOSE);
 			Console::setCursorPos(1, 23);
 			Console::setColor(GREY);
 			printf("Press enter to see LOG...");
